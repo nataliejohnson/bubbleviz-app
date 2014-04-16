@@ -1,8 +1,10 @@
 # this is app.py
 
-from bottle import route, run, template, static_file, request
+import os
 import random
 import argparse
+
+from bottle import route, run, template, static_file, request
 
 @route('/')
 def home():
@@ -45,6 +47,15 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Process some integers.')
   parser.add_argument('--port', metavar='PORT', type=int, help='Port to serve on')
   args = parser.parse_args()
-  run(host='localhost', port=args.port)
+
+  port = None
+  if os.environ.get('PORT'):
+    port = os.environ.get('PORT')
+  elif args.port:
+    port = args.port
+  else:
+    raise Exception("Port not configured!")
+
+  run(host='localhost', port=port)
 
 

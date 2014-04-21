@@ -1,5 +1,12 @@
 
-
+## Creating a chrome extension
+ * http://extensionizr.com/
+ * https://developer.chrome.com/extensions/
+ * http://stackoverflow.com/questions/14345213/chrome-extension-develoment-samples-tutorial-etc
+ * https://developer.chrome.com/extensions/getstarted
+ * https://developer.chrome.com/extensions/overview
+ * https://developer.chrome.com/extensions/api_index
+ * http://lifehacker.com/5857721/how-to-build-a-chrome-extension
 
 ## Making movies with python
 

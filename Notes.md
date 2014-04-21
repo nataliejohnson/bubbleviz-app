@@ -1,4 +1,10 @@
 
+## Scraping google results
+ * http://www.catonmat.net/blog/python-library-for-google-search/
+ * http://stackoverflow.com/questions/5321434/python-easy-way-to-scrape-google-download-top-n-hits-entire-html-documents
+ * http://searchnewscentral.com/20110928186/General-SEO/how-to-scrape-search-engines-without-pissing-them-off.html
+ * http://stackoverflow.com/questions/5321434/python-easy-way-to-scrape-google-download-top-n-hits-entire-html-documents
+
 ## Creating a chrome extension
  * http://extensionizr.com/
  * https://developer.chrome.com/extensions/

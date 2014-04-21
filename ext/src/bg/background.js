@@ -7,12 +7,10 @@
 
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
-  /*
-  $.getJSON("http://opvdata.herokuapp.com/api/test", function(data){
-    console.log(data);
-  });
-  */
   if(request.url){
+    $.getJSON("http://bubbleviz.herokuapp.com/api/anon-search", {url: request.url}, function(data){
+      console.log(data);
+    });
     console.log("Request: ", request);
   }
   sendResponse({hello:"back"});

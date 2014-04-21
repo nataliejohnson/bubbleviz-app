@@ -18,6 +18,12 @@ def index(name):
 def random_test():
   return {'value': random.random()}
 
+@route('/api/anon-search')
+def anon_search():
+  return {
+    'status': 'OK',
+    'url': request.forms.get('url')
+  }
 
 @route('/static/<pathname>')
 def home(pathname):

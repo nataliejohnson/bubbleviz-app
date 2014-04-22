@@ -17,9 +17,16 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*", "http://*/*"],
+      "matches": [
+          "https://*.google.com/*", 
+          "http://*.google.com/*",
+        "https://*.google.co.uk/*",
+        "http://*.google.co.uk/*",
+        "https://*.google.com.au/*",
+        "http://*.google.com.au/*"
+      ],
       "css": [ "src/inject/inject.css"],
-      "js": ["src/inject/inject.js" ]
+      "js": ["js/signals.min.js", "js/hasher.min.js", "src/inject/inject.js" ]
     }
   ]
 }

@@ -4,7 +4,7 @@ import os
 import random
 import argparse
 
-from bottle import route, run, template, static_file, request
+from bottle import route, run, template, static_file, request, post
 
 @route('/')
 def home():
@@ -18,7 +18,7 @@ def index(name):
 def random_test():
   return {'value': random.random()}
 
-@route('/api/anon-search')
+@post('/api/anon-search')
 def anon_search():
   return {
     'status': 'OK',

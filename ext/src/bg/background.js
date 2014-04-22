@@ -8,8 +8,15 @@
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
   if(request.url){
-    $.getJSON("http://bubbleviz.herokuapp.com/api/anon-search", {url: request.url}, function(data){
-      console.log(data);
+    // TODO: Check if search engine URL...
+    $.ajax({
+      dataType: "json",
+      type: "POST",
+      url: "http://bubbleviz.herokuapp.com/api/anon-search",
+      data: {url: request.url}, 
+      success: function(data){
+        console.log(data);
+      }
     });
     console.log("Request: ", request);
   }

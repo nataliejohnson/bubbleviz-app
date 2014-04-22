@@ -15,7 +15,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
       url: "http://bubbleviz.herokuapp.com/api/anon-search",
       data: {url: request.url}, 
       success: function(data){
-        console.log(data);
+        console.log("From Server: ",data);
       }
     });
     console.log("Request: ", request);

@@ -4,11 +4,13 @@ import os
 import random
 import argparse
 
+import requests
+
 from bottle import route, run, template, static_file, request, post
 
 @route('/')
 def home():
- 	return static_file("./index.html", root="./Session2/")
+  return static_file("./index.html", root="./Session2/")
 
 @route('/hello/<name>')
 def index(name):
@@ -20,14 +22,16 @@ def random_test():
 
 @post('/api/anon-search')
 def anon_search():
+  reply = requests.get(request.form.get('url'))
   return {
     'status': 'OK',
-    'url': request.forms.get('url')
+    'url': request.forms.get('url'),
+    'content': reply
   }
 
 @route('/static/<pathname>')
 def home(pathname):
- 	return static_file(pathname, root="./Session2/static")
+  return static_file(pathname, root="./Session2/static")
 
 
 
@@ -63,5 +67,3 @@ if __name__ == "__main__":
     raise Exception("Port not configured!")
 
   run(host='0.0.0.0', port=port)
-
-

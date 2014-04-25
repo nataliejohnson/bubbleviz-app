@@ -22,11 +22,11 @@ def random_test():
 
 @post('/api/anon-search')
 def anon_search():
-
-  reply = requests.get(request.forms.get('url'))
+  url_to_be_fetched = request.forms.get('url')
+  reply = requests.get(url_to_be_fetched)
   return {
     'status': 'OK',
-    'url': request.forms.get('url'),
+    'url': url_to_be_fetched,
     'content': reply.text
   }
 

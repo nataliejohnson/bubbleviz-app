@@ -22,7 +22,8 @@ def random_test():
 
 @post('/api/anon-search')
 def anon_search():
-  reply = requests.get(request.form.get('url'))
+  
+  reply = requests.get(request.forms.get('url'))
   return {
     'status': 'OK',
     'url': request.forms.get('url'),

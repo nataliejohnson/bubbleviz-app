@@ -26,7 +26,7 @@
         "http://*.google.com.au/*"
       ],
       "css": [ "src/inject/inject.css"],
-      "js": ["js/signals.min.js", "js/hasher.min.js", "src/inject/inject.js" ]
+      "js": ["js/signals.min.js", "js/hasher.min.js", "js/common.js", "src/inject/inject.js" ]
     }
   ]
 }

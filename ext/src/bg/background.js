@@ -1,12 +1,33 @@
-// if you checked "fancy-settings" in extensionizr.com, uncomment this lines
-
-// var settings = new Store("settings", {
-//     "sample_setting": "This is how you use Store.js to remember values"
-// });
-
+/**
+ * background.js
+ */
 
 //example of using a message handler from the inject scripts
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  
+  console.log("New request for ", request);
+  
+  var onSuccess = function(data){
+    console.log("Received data from server successfully");
+
+    // 1. turn data into element
+    var content = data.content;
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(content, "text/html");
+    
+    // 2. grab results from data
+    var results = parseDocumentForResults(doc);
+    
+    // 3. reply with our results.
+    sendResponse(results);
+  };
+
+  var onError = function(jqXHR, textStatus, errorThrown ){
+    console.log("ERROR making ajax request: "+errorThrown);
+  };
+  
+  
   if(request.url){
     // TODO: Check if search engine URL...
     $.ajax({
@@ -14,11 +35,19 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
       type: "POST",
       url: "http://bubbleviz.herokuapp.com/api/anon-search",
       data: {url: request.url}, 
-      success: function(data){
-        console.log("From Server: ",data);
-      }
+      success: onSuccess,
+      error: onError     
     });
-    console.log("Request: ", request);
+
+  } else {
+    sendResponse({error: "NO URL"});
   }
-  sendResponse({hello:"back"});
+  
+  /*
+   * We must return true to let the chrome extension framework know that 
+   * we will be replying asynchronously. If we fail to do so, the framework
+   * will invalidate the sendResponse callback and the content script will 
+   * never receive our reply.
+   */
+  return true;
 });

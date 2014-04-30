@@ -8,12 +8,12 @@
 function scrapeForResults(){
     var results = parseDocumentForResults(document);
     if(results.length > 0){
-      console.log("We found the following search results: ", results);
+      console.log("Personal results: ", JSON.stringify(results));
 
       var request = {url: document.URL};
       
       var onResponse = function(response) {
-        console.log("Response: ", response);
+        console.log("Anonymous results: ", JSON.stringify(response));
       };
 
       chrome.runtime.sendMessage(request, onResponse );

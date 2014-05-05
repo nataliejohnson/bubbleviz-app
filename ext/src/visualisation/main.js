@@ -1,3 +1,8 @@
+  var width = 1920;
+  var height = 1200;
+
+
+
 function getParameterByName(query_string, name) {
     
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -66,13 +71,7 @@ var results_to_scores = function(results){
 
 
 
-
-
-
-
 var visualise_as_radialplot = function(searches){
-  var width = 1920;
-  var height = 1200;
 
   var center_empty_radius = 15;
 
@@ -81,9 +80,9 @@ var visualise_as_radialplot = function(searches){
   });
 
   var svg = d3.select("#chart").append("svg")
-    .attr("width", 1920)
-    .attr("height", 1200)
-    .attr("viewBox", "0 0 1920  1200")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", "0 0 "+width+" "+height)
     .attr("preserveAspectRation", "xMidYMid")
     .call(tip)
   
@@ -100,16 +99,14 @@ var visualise_as_radialplot = function(searches){
     })
     .style('stroke', 'black')
     .attr('x1', center_empty_radius)
-    .attr('x2', (height/2) - center_empty_radius );
+    .attr('x2', (Math.min(width, height)/2) - center_empty_radius );
   
 };
 
 var sizeToFit = function(){
   var chart = $("#chart svg");
-  var aspect = 1920/1200;
   chart.attr("width", $(window).width() );
   chart.attr("height", $(window).height() );
-  console.log( $(window).width(), $(window).height() );
 };
 
 

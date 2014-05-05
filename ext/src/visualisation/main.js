@@ -146,24 +146,23 @@ var visualise_as_heatmap = function(data) {
 
 
 var visualise_as_radialplot = function(searches){
-  //var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
-  //  return d.result; 
-  //});
+  var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
+    return d.result; 
+  });
 
   var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    //.tip()
+    .call(tip)
   
-  //var linegroup = svg.append("g");
-    //.attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+  var linegroup = svg.append("g")
+    .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
   
-  var search = svg.selectAll('line')
-    .data([1,2,3,4,5])
+  var search = linegroup.selectAll('line')
+    .data(searches)
     .enter()
     .append('line')
-
     .attr('transform', function(d,i){
       return 'rotate('+(360/searches.length)*i+')';
     })

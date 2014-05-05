@@ -70,10 +70,33 @@ var results_to_scores = function(results){
 };
 
 
+var result_comparator = function(a,b){
+  // Category filtering
+  if(a.category == "personal" && b.category == "anonymous"){ return -1; }
+  if(a.category == "personal" && b.category == "both"){ return -1; }
+  if(a.category == "both" && b.category == "personal"){ return 1; }
+  if(a.category == "both" && b.category == "anonymous"){ return -1; }
+  if(a.category == "anonymous" && b.category == "personal"){ return 1; }
+  if(a.category == "anonymous" && b.category == "both"){ return 1; }
+
+  // Simple case of one category only
+  if(a.category == "personal" && b.category == "personal"){ return a.personal_rank - b.personal_rank; }
+  if(a.category == "anonymous" && b.category == "anonymous"){ return a.anonymous_rank - b.anonymous_rank; }
+
+  // We prefer the personal rank for sorting, since we want more personal items to be closer to the center.
+  if(a.category == "both" && b.category == "both"){ return a.personal_rank - b.personal_rank; }
+  
+  return 0;
+    
+};
 
 var visualise_as_radialplot = function(searches){
 
-  var center_empty_radius = 15;
+  var symbol_width = 10;
+  var center_empty_radius = ( (symbol_width+4) * searches.length) / (2*Math.PI);
+  var line_length = (Math.min(width, height)/2) - center_empty_radius;
+  var maximum_num_results = Math.max.apply(null, searches.map(function(results){return results.length;}));
+  var separation = line_length / (maximum_num_results + 1);
 
   var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
     return d.result; 
@@ -86,20 +109,41 @@ var visualise_as_radialplot = function(searches){
     .attr("preserveAspectRation", "xMidYMid")
     .call(tip)
   
-  var linegroup = svg.append("g")
+  var searchgroup = svg.append("g")
     .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
   
-  var search = linegroup.selectAll('line')
+  var srchs = searchgroup.selectAll('g')
     .data(searches)
     .enter()
-    .append('line')
+    .append('g')
+    .attr('class', "search")
     .attr('transform', function(d,i){
       return 'rotate('+(360/searches.length)*i+')';
     })
-    .style('stroke', 'black')
-    .attr('x1', center_empty_radius)
-    .attr('x2', (Math.min(width, height)/2) - center_empty_radius );
+
+  srchs.append('line')
+      .style('stroke', 'black')
+      .attr('x1', center_empty_radius)
+      .attr('x2', line_length)
+    
+  
+  srchs.selectAll('g')
+    .data(function(d){
+      d.sort(result_comparator);
+      return d;
+    })
+    .enter()
+    .append('circle')
+    .attr('r', symbol_width/2)
+    .attr('cx', function (d,i){return (i*separation) + center_empty_radius;})
+    .attr('fill', function(d,i){
+      if(d.category == "personal"){ return "red"; }
+      if(d.category == "anonymous"){ return "blue"; }
+      if(d.category == "both"){ return "green"; }
+      return "grey"
+    });
+
   
 };
 
@@ -121,7 +165,6 @@ $(function(){
     visualise_as_radialplot(data);
     sizeToFit();
     $(window).on('resize', sizeToFit);
-
   });
 
 

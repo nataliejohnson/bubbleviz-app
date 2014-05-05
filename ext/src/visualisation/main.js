@@ -1,11 +1,3 @@
-var margin = { top: 50, right: 0, bottom: 100, left: 30 };
-var width = 960 - margin.left - margin.right;
-var height = 430 - margin.top - margin.bottom;
-var gridSize = Math.floor(width / 24);
-var legendElementWidth = gridSize*2;
-var buckets = 9;
-var colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"];
-
 function getParameterByName(query_string, name) {
     
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -75,84 +67,24 @@ var results_to_scores = function(results){
 
 
 
-var visualise_as_heatmap = function(data) {
-    var colorScale = d3.scale.quantile()
-        .domain([0, buckets - 1, d3.max(data, function (d) { return d.score; })])
-        .range(colors);
 
-  var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
-    return d.result; 
-  });
-
-  
-    var svg = d3.select("#chart").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  .call(tip);
-
-    var heatMap = svg.selectAll(".result")
-        .data(data)
-        .enter().append("rect")
-        .attr("x", function(d, i) { return (i%10) * gridSize; })
-        .attr("y", function(d, i) { return Math.floor(i/10) * gridSize; })
-        .attr("rx", 4)
-        .attr("ry", 4)
-        .attr("class", "hour bordered")
-        .attr("width", gridSize)
-        .attr("height", gridSize)
-        .style("fill", function(d){
-          if(d.category == "anonymous"){ return "#ff0000"; }
-          else if(d.category == "personal"){ return "#00ff00"; }
-            else if(d.category == "both"){ return "#0000ff" }
-         })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)
-    .on('click', function(d){
-      window.open(d.url);
-    });
-
-  /*
-    heatMap.transition().duration(1000)
-        .style("fill", function(d) { return colorScale(d.value); });
-   */
-
-  
-  
-    heatMap.append("title").text(function(d) { return d.value; });
-        
-    /*
-    var legend = svg.selectAll(".legend")
-        .data([0].concat(colorScale.quantiles()), function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "legend");
-
-    legend.append("rect")
-      .attr("x", function(d, i) { return legendElementWidth * i; })
-      .attr("y", height)
-      .attr("width", legendElementWidth)
-      .attr("height", gridSize / 2)
-      .style("fill", function(d, i) { return colors[i]; });
-
-    legend.append("text")
-      .attr("class", "mono")
-      .text(function(d) { return "≥ " + Math.round(d); })
-      .attr("x", function(d, i) { return legendElementWidth * i; })
-      .attr("y", height + gridSize);
-      
-    */
-}
 
 
 var visualise_as_radialplot = function(searches){
+  var width = 1920;
+  var height = 1200;
+
+  var center_empty_radius = 15;
+
   var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
     return d.result; 
   });
 
   var svg = d3.select("#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", 1920)
+    .attr("height", 1200)
+    .attr("viewBox", "0 0 1920  1200")
+    .attr("preserveAspectRation", "xMidYMid")
     .call(tip)
   
   var linegroup = svg.append("g")
@@ -167,32 +99,44 @@ var visualise_as_radialplot = function(searches){
       return 'rotate('+(360/searches.length)*i+')';
     })
     .style('stroke', 'black')
-    .attr('x1', 10)
-    .attr('x2', 600);
+    .attr('x1', center_empty_radius)
+    .attr('x2', (height/2) - center_empty_radius );
   
+};
+
+var sizeToFit = function(){
+  var chart = $("#chart svg");
+  var aspect = 1920/1200;
+  chart.attr("width", $(window).width() );
+  chart.attr("height", $(window).height() );
+  console.log( $(window).width(), $(window).height() );
 };
 
 
 
-chrome.storage.local.get("searches", function(store){
-  var data = store.searches.map(results_to_scores);
-  //var flattened_data = [];
-  //flattened_data.concat.apply(flattened_data, data);
-  //visualise_as_heatmap(flattened_data);
-  
-  visualise_as_radialplot(data);
-  
-  
-});
-
-
-$('#clear').click(function(){
-  chrome.storage.local.set({searches: []}, function(){
-    console.log("Cleared local storage");
-    $('#chart svg').remove();
+$(function(){
+  chrome.storage.local.get("searches", function(store){
+    var data = store.searches.map(results_to_scores);
+    //var flattened_data = [];
+    //flattened_data.concat.apply(flattened_data, data);
+    //visualise_as_heatmap(flattened_data);
     
-  })
-});
+    visualise_as_radialplot(data);
+    sizeToFit();
+    $(window).on('resize', sizeToFit);
+
+  });
+
+
+  $('#clear').click(function(){
+    chrome.storage.local.set({searches: []}, function(){
+      console.log("Cleared local storage");
+      $('#chart svg').remove();
+      
+    })
+  });
+
+})
 
 
 

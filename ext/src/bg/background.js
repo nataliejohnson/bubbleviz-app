@@ -2,7 +2,10 @@
  * background.js
  */
 
-//example of using a message handler from the inject scripts
+chrome.browserAction.onClicked.addListener(function(tab) { 
+  chrome.tabs.create({url:chrome.extension.getURL("visualisation.html")}); 
+});
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   

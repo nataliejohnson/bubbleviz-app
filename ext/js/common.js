@@ -33,3 +33,8 @@ function parseDocumentForResults(element){
     });
     return results;
 }
+
+function scrapeSearchTerms(element){
+  var elem = element.querySelector('#gbqfq');
+  return elem.value;
+}

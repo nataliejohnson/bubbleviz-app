@@ -23,15 +23,36 @@
         z-index:-10;
       }
 
+      .action-button{
+        background-color: #4479d4;
+        cursor:pointer;
+        color: white;
+        font-family: sans-serif;
+        padding:0.5em;
+        margin:0 0.5em 0 0.5em;
+        border:none;
+      }
+
+      .action-button:hover{
+        background-color: #052C6E;
+      }
+
+      .actions{
+        margin:1em;
+      }
+
     </style>
     <script src="js/jquery/jquery.min.js"></script>
     <script src="js/d3.v3.js"></script>
     <script src="js/d3-tip.js"></script>
+    <script src="js/spin.min.js"></script>
   </head>
   <body>
     <div id="chart"></div>
-    <a id="clear"> Clear Data </a>
-    <a id="saveimg">Save as Image</a>
+    <div class="actions">
+      <a id="clear" class="action-button"> Clear Data </a>
+      <a id="saveimg" class="action-button">Save to Gallery <span class="spinner"></span></a>
+    </div>
     <script type="text/javascript" src="src/visualisation/main.js"></script>
   </body>
 </html>

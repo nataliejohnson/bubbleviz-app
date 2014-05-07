@@ -4,8 +4,13 @@
 
 
 
-function storeResults(url, personal, anonymous){
-  var object_to_store = {url: url, anonymous: anonymous, personal:personal };
+function storeResults(url, personal, anonymous, search_terms){
+  var object_to_store = {
+    url: url, 
+    anonymous: anonymous, 
+    personal:personal,
+    terms: search_terms
+  };
   
   chrome.storage.local.get("searches", function(store){
    
@@ -45,6 +50,8 @@ function convert_url_to_server_url(url){
  */
 function scrapeForResults(){
     var results = parseDocumentForResults(document);
+    var search_terms = scrapeSearchTerms(document);
+  
     if(results.length > 0){
       console.log("Personal results: ", JSON.stringify(results));
 
@@ -53,7 +60,7 @@ function scrapeForResults(){
       var onResponse = function(response) {
         console.log("Anonymous results: ", JSON.stringify(response));
         
-        storeResults(document.URL, results, response);
+        storeResults(document.URL, results, response, search_terms);
       };
       
 

@@ -38,6 +38,8 @@ var results_to_scores = function(results){
       if (canonical_url in personal_results_index){
         scores.push({
           url: canonical_url,
+          search_url: results.url,
+          terms: results.terms,
           result: personal_results_index[canonical_url].result,
           category: "both",
           personal_rank: personal_results_index[canonical_url].personal_rank,
@@ -49,6 +51,8 @@ var results_to_scores = function(results){
         
       }else{
         scores.push({
+          terms: results.terms,
+          search_url: results.url,
           result:name,
           url: canonical_url,
           anonymous_rank: anonymous_rank,
@@ -59,6 +63,8 @@ var results_to_scores = function(results){
   
   for(var url in personal_results_index){
     scores.push({
+      terms: results.terms,
+      search_url: results.url,
       url: url,
       result: personal_results_index[url].result,
       personal_rank: personal_results_index[url].personal_rank,
@@ -96,7 +102,7 @@ var visualise_as_radialplot = function(searches){
   var center_empty_radius = ( (symbol_width+4) * searches.length) / (2*Math.PI);
   var line_length = (Math.min(width, height)/2) - center_empty_radius;
   var maximum_num_results = Math.max.apply(null, searches.map(function(results){return results.length;}));
-  var separation = line_length / (maximum_num_results + 1);
+  var separation = (line_length - center_empty_radius) / (maximum_num_results-1);
 
   var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
     return d.result; 
@@ -113,20 +119,57 @@ var visualise_as_radialplot = function(searches){
     .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
   
-  var srchs = searchgroup.selectAll('g')
+  var searchesEnter = searchgroup.selectAll('g')
     .data(searches)
     .enter()
-    .append('g')
+ 
+  
+  
+/*
+ .leftlabel{
+  transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+ }
+*/
+  
+  
+  var srchs = searchesEnter.append('g')
     .attr('class', "search")
     .attr('transform', function(d,i){
       return 'rotate('+(360/searches.length)*i+')';
     })
 
+  
+  srchs.append('text')
+      .attr('x', function(d,i){
+        var angle = (360/searches.length)*i;
+        //if(angle > 90 && angle < 270){
+        //  return -(line_length + 20);
+        //}
+      return line_length+20;
+      })
+      .attr('class', function(d,i){
+        var angle = (360/searches.length)*i;
+        if(angle > 90 && angle < 270){
+          return "leftlabel";
+        }
+        return "rightlabel";
+       })
+      .attr('y', 10)
+      .text(function(d){
+        return d[0].terms; 
+      })  
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "20px")
+      .attr("fill", "black")
+      
+      
   srchs.append('line')
       .style('stroke', 'black')
       .attr('x1', center_empty_radius)
       .attr('x2', line_length)
-    
+  
+  
   
   srchs.selectAll('g')
     .data(function(d){
@@ -172,10 +215,24 @@ $(function(){
     chrome.storage.local.set({searches: []}, function(){
       console.log("Cleared local storage");
       $('#chart svg').remove();
-      
     })
   });
 
+  $('#saveimg').click(function(){
+    console.log("Saving visualisation to gallery");
+    var onError = function(jqXHR, textStatus, errorThrown){};
+    var onSuccess = function(data){};
+    $.ajax({
+      dataType: "json",
+      type: "POST",
+      url: "http://bubbleviz.herokuapp.com/api/save/visualisation",
+      data: {
+        svg: $('#chart').html()
+      },
+      success: onSuccess,
+      error: onError
+    })
+  });
 })
 
 

@@ -131,45 +131,71 @@ var visualise_as_radialplot = function(searches){
     -webkit-transform: rotate(180deg);
  }
 */
+  var text_offset = 10;
+
+  var isReversed = function(d,i){
+    var angle = (360/searches.length)*i;
+    if(angle > 90 && angle < 270){
+      return true;
+    }
+    return false;
+  }
   
-  
+  var applyDefaultStyle = function(d3selection){
+      d3selection.select('text')
+        .attr('x', line_length+text_offset )
+        .attr('y', 4)
+        .attr("font-family", "sans-serif")
+        .attr('fill', '#aaaaaa')
+        .attr('font-size', '10px');
+      d3selection.select('line')
+        .style('stroke', 'black')
+        .attr('stroke-width', '1px');
+      d3selection.selectAll('circle')
+        .attr('r', symbol_width/2)
+  }
+  var applyHoverStyle = function(d3selection){
+      d3selection.select('text')
+        .attr('fill', 'black')
+        .attr('font-size', '20px');
+      d3selection.select('line')
+        .style('stroke', 'black')
+        .attr('stroke-width', '3px');
+      d3selection.selectAll('circle')
+        .attr('r', symbol_width/1.3)
+  }
+
   var srchs = searchesEnter.append('g')
     .attr('class', "search")
     .attr('transform', function(d,i){
       return 'rotate('+(360/searches.length)*i+')';
     })
+    .on('mouseover', function(d,i){
+      applyHoverStyle(d3.select(this));
+    })
+    .on('mouseout', function(d,i){
+      applyDefaultStyle(d3.select(this));
+      
+    })
 
   
   srchs.append('text')
-      .attr('x', function(d,i){
-        var angle = (360/searches.length)*i;
-        //if(angle > 90 && angle < 270){
-        //  return -(line_length + 20);
-        //}
-      return line_length+20;
-      })
-      .attr('class', function(d,i){
-        var angle = (360/searches.length)*i;
-        if(angle > 90 && angle < 270){
-          return "leftlabel";
-        }
-        return "rightlabel";
-       })
-      .attr('y', 10)
       .text(function(d){
         return d[0].terms; 
-      })  
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "20px")
-      .attr("fill", "black")
-      
-      
+      })
+      .attr('transform', function(d,i){
+        if(isReversed(d,i)){
+           return 'rotate(180 '+(line_length+text_offset)+',0)';
+        }
+        return null;
+      })
+      .attr('text-anchor', function(d,i){
+        return isReversed(d,i)?"end":"start";
+      })
+          
   srchs.append('line')
-      .style('stroke', 'black')
       .attr('x1', center_empty_radius)
       .attr('x2', line_length)
-  
-  
   
   srchs.selectAll('g')
     .data(function(d){
@@ -178,7 +204,6 @@ var visualise_as_radialplot = function(searches){
     })
     .enter()
     .append('circle')
-    .attr('r', symbol_width/2)
     .attr('cx', function (d,i){return (i*separation) + center_empty_radius;})
     .attr('fill', function(d,i){
       if(d.category == "personal"){ return "red"; }
@@ -187,6 +212,7 @@ var visualise_as_radialplot = function(searches){
       return "grey"
     });
 
+    srchs.each(function(d,i){ applyDefaultStyle(d3.select(this));});
   
 };
 

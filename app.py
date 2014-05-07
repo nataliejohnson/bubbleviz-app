@@ -7,8 +7,10 @@ import urlparse
 
 import requests
 import psycopg2
+import bottle
 from bottle import route, run, template, static_file, request, post
 
+bottle.BaseRequest.MEMFILE_MAX = 10000000 #(10M)
 
 urlparse.uses_netloc.append("postgres")
 # The Database URl is loaded as an Environment variable

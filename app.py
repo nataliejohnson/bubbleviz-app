@@ -63,10 +63,13 @@ def home(pathname):
 
 @post('/api/save/visualisation')
 def savevisu():
+  print("Saving visualisation...")
   svg_data = request.forms.get('svg')
+  print("    Received SVG data: %d bytes"%len(svg_data) )
   cursor = conn.cursor()
   cursor.execute("INSERT INTO visualisations (svg) VALUES (%s) ", (svg_data,) )
   conn.commit()
+  print("    Transaction committed." )
   return {'status': 'OK'}
 
 @route('/api/vis-gallery')

@@ -3,10 +3,37 @@
 import os
 import random
 import argparse
+import urlparse
 
 import requests
-
+import psycopg2
 from bottle import route, run, template, static_file, request, post
+
+
+urlparse.uses_netloc.append("postgres")
+# The Database URl is loaded as an Environment variable
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+conn = psycopg2.connect(
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+)
+
+
+def setup_database():
+  print("[INFO]: Setting up database")
+  cursor = conn.cursor()
+  cursor.execute("""
+    CREATE TABLE IF NOT EXISTS visualisations (
+      id serial PRIMARY KEY, 
+      svg text
+    )
+  """)
+
+
 
 @route('/')
 def home():
@@ -34,8 +61,24 @@ def anon_search():
 def home(pathname):
   return static_file(pathname, root="./Session2/static")
 
+@post('/api/save/visualisation')
+def savevisu():
+  svg_data = request.forms.get('svg')
+  cursor = conn.cursor()
+  cursor.execute("INSERT INTO visualisations (svg) VALUES (%s) ", (svg_data,) )
+  conn.commit()
+  return {'status': 'OK'}
 
-
+@route('/api/vis-gallery')
+def showvizs():
+  cursor = conn.cursor()
+  cursor.execute("SELECT * FROM visualisations;")
+  visualisations = [r[1] for r in  cursor.fetchmany(30)]
+  return { 
+    "status": "OK",
+    "visualisations": visualisations,
+    "count": len(visualisations)
+  }
 
 def gen_results(num):
   return [{'weight':random.random(), 'personalisation':random.random() } for x in range(num)]
@@ -57,7 +100,11 @@ def search():
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Process some integers.')
   parser.add_argument('--port', metavar='PORT', type=int, help='Port to serve on')
+  parser.add_argument('--setup', help="Setup database")
   args = parser.parse_args()
+
+  if args.setup and os.environ.get("DATABASE_URL"):
+    setup_database()
 
   port = None
   if os.environ.get('PORT'):

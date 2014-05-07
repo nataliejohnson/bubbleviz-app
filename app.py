@@ -8,9 +8,11 @@ import urlparse
 import requests
 import psycopg2
 import bottle
-from bottle import route, run, template, static_file, request, post
+from bottle import route, run, template, static_file, request, post, response
 
 bottle.BaseRequest.MEMFILE_MAX = 10000000 #(10M)
+
+app = bottle.Bottle()
 
 urlparse.uses_netloc.append("postgres")
 # The Database URl is loaded as an Environment variable
@@ -37,19 +39,19 @@ def setup_database():
 
 
 
-@route('/')
+@app.route('/')
 def home():
   return static_file("./index.html", root="./Session2/")
 
-@route('/hello/<name>')
+@app.route('/hello/<name>')
 def index(name):
     return template('<b>Hello {{name}}</b>!', name=name)
   
-@route('/api/random-test')
+@app.route('/api/random-test')
 def random_test():
   return {'value': random.random()}
 
-@post('/api/anon-search')
+@app.post('/api/anon-search')
 def anon_search():
   url_to_be_fetched = request.forms.get('url')
   reply = requests.get(url_to_be_fetched)
@@ -59,14 +61,14 @@ def anon_search():
     'content': reply.text
   }
 
-@route('/static/<pathname>')
+@app.route('/static/<pathname>')
 def home(pathname):
   return static_file(pathname, root="./Session2/static")
 
-@post('/api/save/visualisation')
+@app.post('/api/save/visualisation')
 def savevisu():
   print("Saving visualisation...")
-  svg_data = request.forms.get('svg')
+  svg_data = request.body.getvalue()
   print("    Received SVG data: %d bytes"%len(svg_data) )
   cursor = conn.cursor()
   cursor.execute("INSERT INTO visualisations (svg) VALUES (%s) ", (svg_data,) )
@@ -74,7 +76,7 @@ def savevisu():
   print("    Transaction committed." )
   return {'status': 'OK'}
 
-@route('/api/vis-gallery')
+@app.route('/api/vis-gallery')
 def showvizs():
   cursor = conn.cursor()
   cursor.execute("SELECT * FROM visualisations;")
@@ -94,7 +96,7 @@ def item_weight(item):
 def item_personalisation(item):
   return item['personalisation']
 
-@route('/api/search')
+@app.route('/api/search')
 def search():
   query = request.query.get('query')
   return {
@@ -119,4 +121,4 @@ if __name__ == "__main__":
   else:
     raise Exception("Port not configured!")
 
-  run(host='0.0.0.0', port=port)
+  app.run(host='0.0.0.0', port=port)

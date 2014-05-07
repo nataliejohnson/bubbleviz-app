@@ -285,10 +285,9 @@ $(function(){
     $.ajax({
       dataType: "json",
       type: "POST",
+      processData: false,
       url: "http://bubbleviz.herokuapp.com/api/save/visualisation",
-      data: {
-        svg: $('#chart').html()
-      },
+      data: $('#chart').html(),
       success: onSuccess,
       error: onError
     })

@@ -59,8 +59,9 @@ function scrapeForResults(){
       
       var onResponse = function(response) {
         console.log("Anonymous results: ", JSON.stringify(response));
-        
-        storeResults(document.URL, results, response, search_terms);
+        if(!response.error){
+          storeResults(document.URL, results, response, search_terms);
+        }
       };
       
 

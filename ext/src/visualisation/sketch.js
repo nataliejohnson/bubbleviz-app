@@ -66,6 +66,7 @@ $(function(){
 
       /*
        * We define several potential field for our particles.
+       * See the functions plotted at http://fooplot.com/plot/lqvbmcfj5g
        */
       var personalAccelerationFunction = function(VMousePosition, VParticlePosition){ 
         var accel = processing.PVector.sub(VMousePosition, VParticlePosition);
@@ -168,28 +169,25 @@ $(function(){
         });
       };
 
-      var decayRate = 50;
+      var decayRate = 30;
       var tintLayer = null;
       var tintX,tintY;
       var decayAll = function(){
-        
         processing.noStroke();
         processing.fill(0,decayRate);
         processing.rect(0,0,processing.width,processing.height);
-
       };
 
       processing.draw = function() {
         decayAll();
         update();
-        //processing.background(0,0,0);
+        
        	particles.forEach(function(particle){
           particle.draw();
         });
       };
       
       processing.setup = function(){
-        //processing.size(600,600);
         for(var si = 0; si < data.length; si++){
           for(var ri = 0; ri<data[si].length; ri++){
             var result = data[si][ri];
@@ -204,9 +202,11 @@ $(function(){
         }
 
         processing.fill(255);
-        processing.background(30);
+        processing.background(60);
         processing.noStroke();
       }
+      processing.mousePressed = function() { processing.noLoop(); };
+      processing.mouseReleased = function() { processing.loop(); };
     }
   };
 

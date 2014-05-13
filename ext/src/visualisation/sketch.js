@@ -270,6 +270,24 @@ $(function(){
           colour: [100,100,255]
         },
       };    
+
+      var colour_options = {
+        "personal": [ //shades of red
+          [255,0,0],
+          [255,100,100],
+          [255,200,200]
+        ],
+        "both": [ // shades of green
+          [0,255,0],
+          [100,255,100],
+          [200,255,200]
+        ],
+        "anonymous": [ //shades of blue
+          [0,0,255],
+          [100,100,255],
+          [200,200,255]
+        ]
+      };
       
       
       var particles = [];
@@ -326,9 +344,11 @@ $(function(){
         var particle = new Particle(
           $.extend({}, 
             options[result.category], 
-            {
+            { // This object overrides the defaults defined in the 'options' variable
               pos: pos,
-              result: result
+              result: result,
+              // We select a random colour from our colour_options.
+              colour: colour_options[result.category][Math.floor(Math.random()*colour_options[result.category].length)]
             }
           )
         );

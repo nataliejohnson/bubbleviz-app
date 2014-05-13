@@ -21,12 +21,30 @@
 		left:0px;
 		z-index:-10;
 	}
+    
+      #infobox{
+        background-color: rgba(255,255,255,0.6);
+        z-index: 10;
+        position:absolute;
+        right:0px;
+        top:0px;
+        width: 500px;
+        text-align: right;
+        border: 1px solid black;
+      }
 
 	</style>
 	<script src="js/processing.min.js"></script>
 	<script src="js/jquery/jquery.min.js"></script>
+	<script src="js/tether.min.js"></script>
 </head>
 <body>
+	<div id="infobox" class="{{category}}" style="display:none;">
+      <!--<p class="category">Category: <span id="category-placeholder">{{category}}</span></p>-->
+      <p><a class="search" href="{{search_url}}">{{terms}}</a></p>
+      <p><a class="result" href="{{url}}">{{result}}</a></p>
+      <!--<p class="rank">User Rank: <span id="rank-placeholder">{{personal_rank}}</span></p>-->
+    </div>
 	<canvas id="canvas" width="600" height="600"></canvas>
 	<script src="src/visualisation/common.js"></script>
 	<script src="src/visualisation/sketch.js"></script>

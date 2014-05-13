@@ -1,5 +1,64 @@
+/*
+NATALIE IS AWESOME!!!!
+<div id="infobox" class="{{category}}" style="display:none;">
+  <p class="category">Category: <span id="category-placeholder">{{category}}</span></p>
+  <p>Search Terms: <a class="search" href="{{search_url}}">{{terms}}</a></p>
+  <p>Result: <a class="result" href="{{url}}">{{result}}</a></p>
+  <p class="rank">User Rank: <span id="rank-placeholder">{{personal_rank}}</span></p>
+</div>
+*/
+
+
 $(function(){
-      	
+   var lastMoved = 0;
+  
+  
+  var showInformation = function(particle){
+    var result = particle.result;
+    var infobox = $("#infobox");
+    infobox.attr('class', result.category);
+    infobox.find('.category #category-placeholder').html(result.category);
+    infobox.find('.search').attr('href', result.search_url).html(result.terms);
+    infobox.find('.result').attr('href', result.url).html(result.result);
+    if(result.personal_rank){
+      infobox.find('.rank #rank-placeholder').html(result.personal_rank);
+      infobox.find('.rank').show(); 
+    }else{
+      infobox.find('.rank').hide(); 
+    }
+    
+    var anchor = $('<a>').css({
+      position: 'absolute',
+      top: particle.pos.y + 'px',
+      left: particle.pos.x + 'px',
+      width: particle.radius*2 + 'px',
+      height: particle.radius*2 + 'px'
+    });
+    $('body').append(anchor);
+    
+    new Tether({
+      element: infobox[0],
+      target: anchor[0],
+      attachment: 'middle left',
+      targetAttachment: 'middle left',
+      constraints: [
+        {
+          to: 'scrollParent',
+          pin: true
+        }
+      ]
+    });
+    
+    
+    
+    infobox.show();
+  };
+  
+  var hideInformation = function(){
+    var infobox = $("#infobox");
+    infobox.hide();
+  };
+  
     
   /**
    * We have to wrap evrything that will use the processing API around the sketch function so 
@@ -7,7 +66,12 @@ $(function(){
    */ 
    var createSketch  = function(data){
     return function (processing) {
-
+      var getNoise = function(amplitude){
+        var noise = new processing.PVector(Math.random()*((Math.random()>0.5)?-1:1), Math.random()*((Math.random()>0.5)?-1:1));
+        noise.normalize(); 
+        noise.mult(amplitude);
+        return noise;
+      };
       /**
        * The Particle Object is responsible for movement and display of a particle.
        */
@@ -17,18 +81,47 @@ $(function(){
         this.colour = options.colour;
         this.accFunction = options.accFunction;
         
+        this.result = options.result;
         this.oldPos = null;
-        this.radius = 2;
+        this.drawDot = false;
+        this.doUpdate = true;
+        this.radius = 3.5;
+        this.speedState = 'SLOW';
         this.mass = 1;
         this.vel = new processing.PVector(0,0);
         this.acc = new processing.PVector(0,0);
       };
       
       Particle.prototype.updateVelocity = function(VMousePosition){
-      
-        this.vel.add( this.accFunction(VMousePosition, this.pos) );
-        this.vel.limit(this.velMax);
-      }
+        var accel = this.accFunction(VMousePosition, this.pos);
+        
+        if(this.pos.dist(VMousePosition) > 300){
+          this.speedState = "FAST";
+        }
+        
+        
+        var since_moved = (new Date().getTime()) - lastMoved;
+        
+        var time_threshold = 2000;
+        
+        if(since_moved  > time_threshold){
+          this.speedState = "SLOW";
+        }
+        
+        var ko = 5;
+        var k = (- ko*since_moved)/time_threshold + ko + 1; // how much faster than normal we can go
+        
+        
+        if(this.speedState == "FAST"){
+            //accel.add(getNoise(1));
+            this.vel.add(accel);
+            this.vel.limit(k*this.velMax);
+        }else{
+            this.vel.add(accel);
+            this.vel.limit(this.velMax);
+        }
+        
+      };
       
       Particle.prototype.updatePosition = function(VMousePosition){
         this.pos.add(this.vel);
@@ -41,26 +134,36 @@ $(function(){
       };
       
       Particle.prototype.update = function(VMousePosition){
-        this.updateVelocity(VMousePosition);
-        this.oldPos = new processing.PVector(this.pos.x, this.pos.y);
-        this.updatePosition(VMousePosition);
+        if(this.doUpdate){
+          this.updateVelocity(VMousePosition);
+          this.oldPos = new processing.PVector(this.pos.x, this.pos.y);
+          this.updatePosition(VMousePosition);
+        }
       };
       
-      Particle.prototype.draw = function(){
-        //processing.fill(this.colour[0],this.colour[1],this.colour[2]);
-        processing.stroke(this.colour[0],this.colour[1],this.colour[2]);
-        processing.line(this.oldPos.x, this.oldPos.y, this.pos.x, this.pos.y);
-        //processing.ellipse(this.pos.x, this.pos.y, this.radius*2, this.radius*2);
-        //processing.point(this.pos.x, this.pos.y);
+      Particle.prototype.draw = function(){  
+        
+        if(this.drawDot){
+          processing.noStroke();
+          processing.fill(this.colour[0],this.colour[1],this.colour[2]);
+          processing.ellipse(this.pos.x, this.pos.y, this.radius*4, this.radius*4);
+        }else{
+          processing.noStroke();
+          //processing.stroke(this.colour[0],this.colour[1],this.colour[2]);
+          processing.fill(this.colour[0],this.colour[1],this.colour[2]);
+          //processing.point(this.pos.x, this.pos.y);
+          //processing.line(this.oldPos.x, this.oldPos.y, this.pos.x, this.pos.y);
+          processing.ellipse(this.pos.x, this.pos.y, this.radius*2.1,this.radius*1.9);
+        }
       };
 
-
-
-      var getNoise = function(amplitude){
-        var noise = new processing.PVector(Math.random()*((Math.random()>0.5)?-1:1), Math.random()*((Math.random()>0.5)?-1:1));
-        noise.normalize(); 
-        noise.mult(amplitude);
-        return noise;
+      Particle.prototype.select = function(){
+        this.drawDot = true;
+        this.doUpdate = false;
+      };
+      Particle.prototype.unselect = function(){
+        this.drawDot = false;
+        this.doUpdate = true;
       };
 
 
@@ -72,11 +175,12 @@ $(function(){
         var accel = processing.PVector.sub(VMousePosition, VParticlePosition);
         var dist = accel.mag();
         
-        var a = 0.01;
+        var a = 0.001;
+        var b = 0.000000001;
         accel.normalize();
-        accel.mult(a*dist); // f = ax
+        accel.mult(a*dist+b*Math.pow(dist, 4)); // f = ax
         
-        accel.add(getNoise(1));
+        accel.add(getNoise(0.5));
         return accel;
       };
       
@@ -96,13 +200,13 @@ $(function(){
           force = -(Math.cos(theta)+1) * k; 
         }else{
           // Quadratic force = a(dist - n)^2 
-          var a = 0.00005;
+          var a = 0.000005;
           force = Math.pow( (dist-n), 2) * a;
         }
         // f=ma
         accel.mult(force/mass);
         
-        accel.add(getNoise(1));
+        accel.add(getNoise(0.5));
 
         return accel;
       };
@@ -126,7 +230,7 @@ $(function(){
         // f = ma
         accel.mult(force/mass);
         
-        accel.add(getNoise(1));
+        accel.add(getNoise(0.5));
 
         return accel;
       };
@@ -141,19 +245,19 @@ $(function(){
       var options = {
         "personal": {
           pos: new processing.PVector(0,0),
-          maxVel: 10,
+          maxVel: 2.5,
           accFunction: personalAccelerationFunction,
           colour: [255,0,0]
         },
         "both": {
           pos: new processing.PVector(0,0),
-          maxVel: 10,
+          maxVel: 2.5,
           accFunction: bothAccelerationFunction,
           colour: [0,255,0]
         },
         "anonymous": {
           pos: new processing.PVector(0,0),
-          maxVel: 10,
+          maxVel: 2.5,
           accFunction: anonymousAccelerationFunction,
           colour: [100,100,255]
         },
@@ -161,20 +265,25 @@ $(function(){
       
       
       var particles = [];
-
+      var selected = null;
+      
       var update = function(){
-        var mouse = new processing.PVector(processing.mouseX, processing.mouseY);
-        particles.forEach(function(particle){
-          particle.update(mouse);
-        });
+        if(selected){
+          particles.forEach(function(particle){
+            particle.update(selected.pos);
+          });
+        }else{
+          var mousePos = new processing.PVector(processing.mouseX, processing.mouseY);
+          particles.forEach(function(particle){
+            particle.update(mousePos);
+          });
+        }
       };
 
-      var decayRate = 30;
-      var tintLayer = null;
-      var tintX,tintY;
+      var decayRate = 255;
       var decayAll = function(){
         processing.noStroke();
-        processing.fill(0,decayRate);
+        processing.fill(254,254,255,decayRate);
         processing.rect(0,0,processing.width,processing.height);
       };
 
@@ -182,7 +291,7 @@ $(function(){
         decayAll();
         update();
         
-       	particles.forEach(function(particle){
+        particles.forEach(function(particle){
           particle.draw();
         });
       };
@@ -194,7 +303,10 @@ $(function(){
             var particle = new Particle(
                 $.extend({}, 
                   options[result.category], 
-                  {pos: new processing.PVector(Math.random()*600,Math.random()*600)}
+                  {
+                    pos: new processing.PVector(Math.random()*600,Math.random()*600),
+                    result: result
+                  }
                 )
               );
             particles.push(particle);
@@ -202,11 +314,38 @@ $(function(){
         }
 
         processing.fill(255);
-        processing.background(60);
+        processing.background(254,254,255);
         processing.noStroke();
       }
-      processing.mousePressed = function() { processing.noLoop(); };
-      processing.mouseReleased = function() { processing.loop(); };
+      
+      processing.mouseClicked = function() { 
+        
+        if(selected){
+         selected.unselect();
+         hideInformation();
+         selected = null;
+        }else{
+          var nearest = null;
+          var mouse = new processing.PVector(processing.mouseX, processing.mouseY);
+          particles.forEach(function(particle){
+            if(!nearest){ nearest = particle; }
+            if(particle.pos.dist(mouse) < nearest.pos.dist(mouse) ){
+              nearest = particle;
+            }
+          });
+          nearest.select();
+          showInformation(nearest);
+          selected = nearest;
+        }
+       
+      };
+      
+      processing.mouseMoved = function(){
+        lastMoved = new Date().getTime();
+      };
+      
+      
+      
     }
   };
 

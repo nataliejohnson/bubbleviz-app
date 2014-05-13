@@ -10,54 +10,11 @@ NATALIE IS AWESOME!!!!
 
 
 $(function(){
-   var lastMoved = 0;
+  var lastMoved = 0;
+  var anchor = null;
+  var tether = null;
   
   
-  var showInformation = function(particle){
-    var result = particle.result;
-    var infobox = $("#infobox");
-    infobox.attr('class', result.category);
-    infobox.find('.category #category-placeholder').html(result.category);
-    infobox.find('.search').attr('href', result.search_url).html(result.terms);
-    infobox.find('.result').attr('href', result.url).html(result.result);
-    if(result.personal_rank){
-      infobox.find('.rank #rank-placeholder').html(result.personal_rank);
-      infobox.find('.rank').show(); 
-    }else{
-      infobox.find('.rank').hide(); 
-    }
-    
-    var anchor = $('<a>').css({
-      position: 'absolute',
-      top: particle.pos.y + 'px',
-      left: particle.pos.x + 'px',
-      width: particle.radius*2 + 'px',
-      height: particle.radius*2 + 'px'
-    });
-    $('body').append(anchor);
-    
-    new Tether({
-      element: infobox[0],
-      target: anchor[0],
-      attachment: 'middle left',
-      targetAttachment: 'middle left',
-      constraints: [
-        {
-          to: 'scrollParent',
-          pin: true
-        }
-      ]
-    });
-    
-    
-    
-    infobox.show();
-  };
-  
-  var hideInformation = function(){
-    var infobox = $("#infobox");
-    infobox.hide();
-  };
   
     
   /**
@@ -66,6 +23,57 @@ $(function(){
    */ 
    var createSketch  = function(data){
     return function (processing) {
+      var showInformation = function(particle){
+        var result = particle.result;
+        var infobox = $("#infobox");
+        infobox.attr('class', result.category);
+        infobox.find('.category #category-placeholder').html(result.category);
+        infobox.find('.search').attr('href', result.search_url).html(result.terms);
+        infobox.find('.result').attr('href', result.url).html(result.result);
+        if(result.personal_rank){
+          infobox.find('.rank #rank-placeholder').html(result.personal_rank);
+          infobox.find('.rank').show(); 
+        }else{
+          infobox.find('.rank').hide(); 
+        }
+        
+        anchor = $('<a>').css({
+          position: 'absolute',
+          top: particle.pos.y + 'px',
+          left: particle.pos.x + 'px',
+          width: particle.radius*2 + 'px',
+          height: particle.radius*2 + 'px'
+        });
+        $('body').append(anchor);
+        
+        infobox.show();
+        
+        tether = new Tether({
+          element: infobox[0],
+          target: anchor[0],
+          attachment: 'top left',
+          targetAttachment: 'bottom left',
+          constraints: [
+            {
+              to: [20,20,processing.width-20, processing.height-20],
+              attachement:'together',
+              pin: true
+            }
+          ]
+        });
+        
+      };
+  
+  var hideInformation = function(){
+    var infobox = $("#infobox");
+    infobox.hide();
+    tether.destroy();
+    anchor.remove();
+  };
+      
+      
+      
+      
       var getNoise = function(amplitude){
         var noise = new processing.PVector(Math.random()*((Math.random()>0.5)?-1:1), Math.random()*((Math.random()>0.5)?-1:1));
         noise.normalize(); 
@@ -266,11 +274,12 @@ $(function(){
       
       var particles = [];
       var selected = null;
+      var centerOfMass = null;
       
       var update = function(){
         if(selected){
           particles.forEach(function(particle){
-            particle.update(selected.pos);
+            particle.update(centerOfMass);
           });
         }else{
           var mousePos = new processing.PVector(processing.mouseX, processing.mouseY);
@@ -296,20 +305,45 @@ $(function(){
         });
       };
       
+      processing.addResult = function(result, isInjected){
+        var pos = new processing.PVector(Math.random()*processing.width,Math.random()*processing.height);
+      
+        if(isInjected){ 
+          console.log("Adding new result to visualisation...");
+          var ndist = 450; // distance away from center of mass at which new particles are added
+          var com;
+          if (centerOfMass){
+            com = centerOfMass;
+          }else{
+            com = new processing.PVector(processing.mouseX,processing.mouseY);
+          }
+          var n = new processing.PVector( ((Math.random() > 0.5)?-1:1)*Math.random(), ((Math.random() > 0.5)?-1:1)*Math.random());
+          n.normalize();
+          n.mult(ndist);
+          pos = processing.PVector.add(com, n);
+        }
+        
+        var particle = new Particle(
+          $.extend({}, 
+            options[result.category], 
+            {
+              pos: pos,
+              result: result
+            }
+          )
+        );
+        
+        particles.push(particle);
+      };
+      
+      processing.clearResults = function(){
+        particles = [];
+      };
+      
       processing.setup = function(){
         for(var si = 0; si < data.length; si++){
           for(var ri = 0; ri<data[si].length; ri++){
-            var result = data[si][ri];
-            var particle = new Particle(
-                $.extend({}, 
-                  options[result.category], 
-                  {
-                    pos: new processing.PVector(Math.random()*600,Math.random()*600),
-                    result: result
-                  }
-                )
-              );
-            particles.push(particle);
+            processing.addResult( data[si][ri]);
           }
         }
 
@@ -324,6 +358,7 @@ $(function(){
          selected.unselect();
          hideInformation();
          selected = null;
+         centerOfMass = null;
         }else{
           var nearest = null;
           var mouse = new processing.PVector(processing.mouseX, processing.mouseY);
@@ -336,6 +371,22 @@ $(function(){
           nearest.select();
           showInformation(nearest);
           selected = nearest;
+          
+          var category = selected.result.category;
+          var d;
+          if(category == "personal"){ 
+            d = 0; 
+          }else if (category == "both"){
+            d = 125;
+          }else{
+            d = 250;
+          }
+          var center_of_page = new processing.PVector(processing.width/2, processing.height/2);
+          var from_selected_to_center =  processing.PVector.sub(center_of_page, selected.pos);
+          from_selected_to_center.normalize();
+          from_selected_to_center.mult(d);
+          centerOfMass = processing.PVector.add(selected.pos, from_selected_to_center);
+          
         }
        
       };
@@ -344,25 +395,61 @@ $(function(){
         lastMoved = new Date().getTime();
       };
       
-      
-      
     }
   };
 
   var canvas = document.getElementById("canvas");
 
+  var processing = null;
 
   chrome.storage.local.get("searches", function(store){
 
     var data = store.searches.map(results_to_scores);
-    var processing = new Processing(canvas, createSketch(data));
+    processing = new Processing(canvas, createSketch(data));
     
     $(window).on('resize', function(){
+      $('body').css({width: $(window).width() ,height:$(window).height()});
       processing.size($(window).width(),$(window).height());
     });
-    
+    $('body').css({width: $(window).width() ,height:$(window).height()});
     processing.size($(window).width(),$(window).height());
 
+  });
+  
+  
+  chrome.storage.onChanged.addListener(function(changes, namespace) {
+    if (processing && ("searches" in changes) && (namespace == "local") ){
+      
+      var storageChange = changes["searches"];
+      var oldSearches = storageChange.oldValue;
+      var newSearches = storageChange.newValue;
+      
+      if ( oldSearches.length < newSearches.length ){
+        // We added a new search, add new items
+                    var data = newSearches.map(results_to_scores);
+        
+        for(var si = oldSearches.length; si < data.length; si++){
+          for(var ri = 0; ri < data[si].length; ri++){
+            var result = data[si][ri];
+            processing.addResult(result, true);
+
+          }
+        }
+        
+      }else{
+        // Something else happened, redraw viz completely
+        console.log("Don't know how to deal. Clearing changes.")
+        processing.clearResults();
+        
+      }
+        
+    }
+  });
+  
+  $('#clear').click(function(){
+    chrome.storage.local.set({searches: []}, function(){
+      console.log("Cleared local storage");
+    });
   });
   
 });

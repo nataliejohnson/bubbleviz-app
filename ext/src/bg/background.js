@@ -3,7 +3,7 @@
  */
 
 chrome.browserAction.onClicked.addListener(function(tab) { 
-  chrome.tabs.create({url:chrome.extension.getURL("visualisation.html")}); 
+  chrome.tabs.create({url:chrome.extension.getURL("dynamic.html")}); 
 });
 
 

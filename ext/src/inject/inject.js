@@ -9,7 +9,8 @@ function storeResults(url, personal, anonymous, search_terms){
     url: url, 
     anonymous: anonymous, 
     personal:personal,
-    terms: search_terms
+    terms: search_terms,
+    timestamp: (new Date()).getTime()
   };
   
   chrome.storage.local.get("searches", function(store){

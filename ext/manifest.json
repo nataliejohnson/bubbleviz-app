@@ -16,7 +16,9 @@
   },
   "permissions": [ 
     "http://bubbleviz.herokuapp.com/*",
-    "storage"
+    "storage",
+    "history",
+    "downloads"
   ],
   "default_locale": "en",
   "background": {

@@ -38,3 +38,10 @@ function scrapeSearchTerms(element){
   var elem = element.querySelector('#gbqfq');
   return elem.value;
 }
+
+function downloadAsJSON(obj, filename){
+    var jsonHeader = "data:application/json;charset=utf-8,";
+    var fileString = jsonHeader + JSON.stringify(obj, null, '\t') + '\n';
+  var encodedURI = encodeURI(fileString);
+  chrome.downloads.download({ 'url':encodedURI, filename:filename}, function(){});
+}

@@ -20,11 +20,32 @@
 	</style>
 	<script src="js/jquery/jquery.min.js"></script>
  	<script src="js/XMLWriter-1.0.0.js"></script>
+ 	<script src="js/handlebars-v1.3.0.js"></script>
 	<script src="src/common.js"></script>
  	<script src="src/carrot.js"></script>
  	<script src="src/report.js"></script>
+
+ 	<script id="report-template" type="text/x-handlebars-template">
+ 		<div id="report">
+ 			<div id="number-links-personalised">{{personalised_links_number}}</div>
+ 			<div id="most-personalised-search">
+ 				<span class="term">{{mostPersonalised.term}}</span>
+ 				<span class="number-perso">{{mostPersonalised.size}}</span>
+ 				<span class="date">{{mostPersonalised.date}}</span>
+ 			</div>
+ 			<div id="clusters">
+ 				{{#each clusters}}
+ 					<p><span class="cluster-name">{{name}}</span> <span class="cluster-size">{{size}}</span></p>
+ 				{{/each}}
+ 			</div>
+ 			<div id="search-frequency">
+ 				
+ 			</div>
+ 		</div>
+ 	</script>
+
 </head>
 <body>
-    
+
 </body>
 </html>

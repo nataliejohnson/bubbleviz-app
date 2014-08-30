@@ -60,3 +60,112 @@ function downloadAsJSON(obj, filename){
 	var encodedURI = encodeURI(fileString);
 	chrome.downloads.download({ 'url':encodedURI, filename:filename}, function(){});
 }
+
+function searches2results(searches){
+    var results = [];
+    var counter = 0;
+    searches.forEach(function(search){
+        var search_unique = {
+            terms: search.terms,
+            timestamp: search.timestamp,
+            url: search.url,
+        };
+        search.personal.forEach(function(result){
+          result.search = search_unique;
+          result.id = ""+counter; 
+          counter += 1;
+          results.push(result);
+        });
+        search.anonymous.forEach(function(result){
+          result.search = search_unique;
+          result.id = ""+counter; 
+          counter+=1;
+          results.push(result);
+        });
+    });
+    return results;
+}
+
+/**
+  Building the raw dataset
+
+  !1) fetch searches from chrome storage 
+  !2) flatten searches into results
+  !3) cluster results using carrot2 server
+  !4) add category information to results
+
+  The `onDone()` function will be called with a list 
+  of results in the following format:
+
+    {
+      "search": {
+        "terms": "freefonts",
+        "timestamp": 1409347561516,
+        "url": "https://www.google.co.uk/search?q=freefonts&oq=freefonts&aqs=chrome..69i57j0l5.1478j0j7&sourceid=chrome&es_sm=93&ie=UTF-8"
+      },
+      "type": "anon",
+      "category":"fonts",
+      "categoryScore": 45.3434,
+      "result": "1001 Free Fonts - Download Free Fonts",
+      "snippet": " 1001   Free Fonts  offers a huge selection of   free fonts . Download   free fonts  for   \nWindows and Macintosh. License fonts for commercial use.",
+      "url": "/url?q=http://www.1001freefonts.com/&sa=U&ei=5e8AVI-wF8WI7AbFx4D4Aw&ved=0CBQQFjAA&usg=AFQjCNH1j3w3qieMIxAqtJNRhv5w1e3xeA"
+    }
+
+ */
+function build_results_dataset(onDone, onFail){
+  //console.log("Loading raw dataset");
+  chrome.storage.local.get("searches", function(store){
+    //console.log("-> Loaded searches");
+    
+    var results = searches2results(store.searches);
+    //console.log("-> Converted searches to results");
+    
+
+    function _onSuccess(data, textStatus, jqXHR){
+      //console.log("-> Loaded category clusters", data);
+
+      // We grab the document ids from carrot to be able to match 
+      // document to cluster, then we tag every document
+      data.clusters.forEach(function(cluster){
+        cluster.documents.forEach(function(docID){
+          results.forEach(function(result){
+            if(docID == result.id){
+              result.category = cluster.phrases[0];
+              result.categoryScore = cluster.score;
+              return;
+            }
+          });
+        });
+      });
+
+      if (onDone && (typeof onDone) == "function"){
+        onDone(results);
+      }
+    }
+
+    function _onError(jqXHR, textStatus, errorThrown){
+      //alert("Error occured on request: "+ textStatus + ", "+ errorThrown);
+      if (onFail && (typeof onFail) == "function"){
+        onFail("Error occured while fetching cluster information");
+      }
+    }
+
+    carrot_fetch_clusters(
+      results,
+      _onSuccess, 
+      _onError
+    );
+    
+  });
+}
+
+function build_history_dataset(onDone, onFail){
+  if(onDone && (typeof onDone) == "function"){
+    chrome.history.search({
+      'text':'', 
+      'maxResults':10000, 
+      'startTime': (new Date(2012,01,01)).getTime(),
+      'endTime': (new Date()).getTime()
+    }, onDone);
+  } 
+}

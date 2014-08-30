@@ -21,6 +21,7 @@ function results2xml(results){
 
 	results.forEach(function(result){
 		xw.writeStartElement('document');
+			xw.writeAttributeString("id", result.id);
 			xw.writeElementString('title', result.result.encodeHTML());
 			xw.writeElementString('snippet', result.snippet.encodeHTML());
 			xw.writeElementString('url', result.url.encodeHTML());
@@ -33,27 +34,21 @@ function results2xml(results){
 
 
 
-function fetch_clusters(onSuccess, onError){
-	chrome.storage.local.get("searches", function(store){
-	    var all_results = [];
-	    store.searches.forEach(function(search){
-	    	search.personal.forEach(function(result){
-	    		all_results.push(result);
-	    	});
-	    });
-	    $.ajax({
-		  type: "POST",
-		  url: "http://bubbleviz-carrot.herokuapp.com/dcs/rest",
-		  data: {
-		  	"dcs.c2stream": results2xml(all_results),
-		  	"dcs.algorithm": "lingo",
-		  	"dcs.output.format": "JSON",
-		  	"dcs.clusters.only": true,
-		  },
-		  success: onSuccess,
-		  error: onError,
-		  dataType: 'json',
-		});
+function carrot_fetch_clusters(results, onSuccess, onError){
+	var xml = results2xml(results);
+	//console.log(xml);
+	$.ajax({
+		type: "POST",
+		url: "http://bubbleviz-carrot.herokuapp.com/dcs/rest",
+		data: {
+			"dcs.c2stream": xml,
+			"dcs.algorithm": "lingo",
+			"dcs.output.format": "JSON",
+			"dcs.clusters.only": true,
+		},
+		success: onSuccess,
+		error: onError,
+		dataType: 'json',
 	});
 }
 

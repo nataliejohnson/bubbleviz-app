@@ -25,17 +25,12 @@ var handleFiles = function(){
 $(function(){
     $("#clear-profile").click(function(){
         chrome.storage.local.set({searches: []}, function(){
-            console.log("Cleared profile");
+            console.log("Cleared extension profile");
         });
     });
 
     $("#profile-download").click(function(){
-        chrome.history.search({
-            'text':'', 
-            'maxResults':10000, 
-            'startTime': (new Date(2012,01,01)).getTime(),
-            'endTime': (new Date()).getTime()
-        }, function(items){
+        build_history_dataset(function(items){
             chrome.storage.local.get("searches", function(store){
                 var user_profile = {
                     view_history : items,

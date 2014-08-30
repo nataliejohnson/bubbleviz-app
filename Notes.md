@@ -1,3 +1,13 @@
+TODO
+====
+
+ - Add ranking info to results
+ - Confirmation of actions on clear profile
+ 
+
+
+
+
 
 ## Scraping google results
  * http://www.catonmat.net/blog/python-library-for-google-search/

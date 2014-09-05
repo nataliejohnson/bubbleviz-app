@@ -169,3 +169,28 @@ function build_history_dataset(onDone, onFail){
     }, onDone);
   } 
 }
+
+/**
+ * Filter search results by date.
+ */
+function results_by_date(startDate, endDate){
+  var filter = function(item){
+    if(item.search.timestamp > startDate.getTime() && item.search.timestamp < endDate.getTime()){
+     return true;
+    }else{
+      return false;
+    }
+  };
+  return filter;
+}
+
+function history_items_by_date(startDate, endDate){
+  var filter = function(item){
+    if(item.search.timestamp > startDate.getTime() && item.search.timestamp < endDate.getTime()){
+     return true;
+    }else{
+      return false;
+    }
+  };
+  return filter;
+}

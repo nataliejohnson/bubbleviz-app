@@ -39,4 +39,12 @@ $(function(){
 	var html = report_template(display_data);
 	$('body').append(html);
 
+	$("#slider7").slider({ max: 20, range: true, values: [ 4, 16 ] });
+	$("#slider7").slider("pips" , {
+	    rest: false
+	});
+	$("#slider7").on("slidechange", function(e,ui){
+		console.log(ui.value);
+	});
+
 });

@@ -39,14 +39,32 @@ $(function(){
 	var html = report_template(display_data);
 	$('body').append(html);
 
-	$("#slider7").slider({ max: 20, range: true, values: [ 4, 16 ] });
-	$("#slider7").slider("pips" , {
-	    rest: false
+
+    // Perhaps use http://ghusse.github.io/jQRangeSlider/index.html instead?
+    
+
+	var now = (new Date()).getTime();
+	var week_in_ms = 7*24*60*60*1000;
+	var day_in_ms = 24*60*60*1000;
+	var week_ago = new Date(now-week_in_ms);
+
+	$("#slider7").slider({ 
+		min: (new Date(2014,0,01)).getTime(),
+		max: (new Date(2014,12,31)).getTime(), 
+		range: true, 
+		step: day_in_ms,
+		values: [week_ago.getTime() , now] 
 	});
+	
+	$("#slider7").slider("pips" , {
+		rest:'label'
+	});
+	
 	$("#slider7").on("slidechange", function(e,ui){
 		var start = $("#slider7 .ui-slider-pip-selected-first .ui-slider-label").data("value");
 		var end = $("#slider7 .ui-slider-pip-selected-second .ui-slider-label").data("value");
 		console.log(start,end);
 	});
+
 
 });

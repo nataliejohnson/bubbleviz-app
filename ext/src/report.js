@@ -44,7 +44,9 @@ $(function(){
 	    rest: false
 	});
 	$("#slider7").on("slidechange", function(e,ui){
-		console.log(ui.value);
+		var start = $("#slider7 .ui-slider-pip-selected-first .ui-slider-label").data("value");
+		var end = $("#slider7 .ui-slider-pip-selected-second .ui-slider-label").data("value");
+		console.log(start,end);
 	});
 
 });

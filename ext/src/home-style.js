@@ -102,8 +102,8 @@ $(function(){
   $(function(){
   	$(".expander").click(function(){
   		// These are Page positions. We need viewport positions!
-  		var x_0 = $(this).position().left;
-  		var y_0 = $(this).position().top;
+  		var x_0 = $(this).position().left - $(document).scrollLeft();
+  		var y_0 = $(this).position().top - $(document).scrollTop();
   		var x_1 = x_0 + $(this).outerWidth();
   		var y_1 = y_0 + $(this).outerHeight();
   		console.log(x_0,y_0,x_1,y_1);
@@ -118,7 +118,14 @@ $(function(){
   		};
   		console.log(settings);
   		$(this).css(settings);
-  		//$(this).animate({width:'100%',top:'0px',left:'0px', bottom:'0px'});
+  		$(this).animate({
+  			width:'100%', 
+  			height:'100%',
+  			top:'0px',
+  			left:'0px', 
+  			bottom:'0px',
+  			'z-index': '100'
+  		}, 1000);
   		/*
   		$(this).css({
   			position: 'fixed',

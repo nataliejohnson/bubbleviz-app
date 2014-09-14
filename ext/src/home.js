@@ -1,47 +1,19 @@
 
-
-
-var handleFiles = function(){
-    console.log("file set changed");
-   var filelist = this.files;
-   var file = filelist[0];
-   var reader = new FileReader();
-   var fileLoadedHandler = function(event){
-       var fileData = event.target.result;
-       var jsonData = JSON.parse(fileData);
-       console.log(jsonData); 
-       chrome.storage.local.set({"searches": jsonData.search_history}, function(store){
-           if(runtime.lastError){
-               console.log(runtime.lastError);
-           }else{
-               console.log("set searches locally to", jsonData);
-           }
-       });
-   };
-   reader.onload = fileLoadedHandler;
-   reader.readAsBinaryString(file);
-};
-
 $(function(){
-    $("#clear-profile").click(function(){
-        chrome.storage.local.set({searches: []}, function(){
-            console.log("Cleared extension profile");
-        });
+  console.log("Home.js");
+  
+  var search_item_template = Handlebars.compile($("#search-item-template").html());
+  
+  var onSuccess = function(results){
+    results.forEach(function(result){
+      console.log(result);
+      $('#searches').append(search_item_template(result));
     });
-
-    $("#profile-download").click(function(){
-        build_history_dataset(function(items){
-            chrome.storage.local.get("searches", function(store){
-                var user_profile = {
-                    view_history : items,
-                    search_history : store.searches
-                };
-                downloadAsJSON(user_profile, "profile.json");
-            });
-        });
+    $(".expander").click(function(){
+      expand_tile(this);
     });
+  };
+  
+  get_searches(onSuccess);
 
-    
-    
-    document.getElementById("profile-upload").addEventListener("change", handleFiles, false);
 });

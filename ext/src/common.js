@@ -86,6 +86,14 @@ function searches2results(searches){
     return results;
 }
 
+function get_searches(onSuccess){
+  chrome.storage.local.get("searches", function(store){
+    if(onSuccess && typeof onSuccess == "function"){
+      onSuccess(store.searches);
+    }
+  });
+}
+
 /**
   Building the raw dataset
 

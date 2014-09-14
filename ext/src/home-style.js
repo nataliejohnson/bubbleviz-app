@@ -43,6 +43,21 @@ $(function(){
 
 });
 
+var original_width, original_height, aspect_ration;
+
+var resizeBoxes = function (){
+	var containerWidth=$(containingSelector).width();
+	var width_ratio = containerWidth/original_width;
+	var num_boxes = Math.floor(width_ratio);
+	var remainingWidth = containerWidth - (num_boxes * original_width);
+	var width_increment = remainingWidth/num_boxes;
+	var new_width = original_width+width_increment;
+	var new_height = new_width/aspect_ration;
+	//console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
+	$(boxSelector).width(new_width);
+	$(boxSelector).height(new_height);
+};
+
 /*
  * search boxes behaviour
  */
@@ -51,91 +66,125 @@ $(function(){
  	/*
  	 * Sizing behaviour
  	 */
- 	var original_width = $(boxSelector).outerWidth();
- 	var original_height = $(boxSelector).outerHeight();
- 	var aspect_ration = original_width / original_height;
+ 	original_width = $(boxSelector).outerWidth();
+ 	original_height = $(boxSelector).outerHeight();
+ 	aspect_ration = original_width / original_height;
 
- 	var resizeBoxes = function (){
- 		var containerWidth=$(containingSelector).width();
- 		var width_ratio = containerWidth/original_width;
- 		var num_boxes = Math.floor(width_ratio);
- 		var remainingWidth = containerWidth - (num_boxes * original_width);
- 		var width_increment = remainingWidth/num_boxes;
- 		var new_width = original_width+width_increment;
- 		var new_height = new_width/aspect_ration;
- 		console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
- 		$(boxSelector).width(new_width);
- 		$(boxSelector).height(new_height);
- 	};
+ 	
  	
  	resizeBoxes();
 
  	$(window).resize(function(){
- 		console.log("window resized");
+ 		//console.log("window resized");
  		resizeBoxes();
  	});
 
+ 	/*
+ 	// Hide all elements outside the page so we can animate thme in later...
+ 	$(boxSelector).each( function(i){
+        box_top =  $(this).position().top;
+        var box_bottom = $(this).position().top + $(this).outerHeight();
+        var window_bottom = $(window).scrollTop() + $(window).height();
+        if( box_top > window_bottom ){
+        	$(this).hide();
+        }  
+    }); 
+	*/
 
  	/*
  	 * box scrolling
  	 */
- 	$(window).scroll( function(){
+ 	$(window).scroll( function(event){
+ 		//console.log(event)
+ 		var fadeout_candidates = [];
         $(boxSelector).each( function(i){
-            var box_top =  $(this).position().top;
+            box_top =  $(this).position().top;
             var box_bottom = $(this).position().top + $(this).outerHeight();
             var window_bottom = $(window).scrollTop() + $(window).height();
-            
+            //console.log(box_top, box_bottom, window_bottom);
             /* If the object is completely visible in the window, fade it it */
-            if( window_bottom > box_bottom ){
-                $(this).fadeIn(1000);
+            if( window_bottom > box_bottom){
+            	//console.log($(this).text());
+              fadeout_candidates.push($(this))
             }
-            if( box_top > window_bottom ){
-            	$(this).hide();
-            }  
+            //if( box_top > window_bottom ){
+            //	$(this).hide();
+            //}  
         }); 
+        //console.log(fadeout_candidates);
+        fadeout_candidates.forEach(function(elem, i){
+        	if(i == 0){
+        		elem.fadeIn(1000);
+        	}else{
+        		elem.delay(i*300).fadeIn(1000);	
+        	}
+        	
+        });
+        
     });
  });
 
- /*
-  * Box transition behaviour
-  */
-  $(function(){
-  	$(".expander").click(function(){
-  		// These are Page positions. We need viewport positions!
-  		var x_0 = $(this).position().left - $(document).scrollLeft();
-  		var y_0 = $(this).position().top - $(document).scrollTop();
-  		var x_1 = x_0 + $(this).outerWidth();
-  		var y_1 = y_0 + $(this).outerHeight();
-  		console.log(x_0,y_0,x_1,y_1);
-  		var settings = {
-  			position: 'fixed',
-  			top: y_0+'px',
-  			width:(x_1-x_0)+'px',
-  			left: x_0+'px',
-  			height:(y_1-y_0)+'px',
-  			'z-index': 10,
-  			'background-color':'red'
-  		};
-  		console.log(settings);
-  		$(this).css(settings);
-  		$(this).animate({
-  			width:'100%', 
-  			height:'100%',
-  			top:'0px',
-  			left:'0px', 
-  			bottom:'0px',
-  			'z-index': '100'
-  		}, 1000);
-  		/*
-  		$(this).css({
-  			position: 'fixed',
-  			top: '0px',
-  			bottom:'0px',
-  			left: '0px',
-  			height:'100%',
-  			
-  			'background-color':'#ff0000',
-  			float: 'none'
-  		});*/
-  	});
+var collapse_tile = function(elem){
+  $('body').css('overflow-y', 'auto');
+  resizeBoxes();
+  $elem = $(elem);
+  $elem.find('.collapser').off('click');
+  $parent = $elem.parent();
+  var new_settings = {
+    position: 'fixed',
+    top: ($parent.position().top - $(document).scrollTop()) +'px',
+    left: ($parent.position().left - $(document).scrollLeft()) +'px',
+    width: $parent.width()+'px',
+  height: $parent.height()+'px',
+    'z-index': 10,
+    'background-color':'red'
+  };  
+
+  $elem.animate(new_settings,1000, function(){
+    $(this).css({
+      top: 'auto',
+      left: 'auto',
+      bottom: 'auto',
+      width:'100%',
+      height:'100%',
+      position: 'relative',
+      'z-index':1
+    });
+    $elem.click(function(){
+      expand_tile(this);
+    });
   });
+};
+
+var expand_tile = function(elem){
+  console.log("Expanding tile...");
+  $elem = $(elem)
+  $elem.off('click')
+  $elem.find(".collapser").click(function(){
+    collapse_tile($(this).parent());
+  });
+  
+  // viewport positions
+  var initial_settings = {
+    position: 'fixed',
+    top: ($elem.position().top - $(document).scrollTop()) +'px',
+    left: ($elem.position().left - $(document).scrollLeft()) +'px',
+    width: $elem.outerWidth()+'px',
+    height: $elem.outerHeight()+'px',
+    'z-index': 10,
+    'background-color':'red'
+  };
+
+  $elem.css(initial_settings);
+
+  $elem.animate({
+    width:'100%', 
+    height:'100%',
+    top:'0px',
+    left:'0px', 
+    bottom:'0px',
+    'z-index': '100'
+  }, 1000);
+
+  $('body').css('overflow', 'hidden');
+};

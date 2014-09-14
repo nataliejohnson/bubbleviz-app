@@ -1,3 +1,4 @@
+
 if (!String.prototype.encodeHTML) {
   String.prototype.encodeHTML = function () {
     return this.replace(/&/g, '&amp;')

@@ -48,6 +48,7 @@
     	left:10%;
     	text-align: center;
     	color:white;
+    	z-index: 5;
     }
     #tech-links a{
     	color:white;
@@ -60,25 +61,12 @@
     	margin-left:auto;
     	margin-right:auto;
     }
-	#topbar {
-    	background-color: #2c2b2b;
-    	width:100%;
-    	border-top: 0;
-    	z-index:5;
-    	position: -webkit-sticky;
-    }
-    .sticky {
-		position: fixed;
-		width: 100%;
-		left: 0;
-		top: 0;
-		z-index: 100;
-		border-top: 0;
-	}
+	
 	#searches {
 		width:100%;
 		padding:0px;
 		margin:0px;
+		padding-bottom: 300px;
 		margin-bottom: 30px;
 	}
 	.search{
@@ -102,9 +90,21 @@
 </style>
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/XMLWriter-1.0.0.js"></script>
+<script src="js/handlebars-v1.3.0.js"></script>
+
 <script src="src/common.js"></script>
-<script src="src/home.js"></script>
+<script src="src/carrot.js"></script>
 <script src="src/home-style.js"></script>
+<script src="src/home.js"></script>
+
+<script id="search-item-template" type="text/x-handlebars-template">
+	<div class="search" data-uid="{{uid}}">
+		<div class="expander">
+			<div class="collapser">collapse</div>
+			<div class="search-terms">{{terms}}</div>
+		</div>
+	</div>
+</script>
 
 </head>
 <body>
@@ -113,60 +113,12 @@
 			<h1>hello world</h1>	
 		</div>
 		<div class="folder">
-			Hello again
+			<a href="report.html">Report</a> | <a href="options.html">Options</a>
 		</div>
 	</div>
 
 	<div id="searches">
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
-		<div class="search"><div class="expander">title</div></div>
 		<div style="clear:both;"></div>
 	</div>
-	<div id="tech-links">
-		<a href="history.html">Browser History</a> |
-		<a href="dynamic.html">Dynamic</a> |
-		<a href="visualisation.html">Visualisation</a> |
-		<a href="report.html">Search Report</a> |
-		<a id="profile-download" href="#">download profile</a> |
-		<a id="clear-profile" href="#">Clear Profile</a> |
-		<input type="file" id="profile-upload">
-	</div>
-
-
-
-
-
+	
 </body></html>

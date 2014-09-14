@@ -42,7 +42,7 @@ $(function(){
 
     // Perhaps use http://ghusse.github.io/jQRangeSlider/index.html instead?
     
-
+/*
 	var now = (new Date()).getTime();
 	var week_in_ms = 7*24*60*60*1000;
 	var day_in_ms = 24*60*60*1000;
@@ -65,6 +65,7 @@ $(function(){
 		var end = $("#slider7 .ui-slider-pip-selected-second .ui-slider-label").data("value");
 		console.log(start,end);
 	});
-
+*/
+	$("#slider").liquidSlider();
 
 });

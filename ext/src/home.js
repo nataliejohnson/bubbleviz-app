@@ -12,6 +12,8 @@ $(function(){
     $(".expander").click(function(){
       expand_tile(this);
     });
+    store_sizes();
+    resizeBoxes();
   };
   
   get_searches(onSuccess);

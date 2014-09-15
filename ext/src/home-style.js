@@ -53,11 +53,17 @@ var resizeBoxes = function (){
 	var width_increment = remainingWidth/num_boxes;
 	var new_width = original_width+width_increment;
 	var new_height = new_width/aspect_ration;
-	//console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
+	console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
 	$(boxSelector).width(new_width);
 	$(boxSelector).height(new_height);
 };
 
+var store_sizes = function(){
+  original_width = $(boxSelector).outerWidth();
+  original_height = $(boxSelector).outerHeight();
+  aspect_ration = original_width / original_height;
+  //console.log(original_width,original_height,aspect_ration);
+}
 /*
  * search boxes behaviour
  */
@@ -66,10 +72,7 @@ var resizeBoxes = function (){
  	/*
  	 * Sizing behaviour
  	 */
- 	original_width = $(boxSelector).outerWidth();
- 	original_height = $(boxSelector).outerHeight();
- 	aspect_ration = original_width / original_height;
-
+ 	store_sizes();
  	
  	
  	resizeBoxes();

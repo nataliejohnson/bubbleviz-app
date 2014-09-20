@@ -3,7 +3,8 @@
 <link rel="stylesheet" href="css/normalize.css">
 <link rel="stylesheet" href="css/futura-pt.css">
 <link rel="stylesheet" href="css/common.css">
-
+<link rel="stylesheet" href="js/jquery-ui-1.11.1/jquery-ui.min.css">
+<link rel="stylesheet" href="js/JQRangeSlider-5.7.0/css/iThing-min.css">
 <style>
 	
 	/*
@@ -87,8 +88,18 @@
   		transition: all 1.0s linear;
 		transform: rotateY(180deg);
 	}
+	.dateslider{
+		width:80%;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	#termsearch-input{
+		color:black;
+	}
 </style>
 <script src="js/jquery/jquery.min.js"></script>
+<script src="js/jquery-ui-1.11.1/jquery-ui.min.js"></script>
+<script src="js/JQRangeSlider-5.7.0/JQDateRangeSlider-withRuler-min.js"></script>
 <script src="js/XMLWriter-1.0.0.js"></script>
 <script src="js/handlebars-v1.3.0.js"></script>
 <script src="js/masonry.pkgd.min.js"></script>
@@ -115,6 +126,13 @@
 			<h1>hello world</h1>	
 		</div>
 		<div class="folder">
+			<div class="filtering">
+				<div class="termsearch"><input id="termsearch-input" type="text"></input></div>
+				<div class="dateslider"> <div id="dateslider"></div></div>
+			</div>
+			<div class="ordering">
+			</div>
+
 			<a href="report.html">Report</a> | <a href="options.html">Options</a>
 		</div>
 	</div>

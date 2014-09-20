@@ -182,21 +182,59 @@ function build_history_dataset(onDone, onFail){
   } 
 }
 
+
 /**
- * Filter search results by date.
+ * Creates a date filter to use in filtering the tiles on the homepage
  */
-function results_by_date(startDate, endDate){
-  var filter = function(item){
-    if(item.search.timestamp > startDate.getTime() && item.search.timestamp < endDate.getTime()){
-     return true;
+var make_filter_date = function(startDate, endDate){
+  var filter = function(){
+    var data = $(this).data("search");
+    if (startDate.getTime() < data.timestamp && data.timestamp < endDate.getTime()){
+      return true;
     }else{
       return false;
     }
   };
   return filter;
-}
+};
 
-function history_items_by_date(startDate, endDate){
+/**
+ * Creates a string filter on the search terms to use in filtering the tiles on the homepage
+ */
+var make_filter_terms = function(str){
+  var filter = function(){
+    var data = $(this).data("search");
+    if(data.terms.indexOf(str) > -1){
+      return true;
+    }else{
+      return false;
+    }
+  };
+  return filter;
+};
+
+/**
+ * Combine filters sensibly
+ */
+var combine_filters = function (filters) {
+  var filter = function(){
+    var that = this;
+    return filters.map(function(filter){
+      if(filter){
+        return filter.call(that);
+      }else{
+        return true;
+      }
+    }).every(identity);
+  };
+  return filter;
+};
+
+
+/**
+ * Filter search results by date.
+ */
+function results_by_date(startDate, endDate){
   var filter = function(item){
     if(item.search.timestamp > startDate.getTime() && item.search.timestamp < endDate.getTime()){
      return true;

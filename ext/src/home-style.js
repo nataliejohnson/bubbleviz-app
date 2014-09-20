@@ -171,33 +171,95 @@ $(function(){
  	/*
  	 * box scrolling
  	 */
- 	$(window).scroll( function(event){
- 		//console.log(event)
- 		var fadeout_candidates = [];
-        $(boxSelector).each( function(i){
-            box_top =  $(this).position().top;
-            var box_bottom = $(this).position().top + $(this).outerHeight();
-            var window_bottom = $(window).scrollTop() + $(window).height();
-            //console.log(box_top, box_bottom, window_bottom);
-            /* If the object is completely visible in the window, fade it it */
-            if( window_bottom > box_bottom){
-            	//console.log($(this).text());
-              fadeout_candidates.push($(this))
-            }
-            //if( box_top > window_bottom ){
-            //	$(this).hide();
-            //}  
-        }); 
-        //console.log(fadeout_candidates);
-        fadeout_candidates.forEach(function(elem, i){
-        	if(i == 0){
-        		elem.fadeIn(1000);
-        	}else{
-        		elem.delay(i*300).fadeIn(1000);	
-        	}
+ 	// $(window).scroll( function(event){
+ 	// 	//console.log(event)
+ 	// 	var fadeout_candidates = [];
+  //       $(boxSelector).each( function(i){
+  //           box_top =  $(this).position().top;
+  //           var box_bottom = $(this).position().top + $(this).outerHeight();
+  //           var window_bottom = $(window).scrollTop() + $(window).height();
+  //           //console.log(box_top, box_bottom, window_bottom);
+  //           /* If the object is completely visible in the window, fade it it */
+  //           if( window_bottom > box_bottom){
+  //           	//console.log($(this).text());
+  //             fadeout_candidates.push($(this))
+  //           }
+  //           //if( box_top > window_bottom ){
+  //           //	$(this).hide();
+  //           //}  
+  //       }); 
+  //       //console.log(fadeout_candidates);
+  //       fadeout_candidates.forEach(function(elem, i){
+  //       	if(i == 0){
+  //       		elem.fadeIn(1000);
+  //       	}else{
+  //       		elem.delay(i*300).fadeIn(1000);	
+  //       	}
         	
-        });
+  //       });
         
-    });
+  //   });
  });
 
+/*
+ * Date slider inititialisation
+ */
+$(function(){
+
+  var today = new Date();
+  
+  var current_date_filter = null;
+  var current_term_filter = null;
+
+  $("#dateslider").dateRangeSlider({
+    step:{
+      days: 1
+    },
+    valueLabels:"change",
+    durationIn: 1000,
+    durationOut: 1000,
+    defaultValues: {
+      max: today,
+      min: (new Date()).setDate(today.getDate()-7)
+    },
+    bounds:{
+      min: (new Date()).setMonth(today.getMonth()-3),
+      max: new Date()
+    },
+    formatter:function(val){
+      var months = new Array("Jan", "Feb", "Mar", 
+"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+"Oct", "Nov", "Dec");
+        var days = val.getDate(),
+          month = val.getMonth(),
+          year = val.getFullYear();
+        if(today.getDate() == days && today.getMonth() == month &&today.getFullYear() == year){
+          return "Today";
+        }else{
+          return days + " " + months[month];// + " " + year;
+        }
+      }
+  });
+
+  $("#dateslider").on('valuesChanging', function(ev, data){
+    var max = data.values.max;
+    var min = data.values.min;
+    if(min.getDate() == max.getDate() && min.getMonth() == max.getMonth() && min.getFullYear() == max.getFullYear()){
+        min.setDate(min.getDate()-1);
+    }
+    current_date_filter = make_filter_date(data.values.min, max);
+    $("#searches").isotope({
+      filter: combine_filters([current_date_filter, current_term_filter])
+    });
+  });
+
+  var search_changed = function(){
+    var searched = $("#termsearch-input").val();
+    current_term_filter = make_filter_terms(searched);
+    $("#searches").isotope({
+      filter: combine_filters([current_date_filter, current_term_filter])
+    });
+  };
+  $("#termsearch-input").on("keypress", search_changed);
+  $("#termsearch-input").on("keyup", search_changed);
+});

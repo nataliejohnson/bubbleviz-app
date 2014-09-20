@@ -14,6 +14,10 @@ function toArray(obj) {
   return array;
 }
 
+function identity(i){
+  return i;
+}
+
 function grabRawText(elem){
     var buf = "";
     for(var i = 0; i < elem.childNodes.length; i++){

@@ -39,7 +39,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       url: "http://bubbleviz.herokuapp.com/api/anon-search",
       data: {url: request.url}, 
       success: onSuccess,
-      error: onError     
+      error: onError,
+      timeout: 5000   
     });
 
   } else {

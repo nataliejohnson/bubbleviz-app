@@ -62,6 +62,8 @@ function scrapeForResults(){
         console.log("Anonymous results: ", JSON.stringify(response));
         if(!response.error){
           storeResults(document.URL, results, response, search_terms);
+        }else{
+          console.log("ERROR: Querying server failed", response.error);
         }
       };
       

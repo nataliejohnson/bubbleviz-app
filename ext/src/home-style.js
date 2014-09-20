@@ -141,68 +141,16 @@ $(function(){
 /*
  * search tiles behaviour
  */
- $(function(){
- 
- 	/*
- 	 * Sizing behaviour
- 	 */
+$(function(){
  	store_sizes();
- 	
- 	
  	resizeBoxes();
-
  	$(window).resize(function(){
- 		//console.log("window resized");
  		resizeBoxes();
  	});
-
- 	/*
- 	// Hide all elements outside the page so we can animate thme in later...
- 	$(boxSelector).each( function(i){
-        box_top =  $(this).position().top;
-        var box_bottom = $(this).position().top + $(this).outerHeight();
-        var window_bottom = $(window).scrollTop() + $(window).height();
-        if( box_top > window_bottom ){
-        	$(this).hide();
-        }  
-    }); 
-	*/
-
- 	/*
- 	 * box scrolling
- 	 */
- 	// $(window).scroll( function(event){
- 	// 	//console.log(event)
- 	// 	var fadeout_candidates = [];
-  //       $(boxSelector).each( function(i){
-  //           box_top =  $(this).position().top;
-  //           var box_bottom = $(this).position().top + $(this).outerHeight();
-  //           var window_bottom = $(window).scrollTop() + $(window).height();
-  //           //console.log(box_top, box_bottom, window_bottom);
-  //           /* If the object is completely visible in the window, fade it it */
-  //           if( window_bottom > box_bottom){
-  //           	//console.log($(this).text());
-  //             fadeout_candidates.push($(this))
-  //           }
-  //           //if( box_top > window_bottom ){
-  //           //	$(this).hide();
-  //           //}  
-  //       }); 
-  //       //console.log(fadeout_candidates);
-  //       fadeout_candidates.forEach(function(elem, i){
-  //       	if(i == 0){
-  //       		elem.fadeIn(1000);
-  //       	}else{
-  //       		elem.delay(i*300).fadeIn(1000);	
-  //       	}
-        	
-  //       });
-        
-  //   });
- });
+});
 
 /*
- * Date slider inititialisation
+ * Filtering logic
  */
 $(function(){
 

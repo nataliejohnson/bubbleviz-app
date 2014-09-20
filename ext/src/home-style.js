@@ -149,15 +149,33 @@ $(function(){
  	});
 });
 
+
+var current_date_filter = null;
+var current_term_filter = null;
+
+var order_and_filter = function(){
+  $("#searches").isotope({
+    filter: combine_filters([current_term_filter, current_date_filter]),
+    getSortData:{
+      timestamp: weigh_by_date,
+      terms: ".expander .search-terms",
+      personalisation: search_to_personalisation_score
+    },
+    sortAscending: {
+      terms: true,
+      timestamp: false,
+    },
+    sortBy:"personalisation"
+  });
+};
+
+
 /*
  * Filtering logic
  */
 $(function(){
 
   var today = new Date();
-  
-  var current_date_filter = null;
-  var current_term_filter = null;
 
   $("#dateslider").dateRangeSlider({
     step:{
@@ -196,18 +214,16 @@ $(function(){
         min.setDate(min.getDate()-1);
     }
     current_date_filter = make_filter_date(data.values.min, max);
-    $("#searches").isotope({
-      filter: combine_filters([current_date_filter, current_term_filter])
-    });
+    order_and_filter();
   });
 
   var search_changed = function(){
     var searched = $("#termsearch-input").val();
     current_term_filter = make_filter_terms(searched);
-    $("#searches").isotope({
-      filter: combine_filters([current_date_filter, current_term_filter])
-    });
+    order_and_filter()
   };
   $("#termsearch-input").on("keypress", search_changed);
   $("#termsearch-input").on("keyup", search_changed);
+
+
 });

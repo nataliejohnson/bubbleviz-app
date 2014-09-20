@@ -244,3 +244,10 @@ function results_by_date(startDate, endDate){
   };
   return filter;
 }
+
+/*
+ * 
+ */
+function weigh_by_date(item){
+  return $(item).data('search').timestamp;
+}

@@ -14,7 +14,7 @@ $(function(){
     });
     store_sizes();
     resizeBoxes();
-
+    order_and_filter();
   };
   
   get_searches(onSuccess);

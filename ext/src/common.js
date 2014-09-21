@@ -95,6 +95,25 @@ var result_comparator = function(a,b){
     
 };
 
+/*
+ * Score between 0 and 1 inclusive
+ */
+var score2color = function(score){
+  /*
+  Lightest blue #4390d9
+  #3c7ad5
+  #3764d0
+  #324eb3
+  #303fa0
+  Darkest blue #2f318e
+  */
+  colors = ["#4390d9", "#3c7ad5", "#3764d0", "#324eb3", "#303fa0", "#2f318e"];
+  if(score == 0.0){ return colors[0];}
+  return colors[Math.floor((score * colors.length)-0.001)]
+}
+
+
+
 /**
  * Convert a NodeList to an array
  */
@@ -189,9 +208,7 @@ function get_searches(onSuccess){
     // We add the search score here to support legacy searches that didn't
     // get the score calculated when they were stored.
     store.searches.forEach(function(search){
-      if(!search.score){
-        search.score = search_to_personalisation_score(search);
-      }
+      search.score = search_to_personalisation_score(search);
     });
     console.log(store.searches);
 
@@ -314,7 +331,6 @@ function search_to_personalisation_score(search){
   }).reduce(function(a,b){
     return a+b
   });
-  console.log(scores, total);
   return total/max_total;
 }
 

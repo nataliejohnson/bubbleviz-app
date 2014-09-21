@@ -1,9 +1,4 @@
-TODO
-====
-
- - Add ranking info to results
- - Confirmation of actions on clear profile
- 
+Existing extension for personalisation analysis: http://bobble.gtisc.gatech.edu/index.html
 
 
 

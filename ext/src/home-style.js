@@ -25,22 +25,23 @@ var store_sizes = function(){
 
 
 var collapse_tile = function(elem){
+  console.log('Collapsing tile...');
+  $fullview = $(elem);
+  $search = $fullview.parent();
+  $tileview = $search.find('.tileview');
+
   $('body').css('overflow-y', 'auto');
   resizeBoxes();
-  $elem = $(elem);
-  $elem.find('.collapser').off('click');
-  $parent = $elem.parent();
   var new_settings = {
     position: 'fixed',
-    top: ($parent.position().top - $(document).scrollTop()) +'px',
-    left: ($parent.position().left - $(document).scrollLeft()) +'px',
-    width: $parent.width()+'px',
-  height: $parent.height()+'px',
+    top: ($search.position().top - $(document).scrollTop()) +'px',
+    left: ($search.position().left - $(document).scrollLeft()) +'px',
+    width: $search.width()+'px',
+    height: $search.height()+'px',
     'z-index': 10,
-    'background-color':'red'
   };  
 
-  $elem.animate(new_settings,1000, function(){
+  $fullview.animate(new_settings,1000, function(){
     $(this).css({
       top: 'auto',
       left: 'auto',
@@ -50,34 +51,40 @@ var collapse_tile = function(elem){
       position: 'relative',
       'z-index':1
     });
-    $elem.click(function(){
-      expand_tile(this);
-    });
+    $fullview.hide();
+    //$fullview;
+    //$elem.find('.tileview').fadeIn();
+    
+    //$elem.click(function(){
+    //  expand_tile($tileview);
+    //});
   });
 };
 
+// expand_tile will receive a tileview element
 var expand_tile = function(elem){
   console.log("Expanding tile...");
-  $elem = $(elem)
-  $elem.off('click')
-  $elem.find(".collapser").click(function(){
-    collapse_tile($(this).parent());
+  $tileview = $(elem);
+  $search = $tileview.parent();
+  $fullview = $search.find('.fullview');
+  
+  $fullview.find(".collapser").click(function(){
+    collapse_tile($fullview);
   });
   
   // viewport positions
   var initial_settings = {
     position: 'fixed',
-    top: ($elem.position().top - $(document).scrollTop()) +'px',
-    left: ($elem.position().left - $(document).scrollLeft()) +'px',
-    width: $elem.outerWidth()+'px',
-    height: $elem.outerHeight()+'px',
-    'z-index': 10,
-    'background-color':'red'
+    top: ($search.position().top - $(document).scrollTop()) +'px',
+    left: ($search.position().left - $(document).scrollLeft()) +'px',
+    width: $search.outerWidth()+'px',
+    height: $search.outerHeight()+'px',
+    'z-index': 10
   };
 
-  $elem.css(initial_settings);
+  $fullview.show().css(initial_settings);
 
-  $elem.animate({
+  $fullview.animate({
     width:'100%', 
     height:'100%',
     top:'0px',
@@ -85,6 +92,8 @@ var expand_tile = function(elem){
     bottom:'0px',
     'z-index': '100'
   }, 1000);
+
+  //$search.find('.tileview').fadeOut();
 
   $('body').css('overflow', 'hidden');
 };
@@ -158,7 +167,7 @@ var order_and_filter = function(){
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
-      terms: ".expander .search-terms", 
+      terms: ".tileview .search-terms", 
       personalisation: function(elem){return search_to_personalisation_score($(elem).data('search'));}
     },
     sortAscending: {
@@ -226,9 +235,9 @@ $(function(){
   $("#termsearch-input").on("keypress", search_changed);
   $("#termsearch-input").on("keyup", search_changed);
 
-  $("#sortby-most-personal").click(function(){$("#searches").isotope({sortBy:"personalisation"});});
+  $("#sortby-most-personal").click(function(){$("#searches").isotope({sortBy:"personalisation", sortAscending:false});});
   $("#sortby-time-ascending").click(function(){$("#searches").isotope({sortBy:"timestamp", sortAscending:true});});
   $("#sortby-time-descending").click(function(){$("#searches").isotope({sortBy:"timestamp", sortAscending:false});});
-  $("#sortby-alpha").click(function(){$("#searches").isotope({sortBy:"terms"});});
+  $("#sortby-alpha").click(function(){$("#searches").isotope({sortBy:"terms", sortAscending:true});});
 
 });

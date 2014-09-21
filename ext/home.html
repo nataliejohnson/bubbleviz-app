@@ -78,11 +78,17 @@
 		margin:0px;
 		background-color: grey;
 	}
-	.expander{
+	.search .tileview{
 		width:100%;
 		height:100%;
-		border:1px solid green;
+		background-color: inherit;
+		text-align: center;
 	}
+	.search .fullview{
+		display: none;
+		background-color: inherit;
+	}
+
 	.flip{
 		transform-style: preserve-3d;
   		transition: all 1.0s linear;
@@ -95,6 +101,12 @@
 	}
 	#termsearch-input{
 		color:black;
+	}
+	.search .fullview .results-personal .personal{
+		border-left: 6px solid green;
+	}
+	.search .fullview .results-personal .both{
+		border-left: 6px solid white;
 	}
 </style>
 <script src="js/jquery/jquery.min.js"></script>
@@ -110,16 +122,36 @@
 <script src="src/home-style.js"></script>
 <script src="src/home.js"></script>
 
-<script id="search-item-template" type="text/x-handlebars-template">
+<script id="search-template" type="text/x-handlebars-template">
 	<div class="search" data-uid="{{uid}}">
-		<div class="expander">
-			<div class="collapser">collapse</div>
+		<div class="fullview">
+			<button class="collapser">Collapse</button>
 			<div class="search-terms">{{terms}}</div>
 			<div class="timestamp">{{timestamp}}</div>
 			<div class="score">{{score}}</div>
+			
+			<div class="results-personal">
+			{{#each personalScores}}
+				<div class="result {{category}}">
+					<h3><a href="{{url}}">{{result}}</a></h3>
+				</div>
+			{{/each}}
+			</div>
+			<!--
+			{{#each anonymous}}
+				{{url}}
+				{{title}}
+				{{snippet}}
+			{{/each}}
+			-->
+
+		</div>
+		<div class="tileview">
+			<div class="search-terms">{{terms}}</div>
 		</div>
 	</div>
 </script>
+
 
 </head>
 <body>

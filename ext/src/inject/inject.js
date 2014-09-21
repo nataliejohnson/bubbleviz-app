@@ -10,7 +10,6 @@ function storeResults(url, personal, anonymous, search_terms){
     personal:personal,
     terms: search_terms,
     timestamp: (new Date()).getTime(),
-    score: search_to_personalisation_score({anonymous:anonymous, personal:personal})
   };
   
   chrome.storage.local.get("searches", function(store){

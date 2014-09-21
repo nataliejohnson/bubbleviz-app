@@ -44,7 +44,7 @@ function parseDocumentForResults(element){
         if(link){
           results.push({
             result: link.text,
-            snippet: grabRawText(snippetElem),
+            snippet: (snippetElem)?grabRawText(snippetElem):"",
             url: link.getAttribute('href')
           });
         }

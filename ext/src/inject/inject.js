@@ -3,7 +3,6 @@
  */
 
 
-
 function storeResults(url, personal, anonymous, search_terms){
   var object_to_store = {
     url: url, 
@@ -30,16 +29,27 @@ function storeResults(url, personal, anonymous, search_terms){
 }
 
 function convert_url_to_server_url(url){
+  // What we want : https://google.com/search?q=blah+blah+blah
+  // two types of document URL:
+  //  - http://google.com/webhp#q=abc+def
+  //  - http://google.com/webhp?q=abc+def
+
+  var PREFIX = "https://www.google.com/search"
+
   var server_search_url = url;
   
+
   var parser = document.createElement('a');
   parser.href =  server_search_url;
   
   var index = parser.href.indexOf(parser.search);
+  var query = parser.search;
   var hash = parser.href.slice(index + parser.search.length, parser.href.length);
   
   if(hash){ 
-    server_search_url = parser.href.slice(0, index) + "?"+ hash.slice(1,hash.length);
+    server_search_url = PREFIX + "?" + hash.slice(1,hash.length);
+  }else if(query && !hash){
+    server_search_url = PREFIX + query;
   }
   
   return server_search_url;

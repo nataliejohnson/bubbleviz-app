@@ -185,6 +185,16 @@ function searches2results(searches){
 
 function get_searches(onSuccess){
   chrome.storage.local.get("searches", function(store){
+    
+    // We add the search score here to support legacy searches that didn't
+    // get the score calculated when they were stored.
+    store.searches.forEach(function(search){
+      if(!search.score){
+        search.score = search_to_personalisation_score(search);
+      }
+    });
+    console.log(store.searches);
+
     if(onSuccess && typeof onSuccess == "function"){
       onSuccess(store.searches);
     }
@@ -275,10 +285,37 @@ function build_history_dataset(onDone, onFail){
   } 
 }
 
-
 function search_to_personalisation_score(search){
-  console.log($(search).data('search'));
-  return 0.5;
+  var scores = results_to_scores(search); 
+  // [
+  //   {anonymous_rank: x, personal_rank:y, score:x-y},
+  //   {anonymous_rank: x},
+  //   {personal_rank:y},
+  // ]
+  var personal_results = scores.filter(function(result){
+    return result.category === "both" || result.category === "personal";
+  });
+
+  var max_total = 0;
+  personal_results.forEach(function(e,i){
+    max_total+= (i+1);
+  });
+  var max_normalised = max_total;
+
+  var total = personal_results.map(function(result){
+    if(result.score){ 
+      return result.score; 
+    }else if (result.personal_rank){
+      return personal_results.length - result.personal_rank;
+    }else{
+      console.err(result, "Result had neither score nor personal_rank");
+      return 0;
+    }
+  }).reduce(function(a,b){
+    return a+b
+  });
+  console.log(scores, total);
+  return total/max_total;
 }
 
 

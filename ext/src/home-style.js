@@ -158,12 +158,13 @@ var order_and_filter = function(){
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
-      terms: ".expander .search-terms",
-      personalisation: search_to_personalisation_score
+      terms: ".expander .search-terms", 
+      personalisation: function(elem){return search_to_personalisation_score($(elem).data('search'));}
     },
     sortAscending: {
       terms: true,
       timestamp: false,
+      personalisation:false
     },
     sortBy:"personalisation"
   });

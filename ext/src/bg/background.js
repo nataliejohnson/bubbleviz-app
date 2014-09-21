@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
     // 1. turn data into element
     var content = data.content;
+    console.log("REPLY:", data);
     var parser = new DOMParser();
     var doc = parser.parseFromString(content, "text/html");
     

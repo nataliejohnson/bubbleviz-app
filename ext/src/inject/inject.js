@@ -83,7 +83,7 @@ function main(){
     // On url change, do scrape page
   function handleChanges(newHash, oldHash){
     console.log("Hash changed "+oldHash+" -> "+newHash);
-    setTimeout(scrapeForResults, 500);
+    setTimeout(scrapeForResults, 750);
   }
 
   hasher.changed.add(handleChanges); 

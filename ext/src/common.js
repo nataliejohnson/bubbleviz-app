@@ -183,6 +183,12 @@ function build_history_dataset(onDone, onFail){
 }
 
 
+function search_to_personalisation_score(search){
+  console.log($(search).data('search'));
+  return 0.5;
+}
+
+
 /**
  * Creates a date filter to use in filtering the tiles on the homepage
  */

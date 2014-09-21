@@ -226,5 +226,9 @@ $(function(){
   $("#termsearch-input").on("keypress", search_changed);
   $("#termsearch-input").on("keyup", search_changed);
 
+  $("#sortby-most-personal").click(function(){$("#searches").isotope({sortBy:"personalisation"});});
+  $("#sortby-time-ascending").click(function(){$("#searches").isotope({sortBy:"timestamp", sortAscending:true});});
+  $("#sortby-time-descending").click(function(){$("#searches").isotope({sortBy:"timestamp", sortAscending:false});});
+  $("#sortby-alpha").click(function(){$("#searches").isotope({sortBy:"terms"});});
 
 });

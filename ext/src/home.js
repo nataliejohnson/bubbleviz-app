@@ -10,7 +10,7 @@ $(function(){
 
       data.personalScores = results_to_scores(search);
 
-      console.log(search);
+      //console.log(search);
       var $search = $($.parseHTML(search_item_template(data)));
       $search.data("search", data);
       $search.css({'background-color': score2color(search.score)});

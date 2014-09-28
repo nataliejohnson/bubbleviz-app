@@ -210,7 +210,7 @@ function get_searches(onSuccess){
     store.searches.forEach(function(search){
       search.score = search_to_personalisation_score(search);
     });
-    console.log(store.searches);
+    //console.log(store.searches);
 
     if(onSuccess && typeof onSuccess == "function"){
       onSuccess(store.searches);

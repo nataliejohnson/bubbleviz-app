@@ -29,6 +29,9 @@ var collapse_tile = function(elem){
   $fullview = $(elem);
   $search = $fullview.parent();
   $tileview = $search.find('.tileview');
+  $('#searches').isotope('bindResize');
+  //$('#searches').isotope('layout');
+  order_and_filter();
 
   $('body').css('overflow-y', 'auto');
   resizeBoxes();
@@ -67,6 +70,7 @@ var expand_tile = function(elem){
   $tileview = $(elem);
   $search = $tileview.parent();
   $fullview = $search.find('.fullview');
+  $('#searches').isotope('unbindResize');
   
   $fullview.find(".collapser").click(function(){
     collapse_tile($fullview);
@@ -90,7 +94,7 @@ var expand_tile = function(elem){
     top:'0px',
     left:'0px', 
     bottom:'0px',
-    'z-index': '100'
+    'z-index': '10000'
   }, 1000);
 
   //$search.find('.tileview').fadeOut();

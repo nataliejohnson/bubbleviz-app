@@ -149,8 +149,8 @@ var collapse_tile = function(elem){
   $search = $fullview.parent();
   $tileview = $search.find('.tileview');
   $('#searches').isotope('bindResize');
-  //$('#searches').isotope('layout');
-  order_and_filter();
+  $('#searches').isotope('layout');
+  //order_and_filter();
 
   $('body').css('overflow-y', 'auto');
   resizeBoxes();
@@ -207,6 +207,24 @@ var expand_tile = function(elem){
   };
 
   $fullview.show().css(initial_settings);
+  
+  $fullview.find('.results-personal').isotope({
+    itemSelector: '.result',
+    getSortData: {
+      rank: function(elem){
+        return parseInt($(elem).find('.rank').text());
+      }
+    },
+    filter : function(){
+      console.log(this);
+      if($(this).hasClass('anonymous')){
+        return false;
+      }
+      return true;
+    },
+    sortBy: 'rank',
+    layoutMode: 'vertical'
+  }); 
 
   $fullview.animate({
     width:'100%', 
@@ -215,7 +233,9 @@ var expand_tile = function(elem){
     left:'0px', 
     bottom:'0px',
     'z-index': '10000'
-  }, 1000);
+  }, 1000, "swing", function(){
+    $fullview.find('.results-personal').isotope('layout');
+  });
 
   //$search.find('.tileview').fadeOut();
 

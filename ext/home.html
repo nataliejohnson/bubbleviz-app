@@ -68,14 +68,16 @@
     }
 	
 	#searches {
-		width:100%;
+		width:1200px;
 		padding:0px;
 		margin:0px;
 		margin-bottom: 30px;
+		margin-right: auto;
+		margin-left: auto;
 	}
 	.search{
-		width:277px;
-		height:277px;
+		width:25%;
+		height:50px;
 		float:left;
 		padding:0px;
 		margin:0px;
@@ -105,12 +107,6 @@
 	#termsearch-input{
 		color:black;
 	}
-	.search .fullview .results-personal .personal{
-		border-left: 6px solid green;
-	}
-	.search .fullview .results-personal .both{
-		border-left: 6px solid white;
-	}
 	.indicator{
 		height:20px;
 		width:20px;
@@ -122,7 +118,10 @@
 		background-color: red;
 	}
 	.indicator-stable{
-		background-color: blue;
+		background-color: white;
+	}
+	.result div{
+		display:inline-block;
 	}
 
 </style>
@@ -162,7 +161,7 @@
 					<div class="rank">{{personal_rank}}</div>
 					<div class="anon-rank">{{anonymous_rank}}</div>
 					<div class="indicator {{indicatorclass}}"></div>
-					<h3><a href="{{url}}">{{result}}</a></h3>
+					<a href="{{url}}">{{result}}</a>
 					<!--<div class="score">{{score}}</div>-->
 				</div>
 			{{/each}}

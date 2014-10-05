@@ -3,6 +3,125 @@ var boxSelector = ".search";
 var tobparSelector = "#topbar";
 var original_width, original_height, aspect_ration;
 
+/*
+REAL.PerspectiveTransform();
+*/
+
+var element_to_transform_config = function (elem){
+  $elem = $(elem);
+  var top = $elem.position().top - $(document).scrollTop();
+  var left = $elem.position().left - $(document).scrollLeft();
+  var _width = $elem.outerWidth();
+  var _height = $elem.outerHeight();
+  var new_width = $(window).width();
+  var new_height = $(window).height();
+
+  return {
+    element: elem,
+    src: [
+      {x:0, y:0}, 
+      {x:_width, y:0}, 
+      {x:_width, y:_height}, 
+      {x:0, y:_height}
+    ],
+    dst: [
+      {x:-left, y:-top}, 
+      {x:new_width, y:-top}, 
+      {x:new_width, y:new_height}, 
+      {x:-left, y:new_height}]
+  }
+};
+
+//PerspectiveTransform(element_to_transform_config(element))
+
+var PerspectiveTransform = function(config) {
+
+  var element = config.element; // DOM element to be transformed
+  var src   = config.src;   // Source points of the element
+  var dst   = config.dst;   // Destiny points of the element
+  
+  var a = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
+  var b = [0,0,0,0,0,0,0,0];
+
+  for( var i = 0; i < 4; i++ ){
+    a[i] = [];
+        a[i][0] = a[i+4][3] = src[i].x;
+        a[i][1] = a[i+4][4] = src[i].y;
+        a[i][2] = a[i+4][5] = 1;
+        a[i][3] = a[i][4] = a[i][5] =
+        a[i+4][0] = a[i+4][1] = a[i+4][2] = 0;
+        a[i][6] = -src[i].x*dst[i].x;
+        a[i][7] = -src[i].y*dst[i].x;
+        a[i+4][6] = -src[i].x*dst[i].y;
+        a[i+4][7] = -src[i].y*dst[i].y;
+        
+        b[i] = dst[i].x;
+        b[i+4] = dst[i].y;
+    }
+    
+  var bM = [];
+  for(i=0; i<b.length; i++){
+    bM[i] = [b[i]];
+  }
+  
+  // Matrix Libraries from a Java port of JAMA: A Java Matrix Package, http://math.nist.gov/javanumerics/jama/
+  // Developed by Dr Peter Coxhead: http://www.cs.bham.ac.uk/~pxc/
+  // Available here: http://www.cs.bham.ac.uk/~pxc/js/
+  var A = Matrix.create(a);
+  var B = Matrix.create(bM);
+  var X = Matrix.solve(A,B);
+
+  $fullview = $(element).find('.fullview');
+  
+  $fullview.show().css({
+    'transition-duration': '1s',
+    //'position': 'fixed',
+    'transform-origin': 'top left',
+    //'top': '0px',
+    //'left':'0px',
+    'background-color':'#ffccff',
+    'z-index': '100000'
+  });
+
+  $fullview.css('transform', "matrix3d(" + X.mat[0][0] + "," + X.mat[3][0] + ", 0," + X.mat[6][0] + "," + X.mat[1][0] + "," + X.mat[4][0] + ", 0," + X.mat[7][0] + ",0, 0, 1, 0," + X.mat[2][0] + "," + X.mat[5][0] + ", 0, 1)");
+  
+
+};
+
+var scores_to_data_template = function(scores){
+  // we need: per result - anonrank indicatorclass[indicator-{promoted,demoted,stable}]
+  scores.forEach(function(score){
+
+    if(score.anonymous_rank && score.personal_rank){
+      if(score.anonymous_rank < score.personal_rank){
+        score.indicatorclass = "indicator-demoted";
+      }else if (score.anonymous_rank > score.personal_rank){
+        score.indicatorclass = "indicator-promoted";
+      }else{
+        score.indicatorclass = "indicator-stable";
+      }
+    }
+
+    if(!score.personal_rank){
+      score.anonymous_rank = "-";
+      score.indicatorclass = "indicator-promoted";
+    }
+
+    if(!score.anonymous_rank){
+      score.anonymous_rank = "-";
+      score.indicatorclass = "indicator-promoted";
+    }
+
+  });
+
+  return scores;
+};
+
+
+
+
+
+
 var resizeBoxes = function (){
 	var containerWidth=$(containingSelector).width();
 	var width_ratio = containerWidth/original_width;
@@ -61,6 +180,7 @@ var collapse_tile = function(elem){
     //$elem.click(function(){
     //  expand_tile($tileview);
     //});
+    $('#dateslider').dateRangeSlider('resize')
   });
 };
 
@@ -127,6 +247,7 @@ $(function(){
       } else {
         $(tobparSelector).removeClass('sticky'); 
         $(tobparSelector).find(".folder").slideDown();
+        $(window).trigger('resize');
       }
   };
 
@@ -168,6 +289,7 @@ var current_term_filter = null;
 
 var order_and_filter = function(){
   $("#searches").isotope({
+    layoutMode: 'masonry',
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
@@ -183,19 +305,29 @@ var order_and_filter = function(){
   });
 };
 
-
+var reset_slider_bounds = function(min, max){
+  $("#dateslider").dateRangeSlider({
+    bounds:{
+      min: min,
+      max: max
+    }
+  });
+};
 /*
  * Filtering logic
  */
 $(function(){
 
+  var months = new Array("Jan", "Feb", "Mar", 
+"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+"Oct", "Nov", "Dec");
   var today = new Date();
 
   $("#dateslider").dateRangeSlider({
-    step:{
-      days: 1
-    },
-    valueLabels:"change",
+    //step:{
+    //  days: 1
+    //},
+    valueLabels:"show",
     durationIn: 1000,
     durationOut: 1000,
     defaultValues: {
@@ -206,10 +338,32 @@ $(function(){
       min: (new Date()).setMonth(today.getMonth()-3),
       max: new Date()
     },
+    scales: [{
+      first: function(value){ return value; },
+      end: function(value) {return new Date(); },
+      next: function(value){
+        var next = new Date(value);
+        return new Date(next.setMonth(value.getMonth() + 1));
+      },
+      label: function(){return "";},
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("month-ticker");
+      }
+    },
+    {
+      first: function(value){ return value; },
+      end: function(value) {return new Date(); },
+      next: function(value){
+        var next = new Date(value);
+        next.setDate(value.getDate() + 1);
+        return next
+      },
+      label: function(){return "";},
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("date-ticker");
+      }
+    }],
     formatter:function(val){
-      var months = new Array("Jan", "Feb", "Mar", 
-"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
-"Oct", "Nov", "Dec");
         var days = val.getDate(),
           month = val.getMonth(),
           year = val.getFullYear();
@@ -226,6 +380,7 @@ $(function(){
     var min = data.values.min;
     if(min.getDate() == max.getDate() && min.getMonth() == max.getMonth() && min.getFullYear() == max.getFullYear()){
         min.setDate(min.getDate()-1);
+        //$('#dateslider').dateRangeSlider('values', min,max);
     }
     current_date_filter = make_filter_date(data.values.min, max);
     order_and_filter();

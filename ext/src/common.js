@@ -321,9 +321,9 @@ function search_to_personalisation_score(search){
 
   var total = personal_results.map(function(result){
     if(result.score){ 
-      return result.score; 
+      return Math.abs(result.score); 
     }else if (result.personal_rank){
-      return personal_results.length - result.personal_rank;
+      return Math.abs(personal_results.length - result.personal_rank);
     }else{
       console.err(result, "Result had neither score nor personal_rank");
       return 0;

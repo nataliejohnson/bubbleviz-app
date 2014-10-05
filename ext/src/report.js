@@ -40,6 +40,16 @@ $(function(){
 	var html = report_template(display_data);
 	$('body').append(html);
 
+// Example data binding 
+d3.select("#test-chart")
+  .selectAll("div")
+    .data([1,2,3,4,5,6,7,8,9])
+  .enter().append("div")
+    .style("width", function(d) { return d * 10 + "px"; })
+    .style('background-color', "#abcdef")
+    .style('color', 'white')
+    .text(function(d) { return d; });
+
 
 
 });

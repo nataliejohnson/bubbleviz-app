@@ -356,7 +356,7 @@ var make_filter_date = function(startDate, endDate){
 var make_filter_terms = function(str){
   var filter = function(){
     var data = $(this).data("search");
-    if(data.terms.indexOf(str) > -1){
+    if(data.terms.toUpperCase().indexOf(str.toUpperCase()) > -1){
       return true;
     }else{
       return false;

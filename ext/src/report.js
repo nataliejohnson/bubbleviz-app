@@ -25,6 +25,7 @@ $(function(){
 	function onFail(msg){ console.log(msg); alert(msg); }
 
 	build_results_dataset(function(results){
+		console.log("Results dataset built...", results);
 		build_history_dataset(function(historyItems){
 			console.log(
 				"Fetched all dataset. ready for reporting and rendering: ", 
@@ -40,32 +41,5 @@ $(function(){
 	$('body').append(html);
 
 
-    // Perhaps use http://ghusse.github.io/jQRangeSlider/index.html instead?
-    
-/*
-	var now = (new Date()).getTime();
-	var week_in_ms = 7*24*60*60*1000;
-	var day_in_ms = 24*60*60*1000;
-	var week_ago = new Date(now-week_in_ms);
-
-	$("#slider7").slider({ 
-		min: (new Date(2014,0,01)).getTime(),
-		max: (new Date(2014,12,31)).getTime(), 
-		range: true, 
-		step: day_in_ms,
-		values: [week_ago.getTime() , now] 
-	});
-	
-	$("#slider7").slider("pips" , {
-		rest:'label'
-	});
-	
-	$("#slider7").on("slidechange", function(e,ui){
-		var start = $("#slider7 .ui-slider-pip-selected-first .ui-slider-label").data("value");
-		var end = $("#slider7 .ui-slider-pip-selected-second .ui-slider-label").data("value");
-		console.log(start,end);
-	});
-*/
-	$("#slider").liquidSlider();
 
 });

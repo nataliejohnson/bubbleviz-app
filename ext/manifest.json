@@ -16,6 +16,7 @@
   },
   "permissions": [ 
     "http://bubbleviz.herokuapp.com/*",
+    "http://bubbleviz-carrot.herokuapp.com/*",
     "storage",
     "history",
     "downloads"

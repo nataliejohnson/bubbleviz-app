@@ -130,7 +130,7 @@ var resizeBoxes = function (){
 	var width_increment = remainingWidth/num_boxes;
 	var new_width = original_width+width_increment;
 	var new_height = new_width/aspect_ration;
-	console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
+	//console.log(containerWidth,width_ratio,num_boxes,remainingWidth,width_increment,new_width,new_height);
 	$(boxSelector).width(new_width);
 	$(boxSelector).height(new_height);
 };
@@ -222,7 +222,6 @@ var expand_tile = function(elem){
       }
     },
     filter : function(){
-      console.log(this);
       if($(this).hasClass('anonymous')){
         return false;
       }

@@ -142,8 +142,11 @@ var store_sizes = function(){
   //console.log(original_width,original_height,aspect_ration);
 }
 
+var expended = false;
 
 var collapse_tile = function(elem){
+  if(!expended){return;}
+
   console.log('Collapsing tile...');
   $fullview = $(elem);
   $search = $fullview.parent();
@@ -181,11 +184,14 @@ var collapse_tile = function(elem){
     //  expand_tile($tileview);
     //});
     $('#dateslider').dateRangeSlider('resize')
+    expended = false;
   });
 };
 
 // expand_tile will receive a tileview element
 var expand_tile = function(elem){
+  if(expended){return;}
+  expended = true;
   console.log("Expanding tile...");
   $tileview = $(elem);
   $search = $tileview.parent();

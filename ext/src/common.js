@@ -1,6 +1,8 @@
 /*
  * js/common.js 
  */
+ 
+
 
 function getParameterByName(query_string, name) {
     
@@ -277,9 +279,9 @@ function build_results_dataset(onDone, onFail){
 
     function _onError(jqXHR, textStatus, errorThrown){
       //alert("Error occured on request: "+ textStatus + ", "+ errorThrown);
-      if (onFail && (typeof onFail) == "function"){
-        onFail("Error occured while fetching cluster information");
-      }
+      //if (onFail && (typeof onFail) == "function"){
+        //onFail("Error occured while fetching cluster information");
+      //}
     }
 
     carrot_fetch_clusters(

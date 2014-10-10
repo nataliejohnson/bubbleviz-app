@@ -7,6 +7,8 @@ var original_width, original_height, aspect_ration;
 REAL.PerspectiveTransform();
 */
 
+
+
 var element_to_transform_config = function (elem){
   $elem = $(elem);
   var top = $elem.position().top - $(document).scrollTop();
@@ -103,12 +105,12 @@ var scores_to_data_template = function(scores){
     }
 
     if(!score.personal_rank){
-      score.anonymous_rank = "-";
+      score.anonymous_rank = "+";
       score.indicatorclass = "indicator-promoted";
     }
 
     if(!score.anonymous_rank){
-      score.anonymous_rank = "-";
+      score.anonymous_rank = "+";
       score.indicatorclass = "indicator-promoted";
     }
 
@@ -216,6 +218,10 @@ var expand_tile = function(elem){
   
   $fullview.find('.results-personal').isotope({
     itemSelector: '.result',
+	layoutMode: 'packery',
+	packery: {
+  gutter: 0
+},
     getSortData: {
       rank: function(elem){
         return parseInt($(elem).find('.rank').text());
@@ -227,16 +233,16 @@ var expand_tile = function(elem){
       }
       return true;
     },
-    sortBy: 'rank',
-    layoutMode: 'vertical'
+    sortBy: 'rank'
+    
   }); 
 
   $fullview.animate({
-    width:'100%', 
-    height:'100%',
-    top:'0px',
-    left:'0px', 
-    bottom:'0px',
+    width:'98%', 
+    height:'96%',
+    top:'2%',
+    left:'1%', 
+    bottom:'2%',
     'z-index': '10000'
   }, 1000, "swing", function(){
     $fullview.find('.results-personal').isotope('layout');
@@ -314,7 +320,8 @@ var current_term_filter = null;
 
 var order_and_filter = function(){
   $("#searches").isotope({
-    layoutMode: 'masonry',
+    layoutMode: 'packery',
+	transitionDuration:'0.8s',
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
@@ -425,3 +432,5 @@ $(function(){
   $("#sortby-alpha").click(function(){$("#searches").isotope({sortBy:"terms", sortAscending:true});});
 
 });
+
+

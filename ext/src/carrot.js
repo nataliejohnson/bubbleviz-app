@@ -24,8 +24,8 @@ function results2xml(results){
 		xw.writeStartElement('document');
 			xw.writeAttributeString("id", result.id);
 			xw.writeElementString('title', result.result.encodeHTML());
-			xw.writeElementString('snippet', result.snippet.encodeHTML());
-			xw.writeElementString('url', result.url.encodeHTML());
+			xw.writeElementString('snippet', '');//result.snippet.encodeHTML());
+			xw.writeElementString('url', '');//result.url.encodeHTML());
 		xw.writeEndElement();
 	});
 	xw.writeEndElement();

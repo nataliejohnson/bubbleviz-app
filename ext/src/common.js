@@ -405,3 +405,12 @@ function results_by_date(startDate, endDate){
 function weigh_by_date(item){
   return $(item).data('search').timestamp;
 }
+
+/*
+ * string comparison function
+ */
+function strcmp( a, b ) {
+    if((a+'').toLowerCase() > (b+'').toLowerCase()) return 1  
+    if((a+'').toLowerCase() < (b+'').toLowerCase()) return -1
+    return 0
+}

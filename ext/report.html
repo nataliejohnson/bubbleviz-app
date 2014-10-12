@@ -48,7 +48,6 @@
 /* tooltip */
 .axis path,
 .axis line {
-  fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
@@ -68,12 +67,9 @@ rect {
 }
 
 .x.axis path {
-  display: none;
 }
 
 .y.axis path {
-	display: none;
-  
 }
 
 
@@ -89,20 +85,12 @@ rect {
   font: 10px sans-serif;
 }
 
-.axis path {
-  display: none;
-}
-
 .axis line {
   stroke: #fff;
   stroke-opacity: .5;
   shape-rendering: crispEdges;
 }
 
-
-.tick {
-  display:none;
-}
 
 .d3-tip {
   line-height: 1;
@@ -168,17 +156,28 @@ rect {
       </div>
       
 <div class="masonry">
+  
   <div class="item">
-  <div class="report-line"></div>
-  <p class="report-headings"> Hourly Breakdown </p>
-  <div id="bar-chart-1"></div>
+    <div class="report-line">
+      <p class="report-headings"> Hourly Breakdown </p>
+    </div>
+    <div class="chart-container"> 
+      <div id="bar-chart-1" class="chartbox">
+        <!-- <svg> -->
+      </div>
+    </div>
   </div>
   
   
   <div class="item">
-  <div class="report-line"></div>
-  <p class="report-headings">Daily Breakdown</p>
-  <div id="bar-chart-2"></div>
+    <div class="report-line">
+      <p class="report-headings"> Daily Breakdown </p>
+    </div>
+    <div class="chart-container"> 
+      <div id="bar-chart-2" class="chartbox" style="display: none">
+        
+      </div>
+    </div>
   </div>
   
   
@@ -189,10 +188,13 @@ rect {
   <div id="pie-2"></div>
   </div>
   
-  <div class="item w3 h2">
-  <div class="report-line"></div>
-  <p class="report-headings"> Top Categories </p>
-  <div id="bubble-chart"></div>
+  <div class="item w3 h4">
+    <div class="report-line">
+      <p class="report-headings"> Top Categories </p>
+    </div>
+     <div class="chart-container"> 
+      <div id="bubble-chart" class="chartbox"></div>
+    </div>
   </div>
   
   <div class="item w4 h2">

@@ -24,6 +24,11 @@ body, html {
     font-kerning: normal;
 }
 
+#bubble-chart {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    }
+
 #tech-links {
     border-radius: 3px;
     background-color: rgba(0,0,0,0.5);
@@ -37,11 +42,12 @@ body, html {
 }
 
 .report-headings {
-	margin-bottom: 16px;
-	font-size: 16px;
-	line-height: 1.2;
-	letter-spacing: 0.05px;
-	}
+    font-size: 16px;
+    display: table-cell;
+    vertical-align: middle;
+    line-height: 1.2;
+    letter-spacing: 0.05px;
+}
 
 #tech-links a {
     color: white;
@@ -357,6 +363,11 @@ body, html {
     margin-right: auto;
 }
 
+.top-nav-scrolled {
+    border-bottom: 1px solid #1e1e1e;
+}
+
+
 .inner-middle {
     width: 91.9%;
 	max-width: 1532px;
@@ -375,6 +386,10 @@ body, html {
     font-feature-settings: "kern";
     font-kerning: normal;
 }
+
+.inner-middle-scrolled {
+    border: 0;
+    }
 
 .inner {
     width: 91.9%;
@@ -620,13 +635,20 @@ body, html {
     }
 }
 
-
+.table-row{
+    display: table-row;
+}
+.table-cell{
+    display: table-cell;
+}
 .report-line {
-	width: 100%;
-	height: 1px;
-	background-color: #dadada;
-	margin-bottom: 12px;
-	}
+    width: 100%;
+    display: table;
+    height:15%;
+    border-top: 1px solid #dadada;
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
 
 .masonry {
 	width: 91.9%;
@@ -643,22 +665,23 @@ margin-right: auto;
 
 
 .masonry .item {
-  width:  22%;
+  width:  27%;
   margin-right: 2%;
   height: 330px;
   float: left;
   color: #404040;
+  display:table-row;
  /* border-top: 1px solid;
     background: #D26;
   border-color: hsla(0, 0%, 0%, 0.5); */}
 
-.item.w2 { width:  52%; margin-right: 0;  }
+.item.w2 { width:  42%; margin-right: 0;  }
 .item.w3 { width:  56%; }
 .item.w4 { width:  42%; margin-right: 0; }
 
   .item.h2 { height: 420px;   padding-top: 28px; }
 .item.h3 { height: 330px; }
-.item.h4 { height: 330px;  }
+.item.h4 { height: 660px;  }
 
 .item.gigante {
   width: 180px;
@@ -666,3 +689,30 @@ margin-right: auto;
 }
 
 .gutter-sizer { width: 0.5%; }
+
+
+svg {
+    width:100%
+}
+
+.chart-container{
+    height:85%;
+    width:100%;
+}
+.chartbox {
+    height: 100%;
+}
+
+body.label{
+    background-color: rgba(0,0,0,0);
+    display: table;
+}
+
+.innerlabel{
+    display: table-cell;
+    color:white;
+    background-color: rgba(0,0,0,0);
+    text-align: center;
+    vertical-align: middle;
+    padding:5px;
+}

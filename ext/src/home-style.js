@@ -185,7 +185,7 @@ var collapse_tile = function(elem){
     //$elem.click(function(){
     //  expand_tile($tileview);
     //});
-    $('#dateslider').dateRangeSlider('resize')
+    $('#dateslider').dateRangeSlider('resize');
     expended = false;
   });
 };
@@ -289,7 +289,7 @@ $(function(){
     stickyNav();
   });
 
-  $(tobparSelector).mouseenter(function(){
+  /*$(tobparSelector).mouseenter(function(){
     $(tobparSelector).find(".folder").stop().slideDown();
   });
   $(tobparSelector).mouseleave(function(){
@@ -297,7 +297,7 @@ $(function(){
     if (scrollTop > (stickyNavTop+5) ){
       $(tobparSelector).find(".folder").stop().slideUp();
     } 
-  });
+  });*/
 
 });
 

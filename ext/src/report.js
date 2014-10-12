@@ -363,7 +363,7 @@ var root =  { "children": [
       .html(function(d){return '<div class="innerlabel">'+d.className+'</div>';})//function(d) { return "<p>"+d.className+"</p>"; })
   
   svg.selectAll(".node").filter(function(d,i){
-    console.log(d3.select(this));
+    //console.log(d3.select(this));
     //$elem.find('foreignObject body div.innerlabel').width();
   });
 

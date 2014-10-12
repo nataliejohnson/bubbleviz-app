@@ -38,7 +38,7 @@ function results2xml(results){
 function carrot_fetch_clusters(results, onSuccess, onError){
 	var xml = results2xml(results);
 	if(!results || results.length < 1){
-		if(onSucces && typeof onsuccess == "function"){
+		if(onSuccess && typeof onsuccess == "function"){
 			onSuccess();
 		}
 		return;

@@ -565,7 +565,7 @@ var x = d3.scale.ordinal()
     return d;
   }
 
-  //$("#bar-chart-1").parent().find('.spinning').hide();
+  $("#bar-chart-1").parent().find('.spinning').hide();
 }
 
 // $(function(){

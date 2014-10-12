@@ -19,33 +19,6 @@ var date_data_filter = function (min,max,attr){
 };
 
 
-
-
-/*************************************************
- * GRAPH DRAWING FUNCTIONS
- *************************************************/
-
-var redraw_hourly_graph = function(searches){
-  console.log("[report.js]: redraw_hourly_graph got", searches);
-};
-var redraw_daily_graph = function(searches){
-  console.log("[report.js]: redraw_daily_graph got", searches);
-};
-var redraw_toplinks_graph = function(history){
-  console.log("[report.js]: redraw_toplinks_graph got", history);
-};
-var redraw_cluster_graph = function(results){
-  console.log("[report.js]: redraw_cluster_graph got", results);
-};
-var redraw_influence_graph = function(searches, history, results){
-  console.log("[report.js]: redraw_influence_graph got", searches, history, results);
-};
-/*************************************************/
-
-
-
-
-
 var fetch_clusters = function(searches, onSuccess, onFailure){
   console.log("[report.js]: fetching cluster info for "+searches.length+" searches");
   // handle fetch errors dumbly
@@ -68,12 +41,14 @@ var fetch_clusters = function(searches, onSuccess, onFailure){
 };
 
 /*
- * Filtering logic
+ * Page init
  */
 $(function(){
   var searches = [];
   var history = [];
   var today = new Date();
+
+  spin_all_the_things('.spinning');
 
   $("#dateslider").dateRangeSlider({
     //step:{
@@ -186,7 +161,8 @@ $(function(){
 /*
  * Top links horizontal bars graph
  */
-$(function(){
+var redraw_toplinks_graph = function(history){
+    console.log("[report.js]: redraw_toplinks_graph got", history);
 var m = [30, 10, 10, 30],
     w = 360 - m[1] - m[3],
     h = 280 - m[0] - m[2];
@@ -282,14 +258,15 @@ var data = [
       .attr("class", "y axis")
       .call(yAxis);
 
-});
+};
 
 
 /*
  * Bubble categories chart 
  */
 var bubble_chart_aspect = null;
-var draw_bubble_graph = function() {  
+var redraw_cluster_graph = function(results){
+    console.log("[report.js]: redraw_cluster_graph got", results);
   var bubble_graph_selector = "#bubble-chart";
 
   var pw = $(bubble_graph_selector).parent().width();
@@ -370,11 +347,7 @@ var root =  { "children": [
 d3.select(self.frameElement).style("height", diameter + "px");
 
   /* END bubble chart */
-}
-
-$(function(){
-  draw_bubble_graph();
-});
+};
   
   
   
@@ -382,7 +355,8 @@ $(function(){
   * Hourly breakdown bar chart
   */
 var aspect_hourly_graph = null;
-var draw_hourly_graph = function() {  
+var redraw_hourly_graph = function(searches) {  
+  console.log("[report.js]: redraw_hourly_graph got", searches);
 
   var pw = $("#bar-chart-1").parent().width();
   var ph = $("#bar-chart-1").parent().height();
@@ -563,19 +537,20 @@ var x = d3.scale.ordinal()
   }
 
 }
-$(function(){
-  draw_hourly_graph();
 
-  $(window).resize(function(){
-    draw_hourly_graph();
-  });
-});
+// $(function(){
+//   draw_hourly_graph();
+//   $(window).resize(function(){
+//     draw_hourly_graph();
+//   });
+// });
 
 
 /* 
  * Daily breakdown 
  */
-$(function() {  
+var redraw_daily_graph = function(searches){
+  console.log("[report.js]: redraw_daily_graph got", searches);
    
   var margin = {top: 0, right: 0, bottom: 0, left: 0},
     width = 260 - margin.left - margin.right,
@@ -683,7 +658,7 @@ $(function() {
   }
 
   /* END daily breakdown */
-});
+};
   
   
 
@@ -692,7 +667,8 @@ $(function() {
 /*
  * Pie chart to show ???
  */
-$(function() {
+var redraw_influence_graph = function(searches, history, results){
+  console.log("[report.js]: redraw_influence_graph got", searches, history, results);
   /*  pie 1 */
   var width = 100,
     height = 100,
@@ -747,64 +723,7 @@ $(function() {
         .text(function(d) { return d.data.age; });
   });
 
-}); // end pie 1
-
-/*
- * Pie chart to show ???
- */
-$(function() {
-  /*  pie 2 */
-  var width = 100,
-    height = 100,
-    radius = Math.min(width, height) / 2;
-
-  var color = d3.scale.ordinal()
-      .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-  var arc = d3.svg.arc()
-      .outerRadius(radius - 10)
-      .innerRadius(0);
-
-  var pie = d3.layout.pie()
-      .sort(null)
-      .value(function(d) { return d.population; });
-
-  var svg = d3.select("#pie-2").append("svg")
-      .attr("width", width)
-      .attr("height", height)
-    .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+}; // end pie 1
 
 
-  var data = [
-    {
-      "age":"<5",
-      "population":2704659
-    },
-    {
-      "age":"5-13",
-      "population":4499890
-    }
-  ];
-
-  data.forEach(function(d) {
-    d.population = +d.population;
-
-    var g = svg.selectAll(".arc")
-        .data(pie(data))
-      .enter().append("g")
-        .attr("class", "arc");
-
-    g.append("path")
-        .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.age); });
-
-    g.append("text")
-        .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .text(function(d) { return d.data.age; });
-  });
-
-});//end pie 2
 

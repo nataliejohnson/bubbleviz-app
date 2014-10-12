@@ -275,9 +275,13 @@ $(function(){
       if (scrollTop > (stickyNavTop+5) ){ 
         $(tobparSelector).addClass('sticky');
         $(tobparSelector).find(".folder").slideUp();
+        $("#top-nav").addClass('top-nav-scrolled');
+        $(".inner-middle").addClass('inner-middle-scrolled');
       } else {
         $(tobparSelector).removeClass('sticky'); 
         $(tobparSelector).find(".folder").slideDown();
+        $("#top-nav").removeClass('top-nav-scrolled');
+        $(".inner-middle").removeClass('inner-middle-scrolled');
         $(window).trigger('resize');
       }
   };
@@ -325,7 +329,7 @@ var order_and_filter = function(){
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
-      terms: ".tileview .search-terms", 
+      terms: function(elem){ return $(elem).find('.tileview').find('.search-terms').text().toUpperCase(); },
       personalisation: function(elem){return search_to_personalisation_score($(elem).data('search'));}
     },
     sortAscending: {

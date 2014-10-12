@@ -319,36 +319,7 @@ $(function(){
 });
 
 
-var current_date_filter = null;
-var current_term_filter = null;
 
-var order_and_filter = function(){
-  $("#searches").isotope({
-    layoutMode: 'packery',
-	transitionDuration:'0.8s',
-    filter: combine_filters([current_term_filter, current_date_filter]),
-    getSortData:{
-      timestamp: weigh_by_date,
-      terms: function(elem){ return $(elem).find('.tileview').find('.search-terms').text().toUpperCase(); },
-      personalisation: function(elem){return search_to_personalisation_score($(elem).data('search'));}
-    },
-    sortAscending: {
-      terms: true,
-      timestamp: false,
-      personalisation:false
-    },
-    sortBy:"personalisation"
-  });
-};
-
-var reset_slider_bounds = function(min, max){
-  $("#dateslider").dateRangeSlider({
-    bounds:{
-      min: min,
-      max: max
-    }
-  });
-};
 /*
  * Filtering logic
  */
@@ -437,4 +408,27 @@ $(function(){
 
 });
 
+$(function() {
+  if($(window).width() > 768){
+    // Hide all but first tab content on larger viewports
+    $('.accordion__content:not(:first)').hide();
+    // Activate first tab
+    $('.accordion__title:first-child').addClass('active');
+  } else {
+    
+    // Hide all content items on narrow viewports
+    $('.accordion__content').hide();
+  };
+
+  // Wrap a div around content to create a scrolling container which we're going to use on narrow viewports
+  $( ".accordion__content" ).wrapInner( "<div class='overflow-scrolling'></div>" );
+
+  // The clicking action
+  $('.accordion__title').on('click', function() {
+    $('.accordion__content').hide();
+    $(this).next().show().prev().addClass('active').siblings().removeClass('active');
+    //if slider visible, trigger redraw
+    $('#dateslider').dateRangeSlider('resize');
+  });
+});
 

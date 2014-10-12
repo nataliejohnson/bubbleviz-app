@@ -279,9 +279,10 @@ function build_results_dataset(onDone, onFail){
 
     function _onError(jqXHR, textStatus, errorThrown){
       //alert("Error occured on request: "+ textStatus + ", "+ errorThrown);
-      //if (onFail && (typeof onFail) == "function"){
-        //onFail("Error occured while fetching cluster information");
-      //}
+      if (onFail && (typeof onFail) == "function"){
+        onFail("Error occured while fetching cluster information");
+      }
+      return;
     }
 
     carrot_fetch_clusters(
@@ -414,3 +415,38 @@ function strcmp( a, b ) {
     if((a+'').toLowerCase() < (b+'').toLowerCase()) return -1
     return 0
 }
+
+
+/**
+ * Filtering and ordering...
+ */
+var current_date_filter = null;
+var current_term_filter = null;
+
+var order_and_filter = function(){
+  $("#searches").isotope({
+    layoutMode: 'packery',
+  transitionDuration:'0.8s',
+    filter: combine_filters([current_term_filter, current_date_filter]),
+    getSortData:{
+      timestamp: weigh_by_date,
+      terms: function(elem){ return $(elem).find('.tileview').find('.search-terms').text().toUpperCase(); },
+      personalisation: function(elem){return search_to_personalisation_score($(elem).data('search'));}
+    },
+    sortAscending: {
+      terms: true,
+      timestamp: false,
+      personalisation:false
+    },
+    sortBy:"personalisation"
+  });
+};
+
+var reset_slider_bounds = function(min, max){
+  $("#dateslider").dateRangeSlider({
+    bounds:{
+      min: min,
+      max: max
+    }
+  });
+};

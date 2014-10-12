@@ -7,6 +7,8 @@
       <link rel="stylesheet" href="css/common.css">
       <link rel="stylesheet" href="js/JQRangeSlider-5.7.0/css/iThing-min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
+      
+      <!-- external script -->
       <script src="js/jquery/jquery.min.js"></script>
       <script src="js/jquery-ui-1.11.1/jquery-ui.min.js"></script>
       <script src="js/JQRangeSlider-5.7.0/JQDateRangeSlider-withRuler-min.js"></script>
@@ -19,29 +21,12 @@
       <script src="js/jquery.touchSwipe.min.js"></script>
       <script src="js/isotope.pkgd.min.js"></script>
       <script src="js/packery-mode.pkgd.js"></script>
+      <script src="js/lodash.min.js"></script>
+
+      <!-- our scripts -->
       <script src="src/common.js"></script>
       <script src="src/carrot.js"></script>
       <script src="src/report.js"></script>
-      <script src="src/home-style.js"></script>
-      <script src="src/home.js"></script>
-      <script id="report-template" type="text/x-handlebars-template">
-         <div id="report">
-         	<div id="number-links-personalised">{{personalised_links_number}}</div>
-         	<div id="most-personalised-search">
-         		<span class="term">{{mostPersonalised.term}}</span>
-         		<span class="number-perso">{{mostPersonalised.size}}</span>
-         		<span class="date">{{mostPersonalised.date}}</span>
-         	</div>
-         	<div id="clusters">
-         		{{#each clusters}}
-         			<p><span class="cluster-name">{{name}}</span> <span class="cluster-size">{{size}}</span></p>
-         		{{/each}}
-         	</div>
-         	<div id="search-frequency">
-         		
-         	</div>
-         </div>
-      </script>
       
      <style>
 
@@ -122,12 +107,12 @@ rect {
 }
 
 .accordion__content {
-	border: 0;
-	}
-	
-	.accordion__content {
-	margin: 2em 0 0 -100%;
-	}
+  border: 0;
+  }
+  
+  .accordion__content {
+  margin: 2em 0 0 -100%;
+  }
 </style>
    </head>
    <body>

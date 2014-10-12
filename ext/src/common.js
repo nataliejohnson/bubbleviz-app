@@ -301,6 +301,46 @@ function build_results_dataset(onDone, onFail, filter){
   });
 }
 
+
+function searches_to_categorised_results(searches, onSuccess, onFailure){
+    var results = searches2results(searches); 
+    console.log("searches -> categories")
+    
+    function _onSuccess(data, textStatus, jqXHR){
+      console.log("carrot_fetch success!");
+      // We grab the document ids from carrot to be able to match 
+      // document to cluster, then we tag every document
+      data.clusters.forEach(function(cluster){
+        cluster.documents.forEach(function(docID){
+          results.forEach(function(result){
+            if(docID == result.id){
+              result.category = cluster.phrases[0];
+              result.categoryScore = cluster.score;
+              return;
+            }
+          });
+        });
+      });
+
+      if (onSuccess && (typeof onSuccess) == "function"){
+        onSuccess(results.filter(function(res){return res.category}));
+      }
+    }
+    function _onError(jqXHR, textStatus, errorThrown){
+      console.log("carrot_fetch FAILURE!");
+      //alert("Error occured on request: "+ textStatus + ", "+ errorThrown);
+      if (onFailure && (typeof onFailure) == "function"){
+        onFailure("Error occured while fetching cluster information");
+      }
+      return;
+    }
+    carrot_fetch_clusters(
+      results,
+      _onSuccess, 
+      _onError
+    );
+}
+
 function build_history_dataset(onDone, onFail){
   if(onDone && (typeof onDone) == "function"){
     chrome.history.search({

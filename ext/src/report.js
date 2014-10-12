@@ -1,46 +1,185 @@
+var months = new Array("Jan", "Feb", "Mar", 
+    "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+    "Oct", "Nov", "Dec");
 
-
-var display_data = {
-  startDate: (new Date(2014,01,01)).getTime(),
-  endDate: (new Date()).getTime(),
-
-  personalised_links_number: 456,
-  mostPersonalised: {
-    term: "Kittens",
-    size: 4,
-    date: (new Date()).getTime()
-  },
-
-  clusters: [
-    {name: "Cute creature", size:23},
-    {name: "Engines", size:33},
-    {name: "Fonts", size:45}
-  ],
-
-  view_history: [],
+var date_data_filter = function (min,max,attr){
+  if(!attr){
+    attr = 'timestamp';
+  }
+  var filter = function(item){
+    if (min.getTime() < item[attr] && item[attr] < max.getTime() ){
+      //console.log("true", min, max, search);
+      return true;
+    }else{
+      //console.log("false", min, max, search);
+      return false;
+    }
+  };
+  return filter;
 };
 
 
+
+
+/*************************************************
+ * GRAPH DRAWING FUNCTIONS
+ *************************************************/
+
+var redraw_hourly_graph = function(searches){
+  console.log("[report.js]: redraw_hourly_graph got", searches);
+};
+var redraw_daily_graph = function(searches){
+  console.log("[report.js]: redraw_daily_graph got", searches);
+};
+var redraw_toplinks_graph = function(history){
+  console.log("[report.js]: redraw_toplinks_graph got", history);
+};
+var redraw_cluster_graph = function(results){
+  console.log("[report.js]: redraw_cluster_graph got", results);
+};
+var redraw_influence_graph = function(searches, history, results){
+  console.log("[report.js]: redraw_influence_graph got", searches, history, results);
+};
+/*************************************************/
+
+
+
+
+
+var fetch_clusters = function(searches, onSuccess, onFailure){
+  console.log("[report.js]: fetching cluster info for "+searches.length+" searches");
+  // handle fetch errors dumbly
+  function onFail(msg){ 
+    console.log(msg); alert(msg); 
+  };
+  
+  var _onSuccess = function(results){
+    if(onSuccess && (typeof onSuccess) == "function"){
+      onSuccess(results);
+    }
+  }
+  var _onFailure = function(message){
+    if(onFailure && (typeof onFailure) == "function"){
+      console.log(message); alert(message);
+    }
+  }
+  console.log('Getting categories');
+  searches_to_categorised_results(searches, _onSuccess, _onFailure);
+};
+
 /*
- * Data request and template building
+ * Filtering logic
  */
-$(function(){ 
-  function onFail(msg){ console.log(msg); alert(msg); }
+$(function(){
+  var searches = [];
+  var history = [];
+  var today = new Date();
 
-  build_results_dataset(function(results){
-    console.log("Results dataset built...", results);
-    build_history_dataset(function(historyItems){
-      console.log(
-        "Fetched all dataset. ready for reporting and rendering: ", 
-        {results: results, history: historyItems}
-      );
-    }, onFail);
-  }, onFail);
+  $("#dateslider").dateRangeSlider({
+    //step:{
+    //  days: 1
+    //},
+    valueLabels:"show",
+    durationIn: 1000,
+    durationOut: 1000,
+    defaultValues: {
+      max: today,
+      min: (new Date()).setDate(today.getDate()-7)
+    },
+    bounds:{
+      min: (new Date()).setMonth(today.getMonth()-3),
+      max: new Date()
+    },
+    scales: [{
+      first: function(value){ return value; },
+      end: function(value) {return new Date(); },
+      next: function(value){
+        var next = new Date(value);
+        return new Date(next.setMonth(value.getMonth() + 1));
+      },
+      label: function(){return "";},
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("month-ticker");
+      }
+    },
+    {
+      first: function(value){ return value; },
+      end: function(value) {return new Date(); },
+      next: function(value){
+        var next = new Date(value);
+        next.setDate(value.getDate() + 1);
+        return next
+      },
+      label: function(){return "";},
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("date-ticker");
+      }
+    }],
+    formatter:function(val){
+        var days = val.getDate(),
+          month = val.getMonth(),
+          year = val.getFullYear();
+        if(today.getDate() == days && today.getMonth() == month &&today.getFullYear() == year){
+          return "Today";
+        }else{
+          return days + " " + months[month];// + " " + year;
+        }
+      }
+  });
 
-  //var template_text = $("#report-template").html();
-  //var report_template = Handlebars.compile(template_text);
-  //var html = report_template(display_data);
-  //$('body').append(html);
+  get_searches(function(srchs){
+    console.log("Got "+srchs.length+" searches from chrome.")
+    searches = srchs;
+
+    var timestamps = searches.map(function(search){return search.timestamp;})
+    var maxdate = new Date(Math.max.apply(null, timestamps));
+    var mindate = new Date(Math.min.apply(null, timestamps))
+    reset_slider_bounds(mindate, maxdate);
+
+    console.log("We initialise our report with "+searches.length+" searches");
+    // Initialise the graphs based on the slider's default range.
+    var vals = $('#dateslider').dateRangeSlider('values');
+
+    var filtered_searches = searches.filter(date_data_filter(vals.min, vals.max));
+
+    // These graphs only need the searches to be drawn
+    
+    redraw_daily_graph(filtered_searches);
+    redraw_hourly_graph(filtered_searches);
+
+    build_history_dataset(function(hstry){
+      console.log("Got "+hstry.length+" history items from chrome.");
+      history = hstry;
+
+      var filtered_history = history.filter(date_data_filter(vals.min,vals.max,'lastVisitTime'));
+      // these graphs need history too :)
+      redraw_toplinks_graph(filtered_history);
+      redraw_influence_graph(filtered_searches, filtered_history, searches2results(filtered_searches));
+      
+      fetch_clusters(filtered_searches, function(results){ //Success!
+        //these graphs need the clustered results
+        redraw_cluster_graph(results);
+      }, function(msg){ //Error!
+          console.error(msg); alert(msg);
+      });
+
+    });
+  });
+
+  $("#dateslider").on('valuesChanging', function(ev, data){
+    var max = data.values.max;
+    var min = data.values.min;
+    if(min.getDate() == max.getDate() && min.getMonth() == max.getMonth() && min.getFullYear() == max.getFullYear()){
+        min.setDate(min.getDate()-1);
+        //$('#dateslider').dateRangeSlider('values', min,max);
+    }
+    fetch_clusters(searches.filter(date_data_filter(min, max)));
+    redraw_graphs(searches.filter(date_data_filter(min,max)));
+  });
+
+
+
+  
 });
 
 

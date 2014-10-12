@@ -246,14 +246,21 @@ function get_searches(onSuccess){
     }
 
  */
-function build_results_dataset(onDone, onFail){
+function build_results_dataset(onDone, onFail, filter){
   //console.log("Loading raw dataset");
   chrome.storage.local.get("searches", function(store){
     //console.log("-> Loaded searches");
-    
-    var results = searches2results(store.searches);
+
+    var results = [];
+    if(filter && typeof filter === "function"){
+      console.log("filtering before clusting...");
+      results = searches2results(store.searches.filter(filter));
+    } else {
+      console.log("getting everything...");
+      results = searches2results(store.searches);
+    }
+
     //console.log("-> Converted searches to results");
-    
 
     function _onSuccess(data, textStatus, jqXHR){
       //console.log("-> Loaded category clusters", data);

@@ -275,12 +275,12 @@ $(function(){
       if (scrollTop > (stickyNavTop+5) ){ 
         $(tobparSelector).addClass('sticky');
         $(tobparSelector).find(".folder").slideUp();
-        $("#top-nav").addClass('top-nav-scrolled');
+        $("#top-nav").css('border-bottom','1px solid #ddd');
         $(".inner-middle").addClass('inner-middle-scrolled');
       } else {
         $(tobparSelector).removeClass('sticky'); 
         $(tobparSelector).find(".folder").slideDown();
-        $("#top-nav").removeClass('top-nav-scrolled');
+        $("#top-nav").css('border-bottom','1px solid transparent');
         $(".inner-middle").removeClass('inner-middle-scrolled');
         $(window).trigger('resize');
       }

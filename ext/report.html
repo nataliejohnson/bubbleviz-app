@@ -17,11 +17,12 @@
        <script src="js/jquery.nicescroll.js"></script>
       <script src="js/spin.min.js"></script>
       <script src="js/d3.v3.js"></script>
-      <script src="js/d3-tip.js"></script>
+       <script src="js/d3-tip.js"></script>
+      <script src="js/d4.js"></script>
+     
       <script src="js/jquery.easing.min.js"></script>
       <script src="js/jquery.touchSwipe.min.js"></script>
-      <script src="js/isotope.pkgd.min.js"></script>
-      <script src="js/packery-mode.pkgd.js"></script>
+      <script src="js/masonry.pkgd.min.js"></script>
       <script src="js/lodash.min.js"></script>
 
       <!-- our scripts -->
@@ -56,19 +57,20 @@ rect {
 }
 
 .y.axis path {
+	
 }
 
 
 
 .chart rect {
-  fill: steelblue;
+  fill: #dddddd;
   width: 100%;
 }
 
 
 
 .chart text {
-  font: 10px sans-serif;
+  display: none;
 }
 
 .axis line {
@@ -114,6 +116,29 @@ rect {
   .accordion__content {
   margin: 2em 0 0 -100%;
   }
+  
+  svg.d4 {
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size:11px;
+}
+.d4 .tick text {
+    font-size: 9px;
+    fill: #999;
+    shape-rendering: crispEdges;
+}
+
+.d4 .axis .domain, .d4 .axis .tick line {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.d4 .line, .d4 path, .d4 .connectors line {
+    fill: none;
+    stroke: #222;
+    stroke-width: 1px;
+}
 </style>
    </head>
    <body>
@@ -126,7 +151,7 @@ rect {
                <div class="inner">
                   <dl class="accordion">
                      
-                     <dt class="accordion__title">Dashboard</dt>
+                     <dt class="report__accordion__title">Dashboard</dt>
                      <dd class="accordion__content">
                         <div class="dateslider">
                            <div id="dateslider"></div>
@@ -140,9 +165,11 @@ rect {
             </div>
          </div>
       </div>
+
+
       
 <div class="masonry">
-  
+  <div class="grid-sizer"></div>
   <div class="item">
     <div class="report-line">
       <p class="report-headings"> Hourly Breakdown </p>
@@ -161,37 +188,39 @@ rect {
       <p class="report-headings"> Daily Breakdown </p>
     </div>
     <div class="chart-container"> 
-      <div id="bar-chart-2" class="chartbox" style="display: none">
+      <div id="bar-chart-2" class="chartbox">
         
       </div>
     </div>
   </div>
   
   
-  <div class="item w2">
-  <div class="report-line"></div>
-  <p class="report-headings"> Stats </p>
-  <div id="pie-1"></div>
-  <div id="pie-2"></div>
-  </div>
-  
-  <div class="item w3 h4">
-    <div class="report-line">
-      <p class="report-headings"> Top Categories </p>
+  <div class="item w2 h4">
+ <div class="report-line">
+      <p class="report-headings"> Top Categories</p>
     </div>
-     <div class="chart-container"> 
+   <div class="chart-container"> 
       <div id="bubble-chart" class="chartbox"></div>
     </div>
+ 
+  </div>
+  
+  <div class="item w3">
+    <div class="report-line">
+      <p class="report-headings"> Stats </p>
+    </div>
+     <div id="pie-1"></div>
   </div>
   
   <div class="item w4 h2">
-  <div class="report-line"></div>
+  <div class="report-line">
   <p class="report-headings"> Top Links </p>
-   <div id="top-links"></div>
+  </div>
+   <div id="top-links" class="top-links"></div>
   </div>
  
   </div>
 
-      
+   
    </body>
 </html>

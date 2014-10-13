@@ -1,3 +1,12 @@
+$(function(){
+	  var container = document.querySelector('.masonry');
+var msnry = new Masonry( container, {
+  // options
+  "columnWidth": ".grid-sizer",
+  itemSelector: '.item'
+});
+});
+
 var months = new Array("Jan", "Feb", "Mar", 
     "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
     "Oct", "Nov", "Dec");
@@ -192,101 +201,38 @@ $(function(){
  */
 var redraw_toplinks_graph = function(history){
     console.log("[report.js]: redraw_toplinks_graph got", history);
-var m = [30, 10, 10, 30],
-    w = 360 - m[1] - m[3],
-    h = 280 - m[0] - m[2];
 
-var format = d3.format(",.0f");
 
-var x = d3.scale.linear().range([0, w]),
-    y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
+    var data = [
+      { y: '2010', x:10 },
+      { y: '2011', x:20 },
+      { y: '2012', x:30 },
+      { y: '2013', x:40 },
+      { y: '2014', x:50 },
+	  { y: '2015', x:10 },
+      { y: '2016', x:20 },
+      { y: '2017', x:30 },
+      { y: '2018', x:40 },
+      { y: '2019', x:50 },
+    ];
+  var chart = d4.charts.row();
+  chart.outerWidth($('#top-links').width())
+    .margin({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 160
+    })
+  chart.mixout('xAxis')
+  chart.mixout('yAxis')
+  chart.using('bars', function(bar){
+    bar.rx(4);
+	
+  });
 
-var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
-    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
-
-var svg = d3.select("#top-links").append("svg")
-    .attr("width", '100%')
-    .attr("height", '440')
-  .append("g")
-    .attr("transform", "translate(" + m[0] + "," + m[0] + ")");
-var data = [
-  {
-    "name":"AL",
-    "value":4708708
-  },
-  {
-    "name":"AK",
-    "value":698473
-  },
-  {
-    "name":"AZ",
-    "value":6595778
-  },
-  {
-    "name":"AR",
-    "value":2889450
-  },
-  {
-    "name":"CA",
-    "value":36961664
-  },
-  {
-    "name":"CO",
-    "value":5024748
-  },
-  {
-    "name":"CT",
-    "value":3518288
-  },
-  {
-    "name":"DE",
-    "value":885122
-  },
-  {
-    "name":"DC",
-    "value":599657
-  },
-  {
-    "name":"FL",
-    "value":18537969
-  }
-]
-
-  // Parse numbers, and sort by value.
-  data.forEach(function(d) { d.value = +d.value; });
-  data.sort(function(a, b) { return b.value - a.value; });
-
-  // Set the scale domain.
-  x.domain([0, d3.max(data, function(d) { return d.value; })]);
-  y.domain(data.map(function(d) { return d.name; }));
-
-  var bar = svg.selectAll("g.bar")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
-
-  bar.append("rect")
-      .attr("width", function(d) { return x(d.value); })
-      .attr("height", '17px');
-
-  bar.append("text")
-      .attr("class", "value")
-      .attr("x", function(d) { return x(d.value); })
-      .attr("y", y.rangeBand() / 2)
-      .attr("dx", -3)
-      .attr("dy", ".35em")
-      .attr("text-anchor", "end")
-      .text(function(d) { return format(d.value); });
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
-
+  d3.select('#top-links')
+  .datum(data)
+  .call(chart);
 };
 
 
@@ -306,7 +252,7 @@ var redraw_cluster_graph = function(results){
   }
 
    /* bubble chart */
-   var diameter = 450,
+   var diameter = 550,
     format = d3.format(",d"),
     color = d3.scale.category20c();
 
@@ -354,7 +300,7 @@ var root =  { "children": [
 
   node.append("circle")
       .attr("r", function(d) { return d.r; })
-      .style("fill", function(d) { return color(d.packageName); })
+      .style("fill", "#3666c9" )
       
 
   node.append('foreignObject')
@@ -387,183 +333,34 @@ var aspect_hourly_graph = null;
 var redraw_hourly_graph = function(searches) {  
   console.log("[report.js]: redraw_hourly_graph got", searches);
 
-  var pw = $("#bar-chart-1").parent().width();
-  var ph = $("#bar-chart-1").parent().height();
-  if(!aspect_hourly_graph){
-    aspect_hourly_graph = pw / ph;
+var graphData = [];
+
+  for (var i = 24; i > 0; i--) {
+    graphData.push({
+      x: i,
+      y: i
+    });
   }
-  
-  var margin = {top: 0, right: 0, bottom: 30, left:0};
-  var width = pw;
-  var height = pw/aspect_hourly_graph;
 
-  var formatPercent = d3.format(".0%");
-
-  var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d.letter+ "<br/> Searches: <span style='color:red'>" + d.frequency + "</span>";
+  var chart = d4.charts.column()
+   .mixout('yAxis')
+  .outerWidth($('#bar-chart-1').width())
+    .margin({
+      left: 11,
+      top: 0,
+      right: 11,
+      bottom: 240
     })
-
-
-  $("#bar-chart-1 svg").remove();
-  var svg = d3.select("#bar-chart-1").append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      
-
-  svg.call(tip);
-
-  var data = ([{  
-     "letter":"1am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"2am",
-     "frequency":0.06749
-  },
-  {  
-     "letter":"3am",
-     "frequency":0.06749
-  },
-  {  
-     "letter":"4am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"5am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"6am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"7am",
-     "frequency":0.06094
-  },
-  {  
-     "letter":"8am",
-     "frequency":0.06973
-  },
-  {  
-     "letter":"9am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"10am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"11am",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"12pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"1pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"2pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"3pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"4pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"5pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"6pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"7pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"8pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"9pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"10pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"11pm",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"12pm",
-     "frequency":0.12702
-  }])
-
-var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
-
-  var y = d3.scale.linear()
-      .range([height-margin.bottom, 0]);
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .tickFormat(formatPercent);
+	
+	chart.using('bars', function(bar){
+     bar.rx(2);
+	bar.ry(2);
+	
+  });
   
-  x.domain(data.map(function(d) { return d.letter; }));
-  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + (height-margin.bottom) + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("span")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Frequency");
-
-  var bars = svg.append("g");
-    
-  bars.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.letter); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("height", function(d) { return height - margin.bottom - y(d.frequency); })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
-
-
-
-  function type(d) {
-    d.frequency = +d.frequency;
-    return d;
-  }
+  d3.select('#bar-chart-1')
+    .datum(graphData)
+    .call(chart);
 
   $("#bar-chart-1").parent().find('.spinning').hide();
 }
@@ -582,110 +379,33 @@ var x = d3.scale.ordinal()
 var redraw_daily_graph = function(searches){
   console.log("[report.js]: redraw_daily_graph got", searches);
    
-  var margin = {top: 0, right: 0, bottom: 0, left: 0},
-    width = 260 - margin.left - margin.right,
-    height = 270 - margin.top - margin.bottom;
+  var graphData = [];
 
-  var formatPercent = d3.format(".0%");
-
-  var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
-
-  var y = d3.scale.linear()
-      .range([height, 0]);
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .tickFormat(formatPercent);
-
-  var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "Searches: <span style='color:red'>" + d.frequency + "</span>";
-    })
-    
-
-  var svg = d3.select("#bar-chart-2").append("svg")
-      .attr("width", '100%')
-      .attr("height", '100%')
-    .attr('viewBox','0 0 '+Math.min(width,height)+' '+Math.min(width,height))
-      .attr('preserveAspectRatio','xMinYMin')
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  svg.call(tip);
-
-  var data = ([{  
-     "letter":"S",
-     "frequency":0.08167
-  },
-  {  
-     "letter":"M",
-     "frequency":0.01492
-  },
-  {  
-     "letter":"TU",
-     "frequency":0.0278
-  },
-  {  
-     "letter":"W",
-     "frequency":0.04253
-  },
-  {  
-     "letter":"TH",
-     "frequency":0.12702
-  },
-  {  
-     "letter":"F",
-     "frequency":0.02288
-  },
-  {  
-     "letter":"SA",
-     "frequency":0.02022
-
-  }])
-  
-  x.domain(data.map(function(d) { return d.letter; }));
-  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("span")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Frequency");
-
-  svg.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.letter); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("height", function(d) { return height - y(d.frequency); })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
-
-
-
-  function type(d) {
-    d.frequency = +d.frequency;
-    return d;
+  for (var i = 7; i > 0; i--) {
+    graphData.push({
+      x: i,
+      y: i
+    });
   }
+
+  var chart = d4.charts.column()
+  .mixout('yAxis')
+  .outerWidth($('#bar-chart-2').width())
+    .margin({
+      left: 11,
+      top: 0,
+      right: 11,
+      bottom: 240
+    })
+	
+	chart.using('bars', function(bar){
+    bar.rx(2);
+	bar.ry(2);
+	
+  });
+  d3.select('#bar-chart-2')
+    .datum(graphData)
+    .call(chart);
 
   /* END daily breakdown */
 };

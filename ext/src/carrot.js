@@ -36,13 +36,12 @@ function results2xml(results){
 
 
 function carrot_fetch_clusters(results, onSuccess, onError){
-	console.log("");
 	// Carrot2 struggles to cluster many results
     // in reasoanble time and is timed out by Heroku itself
     // It's also really bad UX to wait that long, so we
     // randomly sample the results set for cluster info
     // it's not perfect, but it's a start
-	results = _(results).shuffle().take(2000).value();
+	results = _(results).shuffle().take(1000).value();
 
 	var xml = results2xml(results);
 	if(!results || results.length < 1){

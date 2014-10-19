@@ -162,9 +162,9 @@ $(function(){
       redraw_toplinks_graph(filtered_history);
       redraw_influence_graph(filtered_searches, filtered_history, searches2results(filtered_searches));
       
-      fetch_clusters(filtered_searches, function(results){ //Success!
+      fetch_clusters(filtered_searches, function(annotated_results){ //Success!
         //these graphs need the clustered results
-        redraw_cluster_graph(results);
+        redraw_cluster_graph(annotated_results);
       }, function(msg){ //Error!
           console.error(msg); alert(msg);
       });
@@ -172,16 +172,35 @@ $(function(){
     });
   });
 
+
+  var max;
+  var min;
+  var threshold_ms = 1000;
+  var check_every_ms = 1000;
+  var lastDragged = new Date();
+  var dirty = false;
+  var filtered_searches;
+  var filtered_history;
+
+  var trigger_redraw_clusters = function(){
+    // we need to call carrot for this one
+    fetch_clusters(filtered_searches, function(annotated_results){ //Success!
+      //these graphs need the clustered results
+      redraw_cluster_graph(annotated_results);
+    }, function(msg){ //Error!
+        console.error(msg); alert(msg);
+    });
+  };
+
   $("#dateslider").on('valuesChanging', function(ev, data){
-    var max = data.values.max;
-    var min = data.values.min;
+    max = data.values.max;
+    min = data.values.min;
     if(min.getDate() == max.getDate() && min.getMonth() == max.getMonth() && min.getFullYear() == max.getFullYear()){
         min.setDate(min.getDate()-1);
         //$('#dateslider').dateRangeSlider('values', min,max);
     }
-
-    var filtered_searches = searches.filter(date_data_filter(min, max));
-    var filtered_history = history.filter(date_data_filter(min,max,'lastVisitTime'));
+    filtered_searches = searches.filter(date_data_filter(min, max));
+    filtered_history = history.filter(date_data_filter(min,max,'lastVisitTime'));
 
     // We don't need to re-fetch the data for these.
     redraw_daily_graph(filtered_searches);
@@ -189,16 +208,24 @@ $(function(){
     redraw_toplinks_graph(filtered_history);
     redraw_influence_graph(filtered_searches, filtered_history, searches2results(filtered_searches));
 
-    // we need to call carrot for this one
-    fetch_clusters(filtered_searches, function(results){ //Success!
-      //these graphs need the clustered results
-      redraw_cluster_graph(results);
-    }, function(msg){ //Error!
-        console.error(msg); alert(msg);
-    });
-    
+    //special treatment for bubble chart that requires carrot fetching...
+    if($("#bubble-chart").has('div.opacity-overlay').length <= 0){
+      $("#bubble-chart").append($('<div>').addClass('opacity-overlay'));
+      $("#bubble-chart").parent().find('.spinning').show();
+    }
+
+    lastDragged = new Date();
+    dirty = true;
   });
 
+  function loop(){
+    var now = new Date();
+    if(dirty && now - lastDragged > threshold_ms){
+      trigger_redraw_clusters();
+      dirty = false;
+    }
+  }
+  setInterval(loop, check_every_ms);
 
 
   
@@ -223,20 +250,8 @@ var redraw_toplinks_graph = function(history){
     }).sortBy(function(e){
       return -e.x;
     }).take(10).reverse().value();
-    console.log(data);  
+    //console.log(data);  
 
-    // var data = [
-    //   { y: 'google.com', x:10 },
-    //   { y: 'Hello.com', x:20 },
-    //   { y: 'ffffound.com', x:30 },
-    //   { y: 'siteinspire.com', x:40 },
-    //   { y: 'nataliejohnson.com', x:50 },
-    //   { y: 'foobar.com', x:10 },
-    //   { y: 'yahoo.com', x:20 },
-    //   { y: '2017', x:30 },
-    //   { y: 'fractallambda.com', x:40 },
-    //   { y: 'stackoverflow.com', x:50 },
-    // ];
   var chart = d4.charts.row();
   
   chart.outerWidth($(selector).width())
@@ -264,8 +279,6 @@ var redraw_toplinks_graph = function(history){
     .call(chart);
 
 
-
-
   $(selector).parent().find('.spinning').hide();
 };
 
@@ -274,9 +287,23 @@ var redraw_toplinks_graph = function(history){
  * Bubble categories chart 
  */
 var bubble_chart_aspect = null;
-var redraw_cluster_graph = function(results){
-  console.log("[report.js]: redraw_cluster_graph got "+results.length+ "results ");
+var redraw_cluster_graph = function(annotated_results){
+  console.log("[report.js]: redraw_cluster_graph got "+annotated_results.length+ " results ");
+  
+  var clusters = _.groupBy(annotated_results, function(annotated_result){
+    return annotated_result.category;
+  }); 
+  //console.log(clusters);
+
+  var children = _(clusters).map(function(results, category){
+    return {className:category, value:results.length }
+  }).sortBy(function(topic){
+    return topic.value
+  }).reverse().take(11).tail(1).shuffle().value();
+  //console.log(children);
+
   var bubble_graph_selector = "#bubble-chart";
+  $(bubble_graph_selector).find("svg").remove();
 
   var pw = $(bubble_graph_selector).parent().width();
   var ph = $(bubble_graph_selector).parent().height();
@@ -295,25 +322,13 @@ var redraw_cluster_graph = function(results){
       .size([pw, ph])
       .padding(40);
 
-var svg = d3.select(bubble_graph_selector).append("svg")
-    .attr("width", '100%')
-    .attr("height",'100%')
-    .attr("class", "bubble");
-  
-var root =  { "children": [
-      {"className": "perfectmasonry ", "value": 2000},
-      {"className": "Agglomerative Cluster", "value": 3938},
-      {"className": "Community Structure", "value": 3812},
-      {"className": "Hierarchical Cluster", "value": 6714},
-      {"className": "Merge Edge", "value": 743},
-      {"className": "Agglomerative Cluster", "value": 4343},
-      {"className": "Community Structure", "value": 4812},
-      {"className": "Hierarchical Cluster", "value": 5714},
-      {"className": "Merge Edge", "value": 143},
-      {"className": "Community Structure", "value": 6812},
-      {"className": "Hierarchical Cluster", "value": 714}
-     ]
-    };
+  var svg = d3.select(bubble_graph_selector).append("svg")
+      .attr("width", '100%')
+      .attr("height",'100%')
+      .attr("class", "bubble");
+    
+  var root =  { "children": children};
+
   var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
@@ -354,7 +369,8 @@ var root =  { "children": [
   });
 
 d3.select(self.frameElement).style("height", diameter + "px");
-
+  $(bubble_graph_selector).parent().find('.spinning').hide();
+  $("#bubble-chart").find("div.opacity-overlay").remove();
   /* END bubble chart */
 };
   
@@ -536,18 +552,12 @@ function urlIsSearchUrl (url){
 var redraw_influence_graph = function(searches, history, results){
   console.log("[report.js]: redraw_influence_graph got "+searches.length+" searches "+ history.length+ " history items "+results.length+" results");
   
-  // pie one - links from search vs all history links
-  // pie two - links from search promoted vs links from search neutral
-
   var indexedHistory = history2indexedHistory(history);
 
   var number_of_history_items = _.size(indexedHistory);
 
   var history_items_from_searches = 0;
   
-  
-
-
   var uniq_results = _(results).reduce(function(accum, result){
       var resulthost;
       //console.log(accum,result);
@@ -621,7 +631,7 @@ var redraw_influence_graph = function(searches, history, results){
   .datum(pie(search_v_history))
   .call(chart); 
 
-
+  $("#links-visited-num").text(number_of_history_items);
 
 
   var promoted_links = 0;
@@ -655,10 +665,17 @@ var redraw_influence_graph = function(searches, history, results){
     { category: "Neutral", value: neutral_links},
     { category: "Unique", value: unique_links},
   ];
+  var total_links = promoted_links+demoted_links+neutral_links+unique_links;
 
   d3.select('#pie2')
   .datum(pie(search_v_search))
   .call(chart);
+
+  $("#promoted-percent").text(""+Math.round((promoted_links/total_links)*100)+"%");
+  $("#demoted-percent").text(""+Math.round((demoted_links/total_links)*100)+"%");
+  $("#neutral-percent").text(""+Math.round((neutral_links/total_links)*100)+"%");
+  $("#unique-percent").text(""+Math.round((unique_links/total_links)*100)+"%");
+  $("#total-results").text(""+total_links);
 
 }; // end pie 1
 
@@ -679,8 +696,6 @@ $(function(){
   hasher.changed.add(handleNewHash);
   hasher.initialized.add(handleNewHash);
   hasher.init();
-
-
 });
 
 

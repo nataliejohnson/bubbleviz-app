@@ -1,11 +1,4 @@
-$(function(){
-  var container = document.querySelector('.masonry');
-  var msnry = new Masonry( container, {
-    // options
-    "columnWidth": ".grid-sizer",
-    itemSelector: '.item'
-  });
-});
+
 
 var months = ["Jan", "Feb", "Mar", 
     "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
@@ -224,12 +217,16 @@ var redraw_toplinks_graph = function(history){
     $(selector).parent().find('.spinning').show();
 
     var indexedHistory = _.reduce(history, function(indexedHistory, historyItem){
-      var host = url2host(historyItem.url)
-      if(host in indexedHistory){
-        indexedHistory[host] += 1;
+      var parser = document.createElement('a');
+      parser.href = historyItem.url;
+      var tld = parser.hostname;
+
+      if(tld in indexedHistory){
+        indexedHistory[tld] += 1;
       }else{
-        indexedHistory[host] = 1;
+        indexedHistory[tld] = 1;
       }
+
       return indexedHistory;
     }, {});
 
@@ -240,6 +237,18 @@ var redraw_toplinks_graph = function(history){
     }).take(10).reverse().value();
     console.log(data);  
 
+    // var data = [
+    //   { y: 'google.com', x:10 },
+    //   { y: 'Hello.com', x:20 },
+    //   { y: 'ffffound.com', x:30 },
+    //   { y: 'siteinspire.com', x:40 },
+    //   { y: 'nataliejohnson.com', x:50 },
+    //   { y: 'foobar.com', x:10 },
+    //   { y: 'yahoo.com', x:20 },
+    //   { y: '2017', x:30 },
+    //   { y: 'fractallambda.com', x:40 },
+    //   { y: 'stackoverflow.com', x:50 },
+    // ];
   var chart = d4.charts.row();
   
   chart.outerWidth($(selector).width())
@@ -265,6 +274,9 @@ var redraw_toplinks_graph = function(history){
   d3.select(selector)
     .datum(data)
     .call(chart);
+
+
+
 
   $(selector).parent().find('.spinning').hide();
 };
@@ -523,95 +535,68 @@ var redraw_daily_graph = function(searches){
   
 
 
+
 /*
-  We want to show as text:
-  + Total number of searches made
-  + Total number of results shown to the user
-  + Total number of links visited in the period
- We want to show relative sizes between:
-  + Number of links visited
-  + Number of links visited due to a search
-  + Number of links visited due to personalisation
- Another way to say this is:
- 
-  + links visited organically / links visited via google search
- 
- Of those links visited via google search:
- 
-  + links visisted from neutral search result
-  + links visited from personalised search results
-*/
+ * Pie chart to show ???
+ */
 var redraw_influence_graph = function(searches, history, results){
   console.log("[report.js]: redraw_influence_graph got "+searches.length+" searches "+ history.length+ " history items "+results.length+" results");
-  console.log(searches);
-  conso1111le.log(searches2results(searches));
-  var resultIndex = _.reduce(searches2results(searches), function(resultIndex, result){
-    resultIndex[url2host(result.url)] = result.category;
-    return resultIndex;
-  }, {});
-
-  var historyIndex = _.reduce(history, function(indexedHistory, historyItem){
-
-    indexedHistory[url2host(historyItem.url)] = 0;
-    return indexedHistory;
-  }, {});
+  
 
 
+  var generateData = function() {
+    var data = [];
+    var names = ['Clay Hauck', 'Diego Hickle'
+    ],
+      pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) {
+          return d.unitsSold;
+        });
+    d4.each(names, function(name) {
+      data.push({
+        unitsSold: Math.max(10, Math.random() * 100),
+        salesman: name
+      });
+    });
+    return pie(data);
+  };
+
+  var chart = d4.charts.donut()
+    .outerWidth($('#pie').width())
+    .margin({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0
+    })
+    .radius(function() {
+      return this.width / 8;
+    })
+    .arcWidth(0)
+    .using('arcLabels', function(labels) {
+      labels.text(function(d) {
+        return d.data.salesman;
+      })
+    })
+    .using('arcs', function(slices) {
+      slices.key(function(d) {
+        return d.data.salesman;
+      });
+    });
 
 
-  /*  pie 1 */
-  var width = 100,
-    height = 100,
-    radius = Math.min(width, height) / 2;
+  var redraw = function() {
+    var data = generateData();
+    d3.select('#pie')
+      .datum(data)
+      .call(chart);
+  };
+  (function loop() {
+    redraw();
+    setTimeout(loop, 4500);
+  })();
 
-  var color = d3.scale.ordinal()
-      .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-  var arc = d3.svg.arc()
-      .outerRadius(radius - 10)
-      .innerRadius(0);
-
-  var pie = d3.layout.pie()
-      .sort(null)
-      .value(function(d) { return d.population; });
-
-  var svg = d3.select("#pie-1").append("svg")
-      .attr("width", width)
-      .attr("height", height)
-    .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-
-  var data = [
-    {
-      "age":"<5",
-      "population":2704659
-    },
-    {
-      "age":"5-13",
-      "population":4499890
-    }
-  ];
-
-  data.forEach(function(d) {
-    d.population = +d.population;
-
-
-    var g = svg.selectAll(".arc")
-        .data(pie(data))
-      .enter().append("g")
-        .attr("class", "arc");
-
-    g.append("path")
-        .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.age); });
-
-    g.append("text")
-        .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .text(function(d) { return d.data.age; });
-  });
 
 }; // end pie 1
 

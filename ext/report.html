@@ -5,6 +5,7 @@
       <link rel="stylesheet" href="css/animate.min.css">
       <link rel="stylesheet" href="css/normalize.css">
       <link rel="stylesheet" href="css/common.css">
+      <link rel="stylesheet" type="text/css" media="screen" href="css/liquid-slider.css">
       <link rel="stylesheet" href="js/JQRangeSlider-5.7.0/css/iThing-min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
       
@@ -14,14 +15,12 @@
       <script src="js/JQRangeSlider-5.7.0/JQDateRangeSlider-withRuler-min.js"></script>
       <script src="js/XMLWriter-1.0.0.js"></script>
       <script src="js/handlebars-v1.3.0.js"></script>
-       <script src="js/jquery.nicescroll.js"></script>
       <script src="js/spin.min.js"></script>
       <script src="js/d3.v3.js"></script>
        <script src="js/d3-tip.js"></script>
       <script src="js/d4.js"></script>
      
-      <script src="js/jquery.easing.min.js"></script>
-      <script src="js/jquery.touchSwipe.min.js"></script>
+ 
       <script src="js/masonry.pkgd.min.js"></script>
       <script src="js/lodash.min.js"></script>
 
@@ -50,7 +49,7 @@ rect {
 }
 
 .bar:hover {
-  fill: #dddddd;
+  fill: #ffccff;
 }
 
 .x.axis path {
@@ -120,27 +119,86 @@ rect {
   }
   
   svg.d4 {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: "Plain-Medium";
   font-size:11px;
 }
 .d4 .tick text {
-    font-size: 9px;
-    fill: #999;
+    font-size: 16px;
+    fill: #444;
     shape-rendering: crispEdges;
 }
+
+.barLabels {
+    font-size: 16px;
+	font-family: "Plain-Medium";
+    fill: #444;
+	display: block;
+	background-color: #ffccff;
+	
+}
+
+
 
 .d4 .axis .domain, .d4 .axis .tick line {
   fill: none;
   stroke: #999;
   stroke-width: 1px;
+  font-size: 16px;
   shape-rendering: crispEdges;
 }
 
 .d4 .line, .d4 path, .d4 .connectors line {
     fill: none;
-    stroke: #222;
-    stroke-width: 1px;
+    /*stroke: #222;
+    stroke-width: 9px;*/}
+
+.title {
+	display: none;
+	}
+	
+	.arcs .series0 {
+		stroke: #ffccff;
+		stroke-width: 3px;
+		}
+		
+		.arcs .series1 {
+		stroke: red;
+		stroke-width: 9px;
+		}
+		
+		.dateslider {
+max-width: 940px;
+margin-right: auto;
+margin-left: auto;
+background-color: white;
+padding-left: 60px;
+padding-right: 60px;
+border-radius: 2px;
 }
+
+.folder {
+	background-color: #f4f4f4;
+	padding-top: 32px;
+	}
+	
+	#top-nav {
+		background-color: #f4f4f4;
+		border: none;
+		}
+		
+		.header {
+			padding-bottom: 23px;
+			}
+			
+
+			
+			.report-bottom {
+				width: 940px;
+				margin-left:auto;
+				margin-right:auto;
+				height: 1px;
+				background-color: #656565;
+				}
 </style>
    </head>
    <body>
@@ -148,84 +206,103 @@ rect {
          <div id="top-nav">
             <div class="inner-middle"><a href="home.html">Persanalysed</a> | <a href="report.html">Report</a> | <a href="options.html">Options</a></div>
          </div>
+         
          <div class="folder">
-            <div class="filtering">
-               <div class="inner">
-                  <dl class="accordion">
-                     
-                     <dt class="report__accordion__title">Dashboard</dt>
-                     <dd class="accordion__content">
-                        <div class="dateslider">
+            
+  
+        <header id="masthead" class="header" role="banner">
+        <nav id="site-navigation" class="container navigation" role="navigation">
+        <h1 class="menu-toggle">Menu</h1>
+        <ul id="main-menu" class="menu">
+          <li class="menu-item"><a href="#breakdown" data-liquidslider-ref="slider-id">Breakdown</a></li>
+          <li class="menu-item"><a href="#toplinks" data-liquidslider-ref="slider-id">Top Links</a></li>
+          <li class="menu-item"><a href="#persanalysation" data-liquidslider-ref="slider-id">Persanalysation</a></li>
+          <li class="menu-item"><a href="#topcategories" data-liquidslider-ref="slider-id">Top Categories</a></li>
+          <!--li class="menu-item"><a href="#right" class="right-btn" data-liquidslider-ref="slider-id">&#187;</a></li-->
+        </ul>
+      </nav>
+      </header>
+      
+      <div id="profile-header">Persanalysed Profile</div>
+      
+      <div class="dateslider">
                            <div id="dateslider"></div>
                         </div>
-                     </dd>
-                     
-                  </dl>
-                  <div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
+                            </div>
 
 
+ <div id="content" class="">
+    <div class="liquid-slider" id="slider-id">
+   
+<div>      
+<section class="container main-page group">
+ <h1 class="title">Breakdown</h1>
+ 
+ <!--article class="insight-panel">
+ <p class="little-text">EXAMPLE STATS REPORT</p>
+ <p>You searched the most at 8am on Tuesdays.</p>
+ </article-->
+ 
       
-<div class="masonry">
-  <div class="grid-sizer"></div>
-  <div class="item">
-    <div class="report-line">
-      <p class="report-headings"> Hourly Breakdown </p>
-    </div>
-    <div class="chart-container"> 
-      <div class="spinning"></div>
-      <div id="bar-chart-1" class="chartbox">
-        <!-- <svg> -->
-      </div>
-    </div>
+  <article id="bar-chart-1"></article>
+  <div class="report-headings"> 
+  <p>Hourly Search Activity</p>
+  <p class="report-text"> You search for fourteen hours a day, seven days a week, mostly at 9am.</p>
   </div>
-  
-  
-  <div class="item">
-    <div class="report-line">
-      <p class="report-headings"> Daily Breakdown </p>
-    </div>
-    <div class="chart-container"> 
-      <div class="spinning"></div>
-      <div id="bar-chart-2" class="chartbox">
-        
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="item w2 h4">
- <div class="report-line">
-      <p class="report-headings"> Top Categories</p>
-    </div>
-   <div class="chart-container"> 
-      <div class="spinning"></div>
-      <div id="bubble-chart" class="chartbox"></div>
-    </div>
+  <article id="bar-chart-2"></article>
+  </section>
+  <div class="report-bottom"></div>
+ </div> 
  
-  </div>
-  
-  <div class="item w3">
-    <div class="report-line">
-      <p class="report-headings"> Stats </p>
-    </div>
-     <div id="pie-1"></div>
-  </div>
-  
-  <div class="item w4 h2">
-    <div class="report-line">
-      <p class="report-headings"> Top Links </p>
-    </div>
-    <div class="spinning"></div>
-    <div id="top-links" class="top-links"></div>
-  </div>
- 
-  </div>
+ <div>
 
+ <section class="container main-page group"> 
+  <h1 class="title">Toplinks</h1>
+  <article class="insight-panel">
+ <p class="little-text">EXAMPLE STATS REPORT</p>
+ <p>You visited <a>google.com.au</a> the most.</p>
+ </article>
+
+<p class="report-headings"> Top links</p>
+  <article id="top-links"></article>
+  
+ 
+  </section>
+ </div>
+ 
+ <div> 
+ <section class="container main-page group"> 
+
+<h1 class="title">persanalysation</h1>
+persanalysation
+<article id="pie"></article>
+ 
+  </section>
+  </div>
+  
+  <div>
+  <section class="container main-page group">
+  
+ 
+<h1 class="title">topcategories</h1>
+top categories
+
+  </section>
+  </div>
+  
+
+
+</div>
+</div> 
+
+
+      </div>
+      </div>
+
+     <script src="js/jquery.easing.min.js"></script>
+      <script src="js/jquery.touchSwipe.min.js"></script>
+       <script src="js/jquery.liquid-slider.min.js"></script>
+       <script src="js/slider-script.js"></script>
    
    </body>
 </html>

@@ -30,7 +30,7 @@
       <script id="search-template" type="text/x-handlebars-template">
          <div class="search" data-uid="{{uid}}">
          	<div class="fullview">
-         	<button class="collapser">Collapse</button>
+         	<a class="collapser"></a>
          	<div class="leftfull">
          	<span class="break-search">you searched for</span><br>
          		<div class="search-terms">{{terms}}</div>
@@ -75,7 +75,10 @@
    <body>
       <div id="topbar">
          <div id="top-nav">
-            <div class="inner-middle">Persanalysed | <a href="report.html">Report</a> | <a href="options.html">Options</a></div>
+            <div class="inner-middle">
+            <a href="#" title="Persanalysed" class="ui_logo"></a>
+           <a> Persanalysed | </a><a href="report.html">Report</a> | <a href="options.html">Options</a>
+            </div>
          </div>
          <div class="folder">
             <div class="filtering">

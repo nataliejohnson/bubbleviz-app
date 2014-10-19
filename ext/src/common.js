@@ -1,12 +1,7 @@
 /*
  * js/common.js 
  */
- function url2host(url){
-  var parser = document.createElement('a');
-  parser.href = url;
-  return parser.hostname;
- }
-
+ 
 
 
 function getParameterByName(query_string, name) {

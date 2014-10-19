@@ -5,19 +5,20 @@
       continuous:false,
       dynamicArrows:false,
       keyboardNavigation:true,
-	   slideEaseFunction:'animate.css',
-  slideEaseDuration:1000,
-  heightEaseDuration:1000,
-  animateIn:"rotateInUpRight",
-  animateOut:"rotateOutUpLeft",
+      slideEaseFunction:'animate.css',
+      slideEaseDuration:1000,
+       heightEaseDuration:1000,
+      animateIn:"rotateInUpRight",
+      animateOut:"rotateOutUpLeft",
       panelKeys:{},
       hashLinking:true,
-      preloader:true,
+      firstPanelToLoad:1,
+      preloader:false,
       panelTitleSelector:'h1.title',
       hashTitleSelector:'h1.title',
       preload: function() {
         var self = this;
-        $('.ls-preloader').html('<div class="liquid-slider-preloader"><div id="blockG_1" class="blockG"></div><div id="blockG_2" class="blockG"></div><div id="blockG_3" class="blockG"></div></div>');
+        //$('.ls-preloader').html('<div class="liquid-slider-preloader"><div id="blockG_1" class="blockG"></div><div id="blockG_2" class="blockG"></div><div id="blockG_3" class="blockG"></div></div>');
         self.adjustHeight(false, self.getHeight());
         setTimeout(function() {
           self.finalize();

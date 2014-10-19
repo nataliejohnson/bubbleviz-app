@@ -531,9 +531,6 @@ var redraw_daily_graph = function(searches){
   $("#bar-chart-2").parent().find('.spinning').hide();
   /* END daily breakdown */
 };
-  
-  
-
 
 
 /*
@@ -599,6 +596,27 @@ var redraw_influence_graph = function(searches, history, results){
 
 
 }; // end pie 1
+
+
+/*
+ Select the right menu item when loading the page to refelect the hashtag used for the liquidslider
+ */
+$(function(){
+  
+  //var hash = hasher.getHash();
+  var handleNewHash = function(newhash, oldhash){
+    $('#main-menu .menu-item a').each(function(i, elem){
+      if($(elem).attr('href').substring(1) == newhash){
+        $(elem).addClass('currentCrossLink');
+      }
+    });
+  };
+  hasher.changed.add(handleNewHash);
+  hasher.initialized.add(handleNewHash);
+  hasher.init();
+
+
+});
 
 
 

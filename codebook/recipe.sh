@@ -40,5 +40,6 @@ for f in `cat ../manifest-exclusive.txt` ; do
 	fi
 	echo mkpdf "../$f" "$(basename $f)" "$(basename $f).pdf" $LANG;
 	mkpdf "../$f" "$(basename $f)" "$(basename $f).pdf" $LANG
-
 done
+
+# cd ${BUILD}; pdftk *.pdf cat output book.pdf

@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}     
+\documentclass[a4paper,10pt]{report}     
 \usepackage{listings}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{pagecolor}
@@ -70,7 +70,7 @@ keywordstyle=\color{bluekeywords}\bfseries,
 stringstyle=\color{redstrings},
 basicstyle=\ttfamily,
 inputencoding=latin1,
-backgroundcolor=\color{light-gray},
+%backgroundcolor=\color{light-gray},
 framesep=5pt,frame=tblr,framerule=0pt,
 xleftmargin=5pt,xrightmargin=5pt
 }
@@ -81,12 +81,13 @@ xleftmargin=5pt,xrightmargin=5pt
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 
 \usepackage{fancyhdr}
-\renewcommand{\footrulewidth}{0.4pt}% default is 0pt
+%\renewcommand{\footrulewidth}{0.4pt}% default is 0pt
+\renewcommand{\headrulewidth}{0pt}
 \pagestyle{fancy}
 \fancyhf{}
 %\rhead{ {{section}} }
-\lhead{ $title$ }
-\cfoot{\copyright 2014 Natalie Johnson}
+\chead{ $title$ }
+%\cfoot{\copyright 2014 Natalie Johnson}
 
 
 \begin{document}

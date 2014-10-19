@@ -67,9 +67,11 @@ rect {
   width: 100%;
 }
 
+#top-links .chart text.column-label{
+    display: visible;
+}
 
-
-.chart text {
+#bar-chart-1 .chart text.column-label, #bar-chart-2 .chart text.column-label{
   display: none;
 }
 
@@ -188,6 +190,7 @@ rect {
       <p class="report-headings"> Daily Breakdown </p>
     </div>
     <div class="chart-container"> 
+      <div class="spinning"></div>
       <div id="bar-chart-2" class="chartbox">
         
       </div>
@@ -200,6 +203,7 @@ rect {
       <p class="report-headings"> Top Categories</p>
     </div>
    <div class="chart-container"> 
+      <div class="spinning"></div>
       <div id="bubble-chart" class="chartbox"></div>
     </div>
  
@@ -213,10 +217,11 @@ rect {
   </div>
   
   <div class="item w4 h2">
-  <div class="report-line">
-  <p class="report-headings"> Top Links </p>
-  </div>
-   <div id="top-links" class="top-links"></div>
+    <div class="report-line">
+      <p class="report-headings"> Top Links </p>
+    </div>
+    <div class="spinning"></div>
+    <div id="top-links" class="top-links"></div>
   </div>
  
   </div>

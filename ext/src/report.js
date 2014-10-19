@@ -1,15 +1,16 @@
 $(function(){
-	  var container = document.querySelector('.masonry');
-var msnry = new Masonry( container, {
-  // options
-  "columnWidth": ".grid-sizer",
-  itemSelector: '.item'
-});
+  var container = document.querySelector('.masonry');
+  var msnry = new Masonry( container, {
+    // options
+    "columnWidth": ".grid-sizer",
+    itemSelector: '.item'
+  });
 });
 
-var months = new Array("Jan", "Feb", "Mar", 
+var months = ["Jan", "Feb", "Mar", 
     "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
-    "Oct", "Nov", "Dec");
+    "Oct", "Nov", "Dec"];
+var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 var date_data_filter = function (min,max,attr){
   if(!attr){
@@ -49,7 +50,6 @@ var fetch_clusters = function(searches, onSuccess, onFailure){
   searches_to_categorised_results(searches, _onSuccess, _onFailure);
 };
 
-var spinners = [];
 var spin_all_the_things = function(selector){
   var opts = {
     lines: 2, // The number of lines to draw
@@ -73,7 +73,7 @@ var spin_all_the_things = function(selector){
     // this is where we would initialise the spinners on our page. 
     // Because we're selecting by elements the spinner will need 
     // need an element on the page that can retrieve using the selector
-    spinners.push(new Spinner(opts).spin(this));
+    new Spinner(opts).spin(this);
   })
 
 };
@@ -186,8 +186,24 @@ $(function(){
         min.setDate(min.getDate()-1);
         //$('#dateslider').dateRangeSlider('values', min,max);
     }
-    fetch_clusters(searches.filter(date_data_filter(min, max)));
-    redraw_graphs(searches.filter(date_data_filter(min,max)));
+
+    var filtered_searches = searches.filter(date_data_filter(min, max));
+    var filtered_history = history.filter(date_data_filter(min,max,'lastVisitTime'));
+
+    // We don't need to re-fetch the data for these.
+    redraw_daily_graph(filtered_searches);
+    redraw_hourly_graph(filtered_searches);
+    redraw_toplinks_graph(filtered_history);
+    redraw_influence_graph(filtered_searches, filtered_history, searches2results(filtered_searches));
+
+    // we need to call carrot for this one
+    fetch_clusters(filtered_searches, function(results){ //Success!
+      //these graphs need the clustered results
+      redraw_cluster_graph(results);
+    }, function(msg){ //Error!
+        console.error(msg); alert(msg);
+    });
+    
   });
 
 
@@ -200,39 +216,57 @@ $(function(){
  * Top links horizontal bars graph
  */
 var redraw_toplinks_graph = function(history){
-    console.log("[report.js]: redraw_toplinks_graph got", history);
+    console.log("[report.js]: redraw_toplinks_graph got "+ history.length + " history items");
 
+    var selector = '#top-links';
 
-    var data = [
-      { y: '2010', x:10 },
-      { y: '2011', x:20 },
-      { y: '2012', x:30 },
-      { y: '2013', x:40 },
-      { y: '2014', x:50 },
-	  { y: '2015', x:10 },
-      { y: '2016', x:20 },
-      { y: '2017', x:30 },
-      { y: '2018', x:40 },
-      { y: '2019', x:50 },
-    ];
+    $(selector).html("");
+    $(selector).parent().find('.spinning').show();
+
+    var indexedHistory = _.reduce(history, function(indexedHistory, historyItem){
+      var host = url2host(historyItem.url)
+      if(host in indexedHistory){
+        indexedHistory[host] += 1;
+      }else{
+        indexedHistory[host] = 1;
+      }
+      return indexedHistory;
+    }, {});
+
+    var data = _(indexedHistory).map(function(v,k){
+      return {y:k, x:v};
+    }).sortBy(function(e){
+      return -e.x;
+    }).take(10).reverse().value();
+    console.log(data);  
+
   var chart = d4.charts.row();
-  chart.outerWidth($('#top-links').width())
+  
+  chart.outerWidth($(selector).width())
     .margin({
       left: 0,
       top: 0,
       right: 0,
       bottom: 160
     })
-  chart.mixout('xAxis')
-  chart.mixout('yAxis')
+  chart.mixout('xAxis');
+  chart.mixout('yAxis');
   chart.using('bars', function(bar){
     bar.rx(4);
-	
+  });
+  chart.using('barLabels', function(label){
+     label.text(function(d){
+        return d.y;
+     });
+     label.x(5);
+     label.classes(label.classes()+' custom-class');
   });
 
-  d3.select('#top-links')
-  .datum(data)
-  .call(chart);
+  d3.select(selector)
+    .datum(data)
+    .call(chart);
+
+  $(selector).parent().find('.spinning').hide();
 };
 
 
@@ -241,7 +275,7 @@ var redraw_toplinks_graph = function(history){
  */
 var bubble_chart_aspect = null;
 var redraw_cluster_graph = function(results){
-    console.log("[report.js]: redraw_cluster_graph got", results);
+  console.log("[report.js]: redraw_cluster_graph got "+results.length+ "results ");
   var bubble_graph_selector = "#bubble-chart";
 
   var pw = $(bubble_graph_selector).parent().width();
@@ -329,33 +363,82 @@ d3.select(self.frameElement).style("height", diameter + "px");
  /*
   * Hourly breakdown bar chart
   */
-var aspect_hourly_graph = null;
 var redraw_hourly_graph = function(searches) {  
-  console.log("[report.js]: redraw_hourly_graph got", searches);
+  console.log("[report.js]: redraw_hourly_graph got "+ searches.length+" searches");
 
-var graphData = [];
+  $("#bar-chart-1").html("");
+  $("#bar-chart-1").parent().find('.spinning').show();
 
-  for (var i = 24; i > 0; i--) {
-    graphData.push({
-      x: i,
-      y: i
-    });
+  var labels = {
+    "0": "12am",
+    "1": "1am",
+    "2": "2am",
+    "3": "3am",
+    "4": "4am",
+    "5": "5am",
+    "6": "6am",
+    "7": "7am",
+    "8": "8am",
+    "9": "9am",
+    "10": "10am",
+    "11": "11am",
+    "12": "12pm",
+    "13": "1pm",
+    "14": "2pm",
+    "15": "3pm",
+    "16": "4pm",
+    "17": "5pm",
+    "18": "6pm",
+    "19": "7pm",
+    "20": "8pm",
+    "21": "9pm",
+    "22": "10pm",
+    "23": "11pm"
+  };
+
+  var graphData = {};
+
+  // add 0 for hours
+  for(var h = 0; h < 24; h++){
+    if(!(h in graphData)){
+      graphData[h] = 0;
+    }
   }
 
+  searches.forEach(function(search){
+    var when = new Date(search.timestamp);
+    graphData[when.getHours()] += 1;
+  });
+
+  // formats it suitably for consumption
+  var graphData = _.reduce(graphData, function(res, v,k){
+    if(k in labels){
+      res.push({x:labels[k], y:v});
+    }else{
+      res.push({x:"", y:v})
+    }
+    
+    return res;
+  }, []);
+
+
+  var graphData = _.sortBy(graphData, graphData,function(o){
+    return k.x;
+  });
+
   var chart = d4.charts.column()
-   .mixout('yAxis')
-  .outerWidth($('#bar-chart-1').width())
+    .mixout('yAxis')
+    .outerWidth($('#bar-chart-1').width())
     .margin({
       left: 11,
       top: 0,
       right: 11,
       bottom: 240
     })
-	
-	chart.using('bars', function(bar){
-     bar.rx(2);
-	bar.ry(2);
-	
+  
+  chart.using('bars', function(bar){
+    bar.rx(2);
+    bar.ry(2);
   });
   
   d3.select('#bar-chart-1')
@@ -365,28 +448,54 @@ var graphData = [];
   $("#bar-chart-1").parent().find('.spinning').hide();
 }
 
-// $(function(){
-//   draw_hourly_graph();
-//   $(window).resize(function(){
-//     draw_hourly_graph();
-//   });
-// });
-
 
 /* 
  * Daily breakdown 
  */
 var redraw_daily_graph = function(searches){
-  console.log("[report.js]: redraw_daily_graph got", searches);
+  console.log("[report.js]: redraw_daily_graph got "+ searches.length+" searches");
    
-  var graphData = [];
+  $("#bar-chart-2").html("");
+  $("#bar-chart-2").parent().find('.spinning').show();
 
-  for (var i = 7; i > 0; i--) {
-    graphData.push({
-      x: i,
-      y: i
-    });
+  var labels = {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+  };
+
+  var graphData = {};
+
+  // add 0 for hours
+  for(var h = 0; h < 7; h++){
+    if(!(h in graphData)){
+      graphData[h] = 0;
+    }
   }
+
+  searches.forEach(function(search){
+    var when = new Date(search.timestamp);
+    graphData[when.getDay()] += 1;
+  });
+
+  // formats it suitably for consumption
+  var graphData = _.reduce(graphData, function(res, v,k){
+    if(k in labels){
+      res.push({x:labels[k], y:v});
+    }else{
+      res.push({x:"", y:v})
+    }
+    return res;
+  }, []);
+
+
+  var graphData = _.sortBy(graphData, graphData,function(o){
+    return k.x;
+  });
 
   var chart = d4.charts.column()
   .mixout('yAxis')
@@ -397,28 +506,59 @@ var redraw_daily_graph = function(searches){
       right: 11,
       bottom: 240
     })
-	
-	chart.using('bars', function(bar){
+  
+  chart.using('bars', function(bar){
     bar.rx(2);
-	bar.ry(2);
-	
+  bar.ry(2);
+  
   });
   d3.select('#bar-chart-2')
     .datum(graphData)
     .call(chart);
 
+  $("#bar-chart-2").parent().find('.spinning').hide();
   /* END daily breakdown */
 };
   
   
 
 
-
 /*
- * Pie chart to show ???
- */
+  We want to show as text:
+  + Total number of searches made
+  + Total number of results shown to the user
+  + Total number of links visited in the period
+ We want to show relative sizes between:
+  + Number of links visited
+  + Number of links visited due to a search
+  + Number of links visited due to personalisation
+ Another way to say this is:
+ 
+  + links visited organically / links visited via google search
+ 
+ Of those links visited via google search:
+ 
+  + links visisted from neutral search result
+  + links visited from personalised search results
+*/
 var redraw_influence_graph = function(searches, history, results){
-  console.log("[report.js]: redraw_influence_graph got", searches, history, results);
+  console.log("[report.js]: redraw_influence_graph got "+searches.length+" searches "+ history.length+ " history items "+results.length+" results");
+  console.log(searches);
+  conso1111le.log(searches2results(searches));
+  var resultIndex = _.reduce(searches2results(searches), function(resultIndex, result){
+    resultIndex[url2host(result.url)] = result.category;
+    return resultIndex;
+  }, {});
+
+  var historyIndex = _.reduce(history, function(indexedHistory, historyItem){
+
+    indexedHistory[url2host(historyItem.url)] = 0;
+    return indexedHistory;
+  }, {});
+
+
+
+
   /*  pie 1 */
   var width = 100,
     height = 100,

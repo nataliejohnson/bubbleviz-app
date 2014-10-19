@@ -90,34 +90,7 @@ var PerspectiveTransform = function(config) {
 
 };
 
-var scores_to_data_template = function(scores){
-  // we need: per result - anonrank indicatorclass[indicator-{promoted,demoted,stable}]
-  scores.forEach(function(score){
 
-    if(score.anonymous_rank && score.personal_rank){
-      if(score.anonymous_rank < score.personal_rank){
-        score.indicatorclass = "indicator-demoted";
-      }else if (score.anonymous_rank > score.personal_rank){
-        score.indicatorclass = "indicator-promoted";
-      }else{
-        score.indicatorclass = "indicator-stable";
-      }
-    }
-
-    if(!score.personal_rank){
-      score.anonymous_rank = "+";
-      score.indicatorclass = "indicator-promoted";
-    }
-
-    if(!score.anonymous_rank){
-      score.anonymous_rank = "+";
-      score.indicatorclass = "indicator-promoted";
-    }
-
-  });
-
-  return scores;
-};
 
 
 

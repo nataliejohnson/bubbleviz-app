@@ -17,6 +17,35 @@ var anonymous_url_to_canonical_url = function(anonymous_url){
   return getParameterByName(query_string, 'q');
 };
 
+var scores_to_data_template = function(scores){
+  // we need: per result - anonrank indicatorclass[indicator-{promoted,demoted,stable}]
+  scores.forEach(function(score){
+
+    if(score.anonymous_rank && score.personal_rank){
+      if(score.anonymous_rank < score.personal_rank){
+        score.indicatorclass = "indicator-demoted";
+      }else if (score.anonymous_rank > score.personal_rank){
+        score.indicatorclass = "indicator-promoted";
+      }else{
+        score.indicatorclass = "indicator-stable";
+      }
+    }
+
+    if(!score.personal_rank){
+      score.anonymous_rank = "+";
+      score.indicatorclass = "indicator-promoted";
+    }
+
+    if(!score.anonymous_rank){
+      score.anonymous_rank = "+";
+      score.indicatorclass = "indicator-promoted";
+    }
+
+  });
+
+  return scores;
+};
+
 var results_to_scores = function(results){
   var scores = [
     /*
@@ -114,6 +143,27 @@ var score2color = function(score){
   return colors[Math.floor((score * colors.length)-0.001)]
 }
 
+
+
+function url2host(url){
+  var parser = document.createElement('a');
+  parser.href = url;
+  return parser.hostname;
+}
+
+function history2indexedHistory (history){
+    var ret = _.reduce(history, function(indexedHistory, historyItem){
+      var host = url2host(historyItem.url);
+      var count = 1;
+      if(host in indexedHistory){
+        indexedHistory[host] += count;
+      }else{
+        indexedHistory[host] = count;
+      }
+      return indexedHistory;
+    }, {});
+    return ret;
+}
 
 
 /**

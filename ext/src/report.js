@@ -216,19 +216,7 @@ var redraw_toplinks_graph = function(history){
     $(selector).html("");
     $(selector).parent().find('.spinning').show();
 
-    var indexedHistory = _.reduce(history, function(indexedHistory, historyItem){
-      var parser = document.createElement('a');
-      parser.href = historyItem.url;
-      var tld = parser.hostname;
-
-      if(tld in indexedHistory){
-        indexedHistory[tld] += 1;
-      }else{
-        indexedHistory[tld] = 1;
-      }
-
-      return indexedHistory;
-    }, {});
+    var indexedHistory = history2indexedHistory(history);
 
     var data = _(indexedHistory).map(function(v,k){
       return {y:k, x:v};
@@ -533,67 +521,144 @@ var redraw_daily_graph = function(searches){
 };
 
 
+function getParameterByName(searchURL, name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(searchURL);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+function urlIsSearchUrl (url){
+  return (url.substring(0,4) == "/url");
+}
 /*
  * Pie chart to show ???
  */
 var redraw_influence_graph = function(searches, history, results){
   console.log("[report.js]: redraw_influence_graph got "+searches.length+" searches "+ history.length+ " history items "+results.length+" results");
   
+  // pie one - links from search vs all history links
+  // pie two - links from search promoted vs links from search neutral
+
+  var indexedHistory = history2indexedHistory(history);
+
+  var number_of_history_items = _.size(indexedHistory);
+
+  var history_items_from_searches = 0;
+  
+  
 
 
-  var generateData = function() {
-    var data = [];
-    var names = ['Clay Hauck', 'Diego Hickle'
-    ],
-      pie = d3.layout.pie()
-        .sort(null)
-        .value(function(d) {
-          return d.unitsSold;
-        });
-    d4.each(names, function(name) {
-      data.push({
-        unitsSold: Math.max(10, Math.random() * 100),
-        salesman: name
-      });
-    });
-    return pie(data);
-  };
+  var uniq_results = _(results).reduce(function(accum, result){
+      var resulthost;
+      //console.log(accum,result);
+      try{
+        if(urlIsSearchUrl(result.url)){
+          var parser = document.createElement('a');
+          parser.href = result.url;
+          resulthost = url2host(getParameterByName(parser.search, 'q'));
+        } else {
+          resulthost = url2host(result.url);
+        }
+        if(resulthost in accum){
+           accum[resulthost].push(result);
+        }else{
+          accum[resulthost] = [result];
+        }
+       
+      }catch(e){
+        console.log(e);
+      }
+      return accum;
+
+    }, {});
+
+  
+  _(uniq_results).forOwn(function(results,host){
+    if (host in indexedHistory){
+      // a result google returned to us made it in our history...
+      history_items_from_searches += 1;
+    }
+  });
+  
+  
+  var search_v_history = [
+    { category: "History Only", value: number_of_history_items - history_items_from_searches},
+    { category: "Search", value: history_items_from_searches}
+  ];
+
+ 
+
+  var pie = d3.layout.pie()
+  .sort(null)
+  .value(function(d) {
+    return d.value;
+  });
 
   var chart = d4.charts.donut()
-    .outerWidth($('#pie').width())
-    .margin({
-      left: 0,
-      top: 0,
-      right: 0,
-      bottom: 0
+  .outerWidth($('#pie').width())
+  .margin({
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0
+  })
+  .radius(function() {
+    return this.width / 8;
+  })
+  .arcWidth(0)
+  .using('arcLabels', function(labels) {
+    labels.text(function(d) {
+      return d.data.category;
     })
-    .radius(function() {
-      return this.width / 8;
-    })
-    .arcWidth(0)
-    .using('arcLabels', function(labels) {
-      labels.text(function(d) {
-        return d.data.salesman;
-      })
-    })
-    .using('arcs', function(slices) {
-      slices.key(function(d) {
-        return d.data.salesman;
-      });
+  })
+  .using('arcs', function(slices) {
+    slices.key(function(d) {
+      return d.data.category;
     });
+  });
+
+  d3.select('#pie')
+  .datum(pie(search_v_history))
+  .call(chart); 
 
 
-  var redraw = function() {
-    var data = generateData();
-    d3.select('#pie')
-      .datum(data)
-      .call(chart);
-  };
-  (function loop() {
-    redraw();
-    setTimeout(loop, 4500);
-  })();
 
+
+  var promoted_links = 0;
+  var demoted_links = 0;
+  var neutral_links = 0;
+  var unique_links = 0;
+
+
+  var tmp_res = [];
+  searches.forEach(function(search){
+    var scores = results_to_scores(search);
+    tmp_res.push(scores_to_data_template(scores));
+  });
+  tmp_res = _(tmp_res).flatten().value();
+
+  tmp_res.forEach(function(result){
+    if(result.anonymous_rank && result.anonymous_rank == "+"){
+      unique_links += 1;
+    }else if(result.indicatorclass == "indicator-promoted"){
+      promoted_links += 1;
+    }else if(result.indicatorclass == "indicator-demoted"){
+      demoted_links += 1;
+    }else if(result.indicatorclass == "indicator-stable"){
+      neutral_links += 1;
+    }
+  });
+
+   var search_v_search = [
+    { category: "Promoted", value: promoted_links},
+    { category: "Demoted", value: demoted_links},
+    { category: "Neutral", value: neutral_links},
+    { category: "Unique", value: unique_links},
+  ];
+
+  d3.select('#pie2')
+  .datum(pie(search_v_search))
+  .call(chart);
 
 }; // end pie 1
 
@@ -604,7 +669,7 @@ var redraw_influence_graph = function(searches, history, results){
 $(function(){
   
   //var hash = hasher.getHash();
-  var handleNewHash = function(newhash, oldhash){
+  var handleNewHash = function( newhash, oldhash){
     $('#main-menu .menu-item a').each(function(i, elem){
       if($(elem).attr('href').substring(1) == newhash){
         $(elem).addClass('currentCrossLink');

@@ -522,7 +522,7 @@ var current_term_filter = null;
 
 var order_and_filter = function(){
   $("#searches").isotope({
-    layoutMode: 'packery',
+    layoutMode: 'masonry',
   transitionDuration:'0.8s',
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
@@ -535,7 +535,7 @@ var order_and_filter = function(){
       timestamp: false,
       personalisation:false
     },
-    sortBy:"personalisation"
+    sortBy:"rank"
   });
 };
 
@@ -544,6 +544,7 @@ var reset_slider_bounds = function(min, max){
     bounds:{
       min: min,
       max: max
-    }
+    },
+	arrows:false
   });
 };

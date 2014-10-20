@@ -17,8 +17,8 @@
          <script src="js/jsMatrix/LUDecomposition.js"></script>
          <script src="js/jsMatrix/QRDecomposition.js"></script>
          <script src="js/jsMatrix/EVDecomposition.js"></script>
-         <script src="js/jsMatrix/Matrix.js"></script>
-         <script src="js/masonry.pkgd.min.js"></script>-->
+         <script src="js/jsMatrix/Matrix.js"></script-->
+         <script src="js/masonry.pkgd.min.js"></script>
       <script src="js/isotope.pkgd.min.js"></script>
       <script src="js/packery-mode.pkgd.js"></script>
       <!--<script src="js/jquery.isotope.perfectmasonry.js"></script>-->
@@ -26,15 +26,17 @@
       <script src="src/carrot.js"></script>
       <script src="src/home-style.js"></script>
       <script src="src/home.js"></script>
+      
+
 
       <script id="search-template" type="text/x-handlebars-template">
          <div class="search" data-uid="{{uid}}">
          	<div class="fullview">
          	<a class="collapser"></a>
          	<div class="leftfull">
-         	<span class="break-search">you searched for</span><br>
+         	<span class="break-search">You searched for</span><br>
          		<div class="search-terms">{{terms}}</div>
-         		<div class="date">at {{date}}.</div>		
+         		<div class="date">at {{date}}</div>		
          	</div>	
          	
          	<div class="percentage">{{percentage}}%<p class="break-personalised">personalised</p>
@@ -50,7 +52,7 @@
          				<div class="anon-rank">{{anonymous_rank}}</div>
          				<div class="indicator {{indicatorclass}}"></div>
 						</div>
-         				<a class"url" href="{{url}}">{{result}}</a>
+         				<a class"url" href="{{url}}" target="_blank">{{result}}</a>
          				<!--<div class="score">{{score}}</div>-->
          			</div>
          		{{/each}}
@@ -76,7 +78,6 @@
       <div id="topbar">
          <div id="top-nav">
             <div class="inner-middle">
-            <a href="#" title="Persanalysed" class="ui_logo"></a>
            <a> Persanalysed | </a><a href="report.html">Report</a> | <a href="options.html">Options</a>
             </div>
          </div>
@@ -86,7 +87,11 @@
                   <dl class="accordion">
                      <dt class="accordion__title">Search</dt>
                      <dd class="accordion__content">
-                        <div class="termsearch"><input id="termsearch-input" placeholder="Enter a term from your search history..." /></div>
+                     <form>
+                        <div class="termsearch"><input id="termsearch-input" name="focus"  required class="search-box" placeholder="Enter a term from your search history..." />
+                        <button class="close-icon" type="reset"></button>
+                        </div>
+                        </form>
                      </dd>
                      <dt class="accordion__title">Filter</dt>
                      <dd class="accordion__content">
@@ -113,6 +118,8 @@
       </div>
       <div id="searches">
       </div>
+     
+      <div id="mynoresults" style="display:none;">terrsting</div>
       <!--div style="clear:both;"></div-->
    </body>
 </html>

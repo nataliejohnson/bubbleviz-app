@@ -191,7 +191,7 @@ var expand_tile = function(elem){
   
   $fullview.find('.results-personal').isotope({
     itemSelector: '.result',
-	layoutMode: 'packery',
+	layoutMode: 'masonry',
 	packery: {
   gutter: 0
 },
@@ -206,9 +206,13 @@ var expand_tile = function(elem){
       }
       return true;
     },
-    sortBy: 'rank'
+    sortBy: 'rank',
+
+	
     
   }); 
+  
+ 
 
   $fullview.animate({
     width:'98%', 
@@ -403,4 +407,6 @@ $(function() {
     $('#dateslider').dateRangeSlider('resize');
   });
 });
+
+
 

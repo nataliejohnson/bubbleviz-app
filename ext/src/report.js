@@ -278,6 +278,15 @@ var redraw_toplinks_graph = function(history){
     .datum(data)
     .call(chart);
 
+  // var tip = d3.tip()
+  //   .attr('class', 'd3-tip')
+  //   .offset([-10, 0])
+  //   .html(function(d) {
+  //     return  "<br/> Searches: <span style='color:red'>" + "Hello world" + "</span>";
+  //   })
+
+  // svg.call(tip);
+
 
   $(selector).parent().find('.spinning').hide();
 };
@@ -387,28 +396,28 @@ var redraw_hourly_graph = function(searches) {
 
   var labels = {
     "0": "12am",
-    "1": "1am",
-    "2": "2am",
-    "3": "3am",
-    "4": "4am",
-    "5": "5am",
+    "1": " ",
+    "2": "  ",
+    "3": "   ",
+    "4": "    ",
+    "5": "     ",
     "6": "6am",
-    "7": "7am",
-    "8": "8am",
-    "9": "9am",
-    "10": "10am",
-    "11": "11am",
+    "7": "       ",
+    "8": "        ",
+    "9": "         ",
+    "10": "          ",
+    "11": "           ",
     "12": "12pm",
-    "13": "1pm",
-    "14": "2pm",
-    "15": "3pm",
-    "16": "4pm",
-    "17": "5pm",
+    "13": "             ",
+    "14": "              ",
+    "15": "               ",
+    "16": "                ",
+    "17": "                 ",
     "18": "6pm",
-    "19": "7pm",
-    "20": "8pm",
-    "21": "9pm",
-    "22": "10pm",
+    "19": "                   ",
+    "20": "                    ",
+    "21": "                     ",
+    "22": "                      ",
     "23": "11pm"
   };
 
@@ -475,13 +484,13 @@ var redraw_daily_graph = function(searches){
   $("#bar-chart-2").parent().find('.spinning').show();
 
   var labels = {
-    "0": "Sunday",
-    "1": "Monday",
-    "2": "Tuesday",
-    "3": "Wednesday",
-    "4": "Thursday",
-    "5": "Friday",
-    "6": "Saturday",
+    "0": "SUN",
+    "1": "MON",
+    "2": "TUE",
+    "3": "WED",
+    "4": "THU",
+    "5": "FRI",
+    "6": "SAT",
   };
 
   var graphData = {};
@@ -615,7 +624,7 @@ var redraw_influence_graph = function(searches, history, results){
   .radius(function() {
     return this.width / 8;
   })
-  .arcWidth(0)
+  .arcWidth(40)
   .using('arcLabels', function(labels) {
     labels.text(function(d) {
       return d.data.category;

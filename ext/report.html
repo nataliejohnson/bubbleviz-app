@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="css/liquid-slider.css">
   <link rel="stylesheet" href="js/JQRangeSlider-5.7.0/css/iThing-min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
-  <!--<link rel="stylesheet" href="css/tooltip.css">-->
+  <link rel="stylesheet" href="css/tooltip.css">
 
   <!-- external script -->
   <script src="js/jquery/jquery.min.js"></script>
@@ -20,7 +20,7 @@
   <script src="js/d3.v3.js"></script>
   <script src="js/d3-tip.js"></script>
   <script src="js/d4.js"></script>
-  <!--<script src="js/tooltip.js"></script>-->
+  <script src="js/tooltip.js"></script>
 
 
 
@@ -51,10 +51,12 @@
     rect {
       fill: #d3d5d5;
       border-bottom-right-radius: 9px;
+	  transition: fill 900ms cubic-bezier(0.25, 0.25, 0.01, 1);
     }
 
     .bar:hover {
       fill: #ffccff;
+	  -webkit-transition: background-color 900ms ease-out,width 500ms cubic-bezier(0.25, 0.25, 0.01, 1);
     }
 
     .x.axis path {
@@ -73,6 +75,7 @@
 
     #top-links .chart text.column-label{
       display: visible;
+	  font-size: 12px;
     }
 
     #bar-chart-1 .chart text.column-label, #bar-chart-2 .chart text.column-label{
@@ -125,18 +128,18 @@
 
     svg.d4 {
       font-family: "Plain-Medium";
-      font-size:11px;
+      font-size:12px;
     }
     .d4 .tick text {
-      font-size: 16px;
-      fill: #444;
+      font-size: 12px;
+      fill: #231f20;
       shape-rendering: crispEdges;
     }
 
     .barLabels {
-      font-size: 16px;
+      font-size: 12px;
       font-family: "Plain-Medium";
-      fill: #444;
+      fill: #231f20;
       display: block;
       background-color: #ffccff;
 
@@ -148,13 +151,13 @@
       fill: none;
       stroke: #999;
       stroke-width: 1px;
-      font-size: 16px;
+      font-size: 12px;
       shape-rendering: crispEdges;
     }
 
     .d4 .line, .d4 path, .d4 .connectors line {
       fill: none;
-    /*stroke: #222;
+    /*stroke: #231f20;
   stroke-width: 9px;*/}
 
   .title {
@@ -162,53 +165,58 @@
  }
 
  .arcs .series0 {
-  stroke: #ffccff;
-  stroke-width: 3px;
+  fill: #47c6e3;
 }
 
 .arcs .series1 {
-  stroke: red;
-  stroke-width: 9px;
+  fill: #32789d;
 }
-
+/*
+.date-ticker {
+	height: 4px;
+	width: 5px;
+	border-left: 1px solid #000;
+	}
+	*/	
  .arcs .series2 {
-  stroke: green;
-  stroke-width: 3px;
+  fill: #498059;
 }
 
 .arcs .series3 {
-  stroke: blue;
-  stroke-width: 9px;
+  fill: #eb595c;
 }
 
 .dateslider {
-  max-width: 940px;
+  max-width: 1020px;
   margin-right: auto;
   margin-left: auto;
   background-color: white;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-radius: 2px;
 }
 
 .folder {
-	background-color: #f4f4f4;
-	padding-top: 32px;
+	padding-top: 73px;
+		width: 1020px;
+	padding-left: 60px;
+	padding-right: 60px;
+	margin-left: auto;
+	margin-right: auto;
+	border-right: 1px solid #f1f1f1;
+border-left: 1px solid #f1f1f1;
+	
 }
 
 #top-nav {
-  background-color: #f4f4f4;
-  border: none;
+	border: 0;
 }
 
 .header {
- padding-bottom: 23px;
+ padding-bottom: 2px;
 }
 
 
 
 .report-bottom {
-  width: 940px;
+  width: 970px;
   margin-left:auto;
   margin-right:auto;
   height: 1px;
@@ -217,12 +225,12 @@
 
 
 #bubble-chart {
-  width: 820px;
+  width: 850px;
   height: 600px;
   }
   
   .chart-data {
-  color: #222222;
+  color: #231f20;
   }
 
 .opacity-overlay{
@@ -233,6 +241,8 @@
   height:100%;
   background-color: rgba(255,255,255,0.3);
 }
+
+
 </style>
 </head>
 <body>
@@ -244,27 +254,26 @@
 
   <div class="folder">
 
-
+<div class="inner-folder">
     <header id="masthead" class="header" role="banner">
       <nav id="site-navigation" class="container navigation" role="navigation">
         <h1 class="menu-toggle">Menu</h1>
         <ul id="main-menu" class="menu">
-          <li class="menu-item"><a href="#breakdown" data-liquidslider-ref="slider-id">Breakdown</a></li>
-          <li class="menu-item"><a href="#toplinks" data-liquidslider-ref="slider-id">Top Links</a></li>
-          <li class="menu-item"><a href="#persanalysation" data-liquidslider-ref="slider-id">Persanalysation</a></li>
-          <li class="menu-item"><a href="#topcategories" data-liquidslider-ref="slider-id">Top Categories</a></li>
+          <li class="menu-item"><a href="#breakdown" data-liquidslider-ref="slider-id">1</a></li>
+          <li class="menu-item"><a href="#toplinks" data-liquidslider-ref="slider-id">2</a></li>
+          <li class="menu-item"><a href="#persanalysation" data-liquidslider-ref="slider-id">3</a></li>
+          <li class="menu-item"><a href="#topcategories" data-liquidslider-ref="slider-id">4</a></li>
           <!--li class="menu-item"><a href="#right" class="right-btn" data-liquidslider-ref="slider-id">&#187;</a></li-->
         </ul>
       </nav>
     </header>
 
-    <div id="profile-header">Persanalysed Profile</div>
 
     <div class="dateslider">
      <div id="dateslider"></div>
    </div>
  </div>
-
+</div>
 
  <div id="content" class="">
   <div class="liquid-slider" id="slider-id">
@@ -272,11 +281,13 @@
     <div>      
       <section class="container main-page group">
         <h1 class="title">breakdown</h1>
+        
+    <div id="profile-header">Search Activity Breakdown</div>
+        <p class="little-text">Top Categories you searched for</p>
+          <article class="insight-panel">
+          <p>You search the most at 8am on Wednesdays.</p>
+        </article>
         <article id="bar-chart-1"></article>
-        <div class="report-headings"> 
-          <p>Hourly Search Activity</p>
-          <p class="report-text"> You search for fourteen hours a day, seven days a week, mostly at 9am.</p>
-        </div>
         <article id="bar-chart-2"></article>
       </section>
       <div class="report-bottom"></div>
@@ -285,19 +296,21 @@
     <div>
       <section class="container main-page group"> 
         <h1 class="title">toplinks</h1>
+        <div id="profile-header">Popular Domains</div>
+        <p class="little-text">Top Categories you searched for</p>
         <article class="insight-panel">
-          <p class="little-text">EXAMPLE STATS REPORT</p>
           <p>You visited <a>google.com.au</a> the most.</p>
         </article>
-        <p class="report-headings"> Top links</p>
         <article id="top-links"></article>
       </section>
+        <div class="report-bottom"></div>
     </div>
 
     <div> 
       <section class="container main-page group"> 
         <h1 class="title">persanalysation</h1>
-        persanalysation
+         <div id="profile-header">Persanalysation</div>
+        <p class="little-text">Top Categories you searched for</p>
         <article id="pie"></article>
         <p class="chart-data">
           <span id="links-visited-num">unknown number of</span> Unique Sites Visited
@@ -311,14 +324,21 @@
           Total Results: <span id="total-results"></span>
         </p>
       </section>
+        <div class="report-bottom"></div>
     </div>
 
     <div> 
       <section class="container main-page group">
         <h1 class="title">topcategories</h1>
+        <div id="profile-header">Top Categories</div>
+        <p class="little-text">Top Categories you searched for</p>
+          <article class="insight-panel">
+          <p>54% of your searches were about Animating SVG, while 29% of your searches were about Stack Overflow.</p>
+        </article>
           <article id="bubble-chart"></article>
           <div class="spinning"></div>
       </section>
+        <div class="report-bottom"></div>
     </div>
 
   </div>

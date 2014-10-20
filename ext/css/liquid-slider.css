@@ -157,7 +157,7 @@
 }
 
 .currentCrossLink {
-  color: #222222;
+  color: #231f20;
 }
 
 .ls-wrapper .liquid-nav ul {
@@ -438,17 +438,32 @@ h1 {
 
 .insight-panel {
 	width: 100%;
-	padding-bottom: 56px;
-	padding-left: 54px;
-	border-bottom: 1px solid #e1e1e1;
-	font-size: 26px;
+	border-top: 1px solid #f3f3f3;
+	border-bottom: 1px solid #f3f3f3;
+	padding-top: 22px;
+	padding-bottom: 27px;
+	margin-bottom: 42px;
+	padding-right: 62px;
+	font-size: 27px;
+	color: #969696;
+	line-height:35px;
+	background: url('img/info.png');
+	background-repeat: no-repeat;
+	background-position: 97.8% 26px;
+	
 }
 
-#bar-chart-1,
-#bar-chart-2
- {
-	width: 400px;
+#bar-chart-1 {
+	width: 390px;
 	float: left;
+	position: relative;
+	border-top: 1px solid #e5e5e5;
+	padding-top: 32px;
+	height: 300px;
+}
+#bar-chart-2 {
+	width: 390px;
+	float: right;
 	position: relative;
 	border-top: 1px solid #e5e5e5;
 	padding-top: 32px;
@@ -457,13 +472,14 @@ h1 {
 
 
 .little-text{
-	padding-bottom: 39px;
-	text-transform: uppercase;
+	padding-bottom: 17px;
 	font-size: 12px;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.03em;
+	color:  #231f20;
+	text-transform: capitalize;
 }
 .container {
-  max-width: 940px;
+  max-width: 1020px;
   width: 100%;
   margin: 0 auto;
 }
@@ -494,19 +510,30 @@ h1 {
   background: none;
   display: block;
   float: none;
+  display: table;
 }
 .navigation .menu .menu-item a {
-  font-size: 16px;
   letter-spacing: -0.01em;
-  padding-right: 0.8em;
   display: block;
   text-decoration: none;
   text-align: center;
   transition: 1s;
   color: #ecebec;
+width: 27px;
+height: 27px;
+font-size: 13px;
+padding-top: initial;
+display: table-cell;
+vertical-align: middle;
+horizontal-align: middle;
+margin-left: auto;
+margin-right: auto;
+text-align: center;
+
+
 }
 .navigation .menu .menu-item a:hover {
-  color: #222222;
+  color: #231f20;
   transition: 1s;
   
 }
@@ -521,16 +548,21 @@ h1 {
 }
 .navigation .menu .menu-item .currentCrossLink {
   font-weight: normal;
-  color: #222222;
+  color: #231f20;
+    border: 2px solid #231f20;
+  border-radius: 27px;
 }
 @media (min-width: 600px) {
   .navigation .menu .menu-item .currentCrossLink {
-	  color: #222222;
+	  color: #231f20;  border: 2px solid #231f20;
+  border-radius: 27px;
   }
 }
 @media (min-width: 600px) {
   .navigation .menu .menu-item .currentCrossLink:hover {
-	color: #222222;
+	color: #231f20;
+	  border: 2px solid #231f20;
+  border-radius: 27px;
   }
 }
 .navigation .open {
@@ -592,10 +624,15 @@ h1 {
 
 .group {
   zoom: 1;
-  max-width: 940px;
+  max-width: 1020px;
   padding-left: 60px;
   padding-right: 60px;
-  background-color: white;
+  border-right:1px solid  #f1f1f1;
+  border-left: 1px solid  #f1f1f1;
+  padding-bottom: 120px;
+  /*-moz-box-shadow: 1px 3px 10px rgba(0,0,0,0.3);
+-webkit-box-shadow: 1px 3px 10px rgba(0,0,0,0.3);
+box-shadow: 1px 3px 10px rgba(0,0,0,0.3);*/
   /* For IE 6/7 (trigger hasLayout) */
 }
 
@@ -603,10 +640,9 @@ h1 {
 	margin: auto;
 display: block;
 position: relative;
-width: 940px;
-text-align: center;
-font-size: 1.8em;
-margin-bottom: 52px;
+font-size: 32px;
+margin-bottom: 29px;
+color: #231f20;
 	}
 
 .ls-wrapper .ls-preloader {

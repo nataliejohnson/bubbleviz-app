@@ -409,4 +409,17 @@ $(function() {
 });
 
 
-
+function dotrans($from, $to){
+      if( !$to.hasClass('effeckt-page-animating') && !$from.hasClass('effeckt-page-animating') ){
+        $to.find('.collapser').hide();
+        $from.find('.collapser').hide();
+        $to.addClass('effeckt-page-animating effeckt-page-active ' + $to.data('transition-in'));
+        $from.addClass('effeckt-page-animating');
+        setTimeout(function(){ 
+          $from.removeClass('effeckt-page-active effeckt-page-animating');
+          $to.removeClass('effeckt-page-animating '+$to.data('transition-in'));
+          $to.find('.collapser').show();
+          $from.find('.collapser').hide();
+        }, 2000);
+      }
+    }

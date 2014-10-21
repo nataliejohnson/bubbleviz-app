@@ -123,19 +123,34 @@ var collapse_tile = function($fullview){
   console.log('Collapsing tile...');
 
   dotrans($fullview, $('#mainpage'));
+
   setTimeout(function(){ 
     $('#searches').isotope('bindResize');
-    $('#searches').isotope('layout');
     $('body').css('overflow-y', 'auto');
     $('#dateslider').dateRangeSlider('resize');
     $('#mainpage').css('overflow', 'auto');
-  }, 1500);
+    $('#searches').isotope('layout');
+    //$('#mainpage').addClass('notransition');
+    //$('#searches').isotope({sortBy: 'personalisation'});
+    
+    // $('.accordion__title.active').trigger('click');
+    // var d = $('.accordion__title.active');
+    // d.removeClass('active');
+    // d.addClass('active');
+    // $('#searches').hide().delay(500, function(){
+    //   $('#searches').show();
+    //   console.log('---');
+    // });
+
+    order_and_filter();
+  }, 2000);
 
 };
 
 // expand_tile will receive a tileview element
 var expand_tile = function(elem){
   console.log("Expanding tile...");
+  $('#mainpage').removeClass('notransition');
   $tileview = $(elem);
   $search = $tileview.parent();
   $fullview = $('[data-uid='+$tileview.data('uid')+'].search-details');
@@ -332,7 +347,8 @@ $(function(){
 
 });
 
-$(function() {
+
+function accordiondraw() {
   if($(window).width() > 768){
     // Hide all but first tab content on larger viewports
     $('.accordion__content:not(:first)').hide();
@@ -348,13 +364,16 @@ $(function() {
   $( ".accordion__content" ).wrapInner( "<div class='overflow-scrolling'></div>" );
 
   // The clicking action
-  $('.accordion__title').on('click', function() {
+  $('.accordion__title').on('click', function(e) {
+    console.log("accordion clicked", e);
     $('.accordion__content').hide();
     $(this).next().show().prev().addClass('active').siblings().removeClass('active');
     //if slider visible, trigger redraw
     $('#dateslider').dateRangeSlider('resize');
   });
-});
+}
+
+$(accordiondraw);
 
 
 function dotrans($from, $to){

@@ -117,84 +117,41 @@ var store_sizes = function(){
   //console.log(original_width,original_height,aspect_ration);
 }
 
-var expended = false;
 
-var collapse_tile = function(elem){
-  if(!expended){return;}
-
+var collapse_tile = function($fullview){
+  
   console.log('Collapsing tile...');
-  $fullview = $(elem);
-  $search = $fullview.parent();
-  $tileview = $search.find('.tileview');
-  $('#searches').isotope('bindResize');
-  $('#searches').isotope('layout');
-  //order_and_filter();
 
-  $('body').css('overflow-y', 'auto');
-  resizeBoxes();
-  var new_settings = {
-    position: 'fixed',
-    top: ($search.position().top - $(document).scrollTop()) +'px',
-    left: ($search.position().left - $(document).scrollLeft()) +'px',
-    width: $search.width()+'px',
-    height: $search.height()+'px',
-    'z-index': 10,
-  };  
-
-  $fullview.animate(new_settings,1000, function(){
-    $(this).css({
-      top: 'auto',
-      left: 'auto',
-      bottom: 'auto',
-      width:'100%',
-      height:'100%',
-      position: 'relative',
-      'z-index':1
-    });
-    $fullview.hide();
-    //$fullview;
-    //$elem.find('.tileview').fadeIn();
-    
-    //$elem.click(function(){
-    //  expand_tile($tileview);
-    //});
+  dotrans($fullview, $('#mainpage'));
+  setTimeout(function(){ 
+    $('#searches').isotope('bindResize');
+    $('#searches').isotope('layout');
+    $('body').css('overflow-y', 'auto');
     $('#dateslider').dateRangeSlider('resize');
-    expended = false;
-  });
+    $('#mainpage').css('overflow', 'auto');
+  }, 1500);
+
 };
 
 // expand_tile will receive a tileview element
 var expand_tile = function(elem){
-  if(expended){return;}
-  expended = true;
   console.log("Expanding tile...");
   $tileview = $(elem);
   $search = $tileview.parent();
-  $fullview = $search.find('.fullview');
+  $fullview = $('[data-uid='+$tileview.data('uid')+'].search-details');
   $('#searches').isotope('unbindResize');
   
   $fullview.find(".collapser").click(function(){
     collapse_tile($fullview);
   });
   
-  // viewport positions
-  var initial_settings = {
-    position: 'fixed',
-    top: ($search.position().top - $(document).scrollTop()) +'px',
-    left: ($search.position().left - $(document).scrollLeft()) +'px',
-    width: $search.outerWidth()+'px',
-    height: $search.outerHeight()+'px',
-    'z-index': 10
-  };
-
-  $fullview.show().css(initial_settings);
   
   $fullview.find('.results-personal').isotope({
     itemSelector: '.result',
-	layoutMode: 'masonry',
-	packery: {
-  gutter: 0
-},
+  	layoutMode: 'masonry',
+  	packery: {
+      gutter: 0
+    },
     getSortData: {
       rank: function(elem){
         return parseInt($(elem).find('.rank').text());
@@ -207,27 +164,18 @@ var expand_tile = function(elem){
       return true;
     },
     sortBy: 'rank',
-
-	
-    
   }); 
+
   
- 
-
-  $fullview.animate({
-    width:'98%', 
-    height:'96%',
-    top:'2%',
-    left:'1%', 
-    bottom:'2%',
-    'z-index': '10000',
-  }, 1000, "swing", function(){
-    $fullview.find('.results-personal').isotope('layout');
-  });
-
-  //$search.find('.tileview').fadeOut();
 
   $('body').css('overflow', 'hidden');
+  $('#mainpage').css('overflow', 'hidden');
+  $fullview.css('overflow', 'hidden');
+
+  dotrans($('#mainpage'), $fullview);
+  setTimeout(function(){ 
+    $fullview.find('.results-personal').isotope('layout');
+  }, 1500);
 };
 
 
@@ -413,13 +361,16 @@ function dotrans($from, $to){
       if( !$to.hasClass('effeckt-page-animating') && !$from.hasClass('effeckt-page-animating') ){
         $to.find('.collapser').hide();
         $from.find('.collapser').hide();
+
         $to.addClass('effeckt-page-animating effeckt-page-active ' + $to.data('transition-in'));
-        $from.addClass('effeckt-page-animating');
+        $from.addClass('effeckt-page-animating '+ $from.data('transition-out'));
+
         setTimeout(function(){ 
-          $from.removeClass('effeckt-page-active effeckt-page-animating');
+          $from.removeClass('effeckt-page-active effeckt-page-animating '+ $from.data('transition-out'));
           $to.removeClass('effeckt-page-animating '+$to.data('transition-in'));
+
           $to.find('.collapser').show();
-          $from.find('.collapser').hide();
+          $from.find('.collapser').show();
         }, 2000);
       }
     }

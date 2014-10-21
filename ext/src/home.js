@@ -32,6 +32,7 @@ $(function(){
   console.log("Home.js");
   
   var search_item_template = Handlebars.compile($("#search-template").html());
+  var fullview_template = Handlebars.compile($("#fullview-template").html());
   
 
   var onSuccess = function(searches){
@@ -46,14 +47,20 @@ $(function(){
       }
 
       data.personalScores = scores_to_data_template(results_to_scores(search));
-      
+      data.uid = UUIDjs.create();
+
       var $search = $($.parseHTML(search_item_template(augment_data(data))));
-
       $search.data("search", data);
-      
       $search.css({'background-color': score2color(search.score)});
-
       $('#searches').append($search);
+
+
+
+      var $fullview = $($.parseHTML(fullview_template(augment_data(data))));
+      $fullview.data("search", data);
+      $fullview.css({'background-color': score2color(search.score)});
+      $('body').append($fullview);
+
     });
 
     $(".tileview").click(function(){

@@ -5950,7 +5950,7 @@ offset | guillotine-reverse | half-slide | sqkwoosh | tunnel>"
 }
 
 [data-effeckt-page] {
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;

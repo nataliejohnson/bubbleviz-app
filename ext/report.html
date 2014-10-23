@@ -63,7 +63,7 @@
          font-family: "Plain-Medium";
 font-size: 14px;
 line-height: 2px;
-fill: #3663d8;
+fill: rgb(48, 63, 160);
 opacity: 1;
          }
          #bar-chart-1 .chart text.column-label, #bar-chart-2 .chart text.column-label{
@@ -149,7 +149,7 @@ opacity: 1;
          width: 5px;
          border-left: 1px solid #000;
          }
-         */	
+         */ 
          .arcs .series2 {
          fill: #498059;
          }
@@ -201,13 +201,13 @@ opacity: 1;
          display: none;
          }
          #top-links .chart rect{
-         stroke: #3663d8;
+         stroke: rgb(48, 63, 160);
          stroke-width: 1px;
          fill: none;
          transition: fill 900ms cubic-bezier(0.25, 0.25, 0.01, 1);
          }
          #top-links .barLabels {
-         fill: #2727a4;
+         fill: rgb(48, 63, 160);
          font-size: 14px;
          letter-spaing: 0.02em;
          }
@@ -216,12 +216,12 @@ opacity: 1;
          }
          #top-links .chart rect:hover ~.barLabels {
          fill: #ffccff;
-         }	
+         }  
          .chart-data {
          color: #231f20;
          float: right;
          font-size: 14px;
-		 width:445px;
+       width:445px;
          }
          .opacity-overlay{
          position: absolute;
@@ -247,7 +247,7 @@ opacity: 1;
          .browser-ind {
          background-color: gray;
          }
-         #top-nav {	
+         #top-nav {  
          height: 110px;
          border-bottom: 1px solid #ECECEC;
          background: transparent;
@@ -324,6 +324,7 @@ opacity: 1;
                      <article id="bar-chart-2"></article>
                   </article>
                   <article class="insight-panel">
+
                      <p>During the day, you search the most at <span id="time-most-searches">8am</span>.</p>
                      <p>During the week, you search the most on <span id="day-most-searched">Wednesday</span>.</p>
                   </article>
@@ -378,7 +379,10 @@ opacity: 1;
                   <p class="little-text">Categories you frequently search for</p>
                   <article id="bubble-chart"></article>
                   <article class="insight-panel">
-                     <p>54% of your searches were about Animating SVG, <br>while 29% of your searches were about Stack Overflow.</p>
+                     <p id="bubble-insight-nodata">Data loading...</p>
+                     <p id="bubble-insight-data" style="display:none;">
+                        <span id="first-bubble-percentage">54</span>% of your searches were about <span id="first-bubble-topic">Animating SVG</span>, <br>
+                        while <span id="second-bubble-percentage">29</span>% of your searches were about <span id="second-bubble-topic">Stack Overflow</span>.</p>
                   </article>
                </section>
             </div>

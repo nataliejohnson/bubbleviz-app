@@ -307,7 +307,17 @@ var redraw_cluster_graph = function(annotated_results){
     return {className:category, value:results.length }
   }).sortBy(function(topic){
     return topic.value
-  }).reverse().take(11).tail(1).shuffle().value();
+  }).reverse();
+  
+  var total = children.tail(1).take(10).reduce(function(acc, v){
+    return acc + v.value;
+  }, 0);
+
+  var percentages = children.tail(1).take(2).map(function(v){
+    return {percentage:Math.round((v.value/total)*100), topic: v.className};
+  }).value();
+
+  children = children.tail(1).take(10).shuffle().value();
   //console.log(children);
 
   var bubble_graph_selector = "#bubble-chart";
@@ -335,7 +345,7 @@ var redraw_cluster_graph = function(annotated_results){
       .attr("height",'100%')
       .attr("class", "bubble");
     
-  var root =  { "children": children};
+  var root =  { "children": children };
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
@@ -376,7 +386,15 @@ var redraw_cluster_graph = function(annotated_results){
     //$elem.find('foreignObject body div.innerlabel').width();
   });
 
-d3.select(self.frameElement).style("height", diameter + "px");
+  $("#bubble-insight-nodata").hide();
+  $("#bubble-insight-data").show();
+  $("#first-bubble-percentage").text(percentages[0].percentage);
+  $("#first-bubble-topic").text(percentages[0].topic);
+  $("#second-bubble-percentage").text(percentages[1].percentage);
+  $("#second-bubble-topic").text(percentages[1].topic);
+
+
+  d3.select(self.frameElement).style("height", diameter + "px");
   $(bubble_graph_selector).parent().find('.loading').hide();
   $("#bubble-chart").find("div.opacity-overlay").remove();
   /* END bubble chart */
@@ -458,7 +476,7 @@ var redraw_hourly_graph = function(searches) {
   var chart = d4.charts.column()
     .mixout('yAxis')
     .outerWidth($('#bar-chart-1').width())
-	.outerHeight($('#bar-chart-1').height())
+  .outerHeight($('#bar-chart-1').height())
     .margin({
       left: 0,
       top: 0,

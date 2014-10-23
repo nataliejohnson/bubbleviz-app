@@ -347,15 +347,6 @@ var redraw_cluster_graph = function(annotated_results){
     
   var root =  { "children": children };
 
-  var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return  "<br/> Searches: <span style='color:red'>" + d.className+ + "</span>";
-    })
-
-  svg.call(tip);
-
   var node = svg.selectAll(".node")
       .data(bubble.nodes(root).filter(function(d) { return !d.children; }))
       .enter().append("g")
@@ -368,6 +359,8 @@ var redraw_cluster_graph = function(annotated_results){
   node.append("circle")
       .attr("r", function(d) { return d.r; })
       .style("fill", "#3663d8" )
+
+      
       
 
   node.append('foreignObject')
@@ -375,12 +368,11 @@ var redraw_cluster_graph = function(annotated_results){
     .attr('y', function(d){return -d.r;})
     .attr('width', function(d){return d.r*2;})
     .attr('height', function(d){return d.r*2;})
-    .on('mouseover', tip.show)
-    .on('mouseout', tip.hide)
     .append("xhtml:body")
       .attr('class', 'label')
       .html(function(d){return '<div class="innerlabel">'+d.className+'</div>';})//function(d) { return "<p>"+d.className+"</p>"; })
-  
+      
+
   svg.selectAll(".node").filter(function(d,i){
     //console.log(d3.select(this));
     //$elem.find('foreignObject body div.innerlabel').width();
@@ -476,7 +468,7 @@ var redraw_hourly_graph = function(searches) {
   var chart = d4.charts.column()
     .mixout('yAxis')
     .outerWidth($('#bar-chart-1').width())
-  .outerHeight($('#bar-chart-1').height())
+    .outerHeight($('#bar-chart-1').height())
     .margin({
       left: 0,
       top: 0,

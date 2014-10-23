@@ -227,12 +227,16 @@ opacity: 1;
          #top-links .chart rect:hover ~.barLabels {
          fill: #ffccff;
          }  
+       .indicator {
+          border-radius: 2px;
+          }
          .chart-data {
        margin-top: 88px;
          color: #231f20;
          float: right;
          font-size: 14px;
        width:445px;
+       letter-spacing: 0.01em;
          }
          .opacity-overlay{
          position: absolute;
@@ -270,6 +274,12 @@ opacity: 1;
          .tooltip{
             z-index: 99999;
          }
+       .little-text {
+   float: left;
+   text-align: left;
+   }
+   
+   
       </style>
    </head>
    <body>
@@ -301,14 +311,14 @@ opacity: 1;
          </div>
       </div>
       <div class="folder">
-           <li class="not-menu-item">Persanalysed Profile</li>
+           
          <header id="masthead" class="header" role="banner">
      
             <nav id="site-navigation" class="container navigation" role="navigation">
                <h1 class="menu-toggle">Menu</h1>
               
                <ul id="main-menu" class="menu">
-                  
+                  <li class="not-menu-item">Persanalysed Profile</li>
                   <li class="menu-item"><a href="#breakdown" data-liquidslider-ref="slider-id">1</a></li>
                   <li class="menu-item"><a href="#toplinks" data-liquidslider-ref="slider-id">2</a></li>
                   <li class="menu-item"><a href="#persanalysation" data-liquidslider-ref="slider-id">3</a></li>
@@ -401,7 +411,7 @@ opacity: 1;
       </div>
       </div>
       <div id="footer">
-             About Settings Profile
+             <a href="about.html">About</a><a href="options.html">Settings</a><a href="profile.html">Profile</a>
             <div class="legal-mark">
                Copyright  &#169; Persanalysed 2014. All Rights Reserved.
             </div>

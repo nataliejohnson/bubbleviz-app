@@ -67,6 +67,7 @@
             <div class="percentage">{{percentage}}%<p class="break-personalised">persanalysed</p>
             </div>
          
+		 <div class="your-results"> Your Results </div>
             <div class="results-personal">
             {{#each personalScores}}
                <div class="result {{category}}">
@@ -132,16 +133,20 @@
         <div class="modal-content">
           <p>Persanalysed is a tool for exploring your personalised searches.</p>
 
-<p>Each box represents a Google search you have made in this browser.</p>
-<div style="width: 600px; height: 90px; margin-left: auto; margin-right: auto;">
-<div class="search" style="text-align: left; auto; width: 365px; height: 80px; display: inline-block; position:relative; background-color: rgb(55, 100, 208);">"your search term"</div>
+<p>Each box represents a Google search.</p>
+<div style="width: 100%; height: 90px; margin-left: auto; margin-right: auto;">
+<div class="search" style="text-align: left; margin-left:23px; width: 365px; height: 80px; display: inline-block; position:relative; background-color: rgb(55, 100, 208); display: table;">
+<p style="padding-left:31px; display: table-cell; vertical-align: middle;">"your search term"</p>
+</div>
 </div>
 <br>
-<p>The search boxes are coloured from darkest to lightest, </p>
-<p>IMG </p>
-
-<p>Click on a search box to view its results.</p>
-          <button class="modal-toggle">Update</button>
+<p>The darker tiles are more personalised. </p>
+<div class="gradient"></div>
+<div style="width:365px; height: 30px; margin-left: auto, margin-right: auto; display: inline-block;">
+<span class="little-text" style="color:white; text-align: left; width: 45%; float: left;">Least Personalised</span>
+<span class="little-text" style="color:white; text-align: right; width: 45%; float: right;">Most Personalised</span>
+</div>
+          <button class="modal-toggle collapser">Update</button>
         </div>
       </div>
  </div>
@@ -192,8 +197,8 @@
          </div>
          
          <div id="alert">No searches. Zilch. Zero. None.</div>
-         <div id="footer">
-            About Settings Profile
+          <div id="footer">
+             <a href="about.html">About</a><a href="options.html">Settings</a><a href="profile.html">Profile</a>
             <div class="legal-mark">
                Copyright  &#169; Persanalysed 2014. All Rights Reserved.
             </div>

@@ -476,9 +476,6 @@ var redraw_hourly_graph = function(searches) {
       bottom: 32
     })
   
-  chart.using('bars', function(bar){
-  });
-  
   d3.select('#bar-chart-1')
     .datum(graphData)
     .call(chart);

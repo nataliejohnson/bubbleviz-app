@@ -469,6 +469,20 @@ padding-top: 10px;
 	min-width: 500px;
 }
 
+.your-results{
+	display: block;
+	float: none;
+	position: relative;
+	margin-bottom: 13px;
+	width: 52%;
+float: right;
+font-size: 16px;
+letter-spacing: 0.01em;
+line-height: 28px;
+overflow-y: auto;
+min-width: 500px;
+	}
+	
 .result{
 	display: block;
 	float: none;
@@ -726,6 +740,16 @@ font-size: 14px;
 letter-spacing: 0.02em;
 
 }
+
+#footer a {
+text-decoration: none;
+color: inherit;
+padding: 0px 0.8em;
+	}
+	
+	#footer a:hover {
+text-decoration: underline;
+	}
 
 
  .legal-mark {
@@ -1333,7 +1357,8 @@ body.label{
     margin-bottom: 24px;
 	display: inline-block;
 	font-size: 16px;
-letter-spacing: 0.02em;
+	line-height: 21px;
+letter-spacing: 0.01em;
 }
 
 .modal.is-visible {
@@ -1364,7 +1389,7 @@ letter-spacing: 0.02em;
   z-index: 9999;
   top: 6em;
   left: 50%;
-  width: 600px;
+  width: 502px;
   margin-left: -16em;
   background-color: rgb(48, 63, 160);
   color: white;
@@ -1384,14 +1409,14 @@ letter-spacing: 0.02em;
 
 
 .modal-content {
-  padding-left: 110px;
-  padding-right: 110px;
-  padding-bottom: 65px;
+  padding-left: 45px;
+  padding-right: 45px;
+  padding-bottom: 25px;
   text-align: center;
 }
 
 .modal-header {
-	padding-top: 65px;
+	padding-top: 25px;
   position: relative;
    background-color: rgb(48, 63, 160);
    color: white;
@@ -1413,9 +1438,19 @@ letter-spacing: 0.02em;
   color: #777;
 }
 
+ .little-text {
+         font-size: 12px;
+         color: #464646;
+         letter-spacing: 0.01em;
+         text-align:right;
+         width: 100px;
+         float: right;
+         margin-top: 5px;
+  }
+
 .modal-heading {
   font-size: 43px;
-  margin-bottom: 42px;
+  margin-bottom: 21px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -1427,6 +1462,14 @@ letter-spacing: 0.02em;
 .modal-content > *:last-child {
   margin-bottom: 0;
 }
+
+.gradient {
+	width: 365px;
+	height: 30px;
+	background: linear-gradient(to right, #4390d9 0%, #3c7ad5 20%, #3764d0 40%, #324eb3 60%, #303fa0 80%, #2f318e 100%);
+	margin-left: auto;
+	margin-right: auto;
+	}
  
 @keyframes fallPerspective {
     100% { transform: translateZ(0px) translateY(0px) rotateX(0deg); opacity: 1; }

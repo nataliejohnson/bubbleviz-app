@@ -304,6 +304,7 @@ padding-top: 10px;
     margin: 0px;
 	-webkit-border-bottom-right-radius: 9px;
     border-top-bottom-right-radius: 9px;
+    overflow:hidden;
 
 }
 

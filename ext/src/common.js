@@ -2,7 +2,19 @@
  * js/common.js 
  */
  
-
+$(function(){
+$(window).load(function() { 
+  $("#status").delay(1000).fadeOut("slow"); 
+			$(".loading").delay(1000).fadeOut("slow");
+			console.log("fading out");
+		})
+		 	});
+	$(function(){ 		
+			$('.modal-toggle').on('click', function(e) {
+  e.preventDefault();
+  $('.modal').toggleClass('is-visible');
+});
+});
 
 function getParameterByName(query_string, name) {
     
@@ -520,11 +532,25 @@ function strcmp( a, b ) {
 var current_date_filter = null;
 var current_term_filter = null;
 
+
+
+
 var order_and_filter = function(){
-  console.log("Ordering and filtering searches");
-  $("#searches").isotope({
+	var itemReveal = Isotope.Item.prototype.reveal;
+    Isotope.Item.prototype.reveal = function() {
+        itemReveal.apply( this, arguments );
+        $( this.element ).removeClass('isotope-hidden');
+    };
+    var itemHide = Isotope.Item.prototype.hide;
+    Isotope.Item.prototype.hide = function() {
+        itemHide.apply( this, arguments );
+        $( this.element ).addClass('isotope-hidden');
+    };  
+  var $container = $('#searches');
+    $container.isotope({
+    itemSelector: '.search',
     layoutMode: 'masonry',
-    transitionDuration:'0.8s',
+  transitionDuration:'0.8s',
     filter: combine_filters([current_term_filter, current_date_filter]),
     getSortData:{
       timestamp: weigh_by_date,
@@ -536,9 +562,34 @@ var order_and_filter = function(){
       timestamp: false,
       personalisation:false
     },
-    sortBy:"rank"
+    sortBy:"rank",	
   });
+  var noItemsAlert = $('#alert');
+	$container.isotope( 'on', 'layoutComplete', function() {
+		var numItems = $container.find('.search:not(.isotope-hidden)').length;
+		if (numItems == 0) {
+	        noItemsAlert.show(250);
+	    } else {
+	        noItemsAlert.hide(250);
+	    }
+	});
+    
 };
+
+
+
+$(function(){
+$( "#termsearch-input" ).focus(function() {
+			$('.actual-x').show();
+	});
+	 
+});
+
+
+		
+	 
+
+		
 
 var reset_slider_bounds = function(min, max){
   $("#dateslider").dateRangeSlider({

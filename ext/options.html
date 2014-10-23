@@ -1,43 +1,173 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<link rel="stylesheet" href="js/jquery-ui-slider-pips/jquery-ui-slider-pips.css">
-	<link rel="stylesheet" href="js/jquery-ui-1.11.1/jquery-ui.min.css">
-	<link rel="stylesheet" href="js/liquidslider-master/css/liquid-slider.css">
-	<link rel="stylesheet" href="css/animate.min.css">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/futura-pt.css">
-	<link rel="stylesheet" href="css/common.css">
-
-	<style>
-	*{
-		box-sizing: border-box;
-	}
-	html{
-		width:100%;
-		height:100%;
-	}
-	body, html {
-		margin: 0px;
-		padding: 0px;
-		width:100%;
-		height:100%;
-	}
-	</style>
-	<script src="js/jquery/jquery.min.js"></script>
-	<script src="js/XMLWriter-1.0.0.js"></script>
- 	<script src="src/common.js"></script>
- 	<script src="src/carrot.js"></script>
- 	<script src="src/options.js"></script>
-</head>
-<body>
-	<div id="tech-links">
-		<a href="history.html">Browser History</a> |
-		<a href="dynamic.html">Dynamic</a> |
-		<a href="visualisation.html">Visualisation</a> |
-		<a id="profile-download" href="#">download profile</a> |
-		<a id="clear-profile" href="#">Clear Profile</a> |
-		<input type="file" id="profile-upload">
-	</div>
-</body>
+   <head>
+      <link rel="stylesheet" href="js/jquery-ui-slider-pips/jquery-ui-slider-pips.css">
+      <link rel="stylesheet" href="js/jquery-ui-1.11.1/jquery-ui.min.css">
+      <link rel="stylesheet" href="css/animate.min.css">
+      <link rel="stylesheet" href="css/normalize.css">
+      <link rel="stylesheet" href="css/common.css">
+      <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
+      <link rel="stylesheet" href="css/spinner.css">
+      <style>
+         *{
+         box-sizing: border-box;
+         }
+         html{
+         width:100%;
+         height:100%;
+         }
+         body, html {
+         margin: 0px;
+         padding: 0px;
+         width:100%;
+         height:100%;
+         }
+         #top-nav {
+         /*background-color: #fff;*/		}
+         #links-container {
+         background-color: #fff;
+         width: 100%;
+         height: 565px;
+		 margin-top: 75px;
+         }
+         #tech-links p {
+         font-size: 18px;
+         }
+         #tech-links a {
+         font-family: "PlainMedium", Helvetica, Arial, sans-serif;
+         -webkit-text-size-adjust: 100%;
+         -ms-text-size-adjust: 100%;
+         -webkit-font-smoothing: antialiased;
+         -moz-osx-font-smoothing: grayscale;
+         text-rendering: optimizeLegibility;
+         font-feature-settings: "kern";
+         font-kerning: normal;
+         font-weight: normal;
+         background-color: #FFF;
+         border: 1px solid #e4e4e4;
+         color: #838383;
+         padding: 15px;
+         font-size: 18px;
+         line-height: 40px;
+         transition: background-color 200ms linear,color 200ms linear;
+         position: relative;
+         display: block;
+         margin-top: 8px;
+         margin-bottom: 30px;
+         text-align: center;
+         text-decoration: none;
+         border-radius: 1px;
+         }
+         input[type='file'] {
+         opacity:0    
+         }
+         .profile-upload {
+         font-family: "PlainMedium", Helvetica, Arial, sans-serif;
+         -webkit-text-size-adjust: 100%;
+         -ms-text-size-adjust: 100%;
+         -webkit-font-smoothing: antialiased;
+         -moz-osx-font-smoothing: grayscale;
+         text-rendering: optimizeLegibility;
+         font-feature-settings: "kern";
+         font-kerning: normal;
+         font-weight: normal;
+         display: inline-block;
+         background: white;
+         border-radius: 1px;
+         width: 425px;
+         outline: none;
+         white-space: nowrap;
+         -webkit-user-select: none;
+         cursor: pointer;
+         border: 1px solid #e4e4e4;
+         padding: 15px;
+         color: #838383;
+         font-size: 18px;
+         line-height: 40px;
+         transition: background-color 200ms linear,color 200ms linear;
+         position: relative;
+         display: block;
+         margin-top: 8px;
+         margin-bottom: 30px;
+         text-align: center;
+         text-decoration: none;
+         }
+         .profile-upload:hover::before {
+         border-color: #231f20;
+         }
+         .profile-upload:active::before {
+         background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+         }
+         .account-title {
+         color: #231f20;
+         }
+         #upload-fake {
+         width:0;
+         height: 0;
+         }
+         .little-text {
+         font-size: 12px;
+         color: #464646;
+         letter-spacing: 0.01em;
+         text-align:right;
+         width: 100px;
+         float: right;
+         margin-top: 5px;
+         }
+      </style>
+      <script src="js/jquery/jquery.min.js"></script>
+      <script src="js/XMLWriter-1.0.0.js"></script>
+      <script src="src/common.js"></script>
+      <script src="src/carrot.js"></script>
+      <script src="src/options.js"></script>
+   </head>
+   <body>
+   
+        <!--LOADING --> 
+      <div id="status">
+      <div class="loading">
+         <div class="spinner">
+            <div class="mask">
+               <div class="maskedCircle"></div>
+            </div>
+         </div>
+      </div>
+      </div>
+      <!-- LOADING --> 
+      
+      <div id="top-nav">
+         <div class="inner-middle">
+            <ul id="left-menu">
+               <li class="left-menu-item"><a href="index.html"></a></li>
+               <span class="persanalysed-text">Persanalysed</span>
+            </ul>
+            <ul id="right-menu">
+               <li class="right-menu-item"><a class="info-icon"></a> </li>
+               <li class="right-menu-item"><a class="report-icon" href="report.html" alt="Report"></a> </li>
+               <li class="right-menu-item"><a class="options-icon menu-item-page" href="options.html" alt="Options"></a> </li>
+               <li class="right-menu-item"><a class="about-icon" href="about.html" alt="About"></a> </li>
+            </ul>
+         </div>
+      </div>
+      <div id="links-container">
+         <div id="tech-links">
+            <p style="width: 70%; float:left;">Upload profile data</p>
+            <div class="little-text">File format: .json</div>
+            <div>
+               <input type="file" id="upload-fake"/>
+               <span id="val"></span>
+               <span id="upload-button" class="profile-upload">Upload New Profile</span>
+            </div>
+            <p>Download your profile data</p>
+            <a id="profile-download" href="#">Download Profile</a> 
+            <p>Clear your profile data</p>
+            <a id="clear-profile" href="#">Clear Profile Data</a> 
+         </div>
+      </div>
+      <div id="footer">
+       About Settings Profile
+            <div class="legal-mark">
+               Copyright  &#169; Persanalysed 2014. All Rights Reserved.
+      </div>
+   </body>
 </html>

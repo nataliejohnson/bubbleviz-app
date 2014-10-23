@@ -52,6 +52,7 @@ $(function(){
       var $search = $($.parseHTML(search_item_template(augment_data(data))));
       $search.data("search", data);
       $search.css({'background-color': score2color(search.score)});
+	  $search.css({'background-color': score2color(search.score)});
       $('#searches').append($search);
 
 
@@ -59,7 +60,7 @@ $(function(){
       var $fullview = $($.parseHTML(fullview_template(augment_data(data))));
       $fullview.data("search", data);
       $fullview.css({'background-color': score2color(search.score)});
-      $('body').append($fullview);
+      $('#mainpage2').append($fullview);
 
     });
 

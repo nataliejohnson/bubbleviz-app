@@ -258,13 +258,12 @@ var redraw_toplinks_graph = function(history){
     .margin({
       left: 0,
       top: 0,
-      right: 0,
-      bottom: 160
+      right: 2,
+      bottom: 0
     })
   chart.mixout('xAxis');
   chart.mixout('yAxis');
   chart.using('bars', function(bar){
-    bar.rx(4);
   });
   chart.using('barLabels', function(label){
      label.text(function(d){
@@ -314,8 +313,8 @@ var redraw_cluster_graph = function(annotated_results){
   var bubble_graph_selector = "#bubble-chart";
   $(bubble_graph_selector).find("svg").remove();
 
-  var pw = $(bubble_graph_selector).parent().width();
-  var ph = $(bubble_graph_selector).parent().height();
+  var pw = $(bubble_graph_selector).width();
+  var ph = $(bubble_graph_selector).height();
 
   if(!bubble_chart_aspect){
     bubble_chart_aspect = pw / ph;
@@ -358,7 +357,7 @@ var redraw_cluster_graph = function(annotated_results){
 
   node.append("circle")
       .attr("r", function(d) { return d.r; })
-      .style("fill", "#3666c9" )
+      .style("fill", "#3663d8" )
       
 
   node.append('foreignObject')
@@ -378,7 +377,7 @@ var redraw_cluster_graph = function(annotated_results){
   });
 
 d3.select(self.frameElement).style("height", diameter + "px");
-  $(bubble_graph_selector).parent().find('.spinning').hide();
+  $(bubble_graph_selector).parent().find('.loading').hide();
   $("#bubble-chart").find("div.opacity-overlay").remove();
   /* END bubble chart */
 };
@@ -454,16 +453,15 @@ var redraw_hourly_graph = function(searches) {
   var chart = d4.charts.column()
     .mixout('yAxis')
     .outerWidth($('#bar-chart-1').width())
+	.outerHeight($('#bar-chart-1').height())
     .margin({
-      left: 11,
+      left: 0,
       top: 0,
-      right: 11,
-      bottom: 240
+      right: 0,
+      bottom: 32
     })
   
   chart.using('bars', function(bar){
-    bar.rx(2);
-    bar.ry(2);
   });
   
   d3.select('#bar-chart-1')
@@ -525,16 +523,15 @@ var redraw_daily_graph = function(searches){
   var chart = d4.charts.column()
   .mixout('yAxis')
   .outerWidth($('#bar-chart-2').width())
+  .outerHeight($('#bar-chart-2').height())
     .margin({
-      left: 11,
+      left: 0,
       top: 0,
-      right: 11,
-      bottom: 240
+      right: 0,
+      bottom: 32
     })
   
   chart.using('bars', function(bar){
-    bar.rx(2);
-  bar.ry(2);
   
   });
   d3.select('#bar-chart-2')
@@ -615,16 +612,17 @@ var redraw_influence_graph = function(searches, history, results){
 
   var chart = d4.charts.donut()
   .outerWidth($('#pie').width())
+  .height(282)
   .margin({
     left: 0,
-    top: 0,
+    top: 20,
     right: 0,
     bottom: 0
   })
   .radius(function() {
-    return this.width / 8;
+    return 282/2;
   })
-  .arcWidth(40)
+  .arcWidth(60)
   .using('arcLabels', function(labels) {
     labels.text(function(d) {
       return d.data.category;

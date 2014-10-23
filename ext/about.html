@@ -7,18 +7,13 @@
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
   <link rel="stylesheet" href="css/tooltip.css">
+  <link rel="stylesheet" href="css/spinner.css">
 
   <!-- external script -->
   <script src="js/jquery/jquery.min.js"></script>
   <script src="js/jquery-ui-1.11.1/jquery-ui.min.js"></script>
-  <script src="js/JQRangeSlider-5.7.0/JQDateRangeSlider-withRuler-min.js"></script>
   <script src="js/XMLWriter-1.0.0.js"></script>
   <script src="js/handlebars-v1.3.0.js"></script>
-  <script src="js/spin.min.js"></script>
-  <script src="js/d3.v3.js"></script>
-  <script src="js/d3-tip.js"></script>
-  <script src="js/d4.js"></script>
-  <script src="js/tooltip.js"></script>
 
 
 
@@ -34,13 +29,10 @@ body, html {
 	color: #fff;
 	}
 	
-	#top-nav {
-		background-color: #3764d0;
-		border:0;
-		}
+	
 
 .about {
-	padding-top: 135px;
+	padding-top: 85px;
 	width: 1020px;
 	padding-left: 60px;
 	padding-right: 60px;
@@ -103,19 +95,68 @@ body, html {
 		.about-footer {
 			margin-top: 51px;
 			}
-
+	#top-nav {	
+					height: 110px;
+					border-bottom: 1px solid #ECECEC;
+background: transparent;
+padding-top: 40px;
+					}
+					
+					 .options-icon {background: url('css/img/settings-white.png');}
+				#info-icon {background: url('css/img/information-white.png');}
+				.report-icon {background: url('css/img/profile-white.png');}
+				.about-icon {background: url('css/img/about-white.png');}
+				.left-menu-item a {
+			  background: url('css/img/persanalysed-white.png'); }
+			  
+			  #top-nav {
+			  border: 0;
+			  }
+			  
+			  #status {
+				  background-color: #3764d0;
+				  
+				  }
+				  
+				  .persanalysed-text {
+					  color: white;
+					  }
+			  
 
 
 
 </style>
 </head>
 <body>
- <div id="topbar">
-   <div id="top-nav">
-    <div class="inner-middle"><a href="home.html">Persanalysed</a> | <a href="report.html">Report</a> | <a href="options.html">Options</a></div>
-  </div>
-  </div>
 
+      <!--LOADING --> 
+      <div id="status">
+      <div class="loading" style="display: none;">
+         <div class="spinner">
+            <div class="mask">
+               <div class="maskedCircle"></div>
+            </div>
+         </div>
+      </div>
+      </div>
+      <!-- LOADING --> 
+      
+<div id="topbar">
+   <div id="top-nav">
+    <div class="inner-middle">
+    <ul id="left-menu">
+                     <li class="left-menu-item"><a href="#"></a></li>
+                     <span class="persanalysed-text">Persanalysed</span>
+                  </ul>
+                  <ul id="right-menu">
+                     <li class="right-menu-item"><a class="report-icon" href="report.html" alt="Report"></a> </li>
+                     <li class="right-menu-item"><a class="options-icon" href="options.html" alt="Options"></a> </li>
+                     <li class="right-menu-item"><a class="about-icon menu-item-page" href="#" alt="About"></a> </li>
+                  </ul>
+    </div>
+  </div>
+  </div>
+  
   <div class="about">
 <h1 class="about-header">About Persanalysed</h1>
 

@@ -6,14 +6,26 @@
       <link rel="stylesheet" href="js/jquery-ui-1.11.1/jquery-ui.min.css">
       <link rel="stylesheet" href="js/JQRangeSlider-5.7.0/css/iThing-min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="PlainMedium-Regular.css" />
+      <link rel="stylesheet" href="css/spinner.css">
       <link rel="stylesheet" href="css/effeckt.css">
-      
+      <style>
+         body, html {
+         overflow:hidden;
+         }
+		 
+		 #top-nav {
+			 border-bottom: 0;
+			 }
+	
+
+      </style>
       <script src="js/jquery/jquery.min.js"></script>
       <script src="js/jquery-ui-1.11.1/jquery-ui.min.js"></script>
       <script src="js/JQRangeSlider-5.7.0/JQDateRangeSlider-withRuler-min.js"></script>
       <script src="js/XMLWriter-1.0.0.js"></script>
       <script src="js/handlebars-v1.3.0.js"></script>
-      <script src="js/jquery.nicescroll.js"></script>
+      <script src="js/modernizr.custom.js"></script>
+      
       <!--
          <script src="js/jsMatrix/IOUtils.js"></script>
          <script src="js/jsMatrix/LUDecomposition.js"></script>
@@ -21,6 +33,9 @@
          <script src="js/jsMatrix/EVDecomposition.js"></script>
          <script src="js/jsMatrix/Matrix.js"></script-->
       <script src="js/masonry.pkgd.min.js"></script>
+      <!--script src="js/imagesloaded.js"></script>
+         <script src="js/classie.js"></script>
+         <script src="js/AnimOnScroll.js"></script-->
       <script src="js/isotope.pkgd.min.js"></script>
       <script src="js/packery-mode.pkgd.js"></script>
       <script src="js/uuid.js"></script>
@@ -29,9 +44,6 @@
       <script src="src/carrot.js"></script>
       <script src="src/home-style.js"></script>
       <script src="src/home.js"></script>
-      
-
-
       <script id="search-template" type="text/x-handlebars-template">
          <div class="search">
          	<div class="tileview" data-uid="{{uid}}">
@@ -39,7 +51,6 @@
          	</div>
          </div>
       </script>
-      
       <script id="fullview-template" type="text/x-handlebars-template">
          <div class="search-details" 
             data-effeckt-page="page" 
@@ -53,9 +64,9 @@
                <div class="date">at {{date}}</div>    
             </div>   
             
-            <div class="percentage">{{percentage}}%<p class="break-personalised">personalised</p>
+            <div class="percentage">{{percentage}}%<p class="break-personalised">persanalysed</p>
             </div>
-
+         
             <div class="results-personal">
             {{#each personalScores}}
                <div class="result {{category}}">
@@ -70,9 +81,24 @@
             </div>
          </div>
       </script>
-  
    </head>
    <body>
+      <div id="mainpage2"></div>
+      
+      
+      
+      <!--LOADING --> 
+      <div id="status">
+      <div class="loading">
+         <div class="spinner">
+            <div class="mask">
+               <div class="maskedCircle"></div>
+            </div>
+         </div>
+      </div>
+      </div>
+      <!-- LOADING --> 
+      
       <div id="mainpage" 
          data-effeckt-page="page" 
          data-transition-in="scale-down-from-front"
@@ -81,50 +107,100 @@
          <div id="topbar">
             <div id="top-nav">
                <div class="inner-middle">
-              <a> Persanalysed | </a><a href="report.html">Report</a> | <a href="options.html">Options</a>
+                  <ul id="left-menu">
+                     <li class="left-menu-item"><a href="index.html"></a></li>
+                     <span class="persanalysed-text">Persanalysed</span>
+                  </ul>
+                  <ul id="right-menu">
+                     <li class="right-menu-item"><button id="info-icon" class="modal-toggle"></button></li>
+                     <li class="right-menu-item"><a class="report-icon" href="report.html" alt="Report"></a> </li>
+                     <li class="right-menu-item"><a class="options-icon" href="options.html" alt="Options"></a> </li>
+                     <li class="right-menu-item"><a class="about-icon" href="about.html" alt="About"></a> </li>
+                  </ul>
                </div>
             </div>
+             
+              <div class="modal">
+    <div class="modal-overlay modal-toggle"></div>
+    <div class="modal-wrapper modal-transition">
+      <div class="modal-header">
+        <button class="modal-close modal-toggle"><svg class="icon-close icon" viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></button>
+        <h2 class="modal-heading">Info</h2>
+      </div>
+      
+      <div class="modal-body">
+        <div class="modal-content">
+          <p>Persanalysed is a tool for exploring your personalised searches.</p>
+
+<p>Each box represents a Google search you have made in this browser.</p>
+<div style="width: 600px; height: 90px; margin-left: auto; margin-right: auto;">
+<div class="search" style="text-align: left; auto; width: 365px; height: 80px; display: inline-block; position:relative; background-color: rgb(55, 100, 208);">"your search term"</div>
+</div>
+<br>
+<p>The search boxes are coloured from darkest to lightest, </p>
+<p>IMG </p>
+
+<p>Click on a search box to view its results.</p>
+          <button class="modal-toggle">Update</button>
+        </div>
+      </div>
+ </div>
+ </div>
+
             <div class="folder">
                <div class="filtering">
                   <div class="inner">
                      <dl class="accordion">
                         <dt class="accordion__title">Search</dt>
                         <dd class="accordion__content">
-                        <form>
-                           <div class="termsearch"><input id="termsearch-input" name="focus"  required class="search-box" placeholder="Enter a term from your search history..." />
-                           <button class="close-icon" type="reset"></button>
-                           </div>
+                           <form>
+                              <div class="termsearch">
+                                 <input id="termsearch-input" name="focus" autocomplete="off" placeholder="Enter a term from your search history..." />
+                                 <div class="close-icon" type="reset">
+                                    <button class="actual-x" type="button" style="display:none;"></button>
+                                 </div>
+                              </div>
                            </form>
                         </dd>
                         <dt class="accordion__title">Filter</dt>
                         <dd class="accordion__content">
-                           <div class="dateslider">
-                              <div id="dateslider"></div>
+                           <span class="filterby">Filter by date: </span>
+                           <div class="dateslider-cont">
+                              <div class="dateslider">
+                                 <div id="dateslider"></div>
+                              </div>
                            </div>
                         </dd>
                         <dt class="accordion__title">Sort</dt>
                         <dd class="accordion__content">
-                           <span>Sort by:</span>
+                           <span class="sortby">Sort by:</span>
                            <div class="ordering">
-                              <button id="sortby-most-personal">Personalisation</button>
-                              <button id="sortby-time-ascending">Earliest</button>
-                              <button id="sortby-time-descending">Latest</button>
-                              <button id="sortby-alpha">Terms</button>
+                              <div id="filters" class="button-group"> 
+                                 <button id="sortby-most-personal" class="button">Most to Least Personalised</button>
+                                 <button id="sortby-time-ascending" class="button is-checked">Earliest</button>
+                                 <button id="sortby-time-descending" class="button">Latest</button>
+                                 <button id="sortby-alpha" class="button">Alphabetisation</button>
+                              </div>
                            </div>
                         </dd>
                      </dl>
-                     <div>
-                     </div>
                   </div>
                </div>
             </div>
          </div>
          <div id="searches">
          </div>
-        
-         <div id="mynoresults" style="display:none;">terrsting</div>
+         
+         <div id="alert">No searches. Zilch. Zero. None.</div>
+         <div id="footer">
+            About Settings Profile
+            <div class="legal-mark">
+               Copyright  &#169; Persanalysed 2014. All Rights Reserved.
+            </div>
+         </div>
       </div>
-
       <!--div style="clear:both;"></div-->
+      
+
    </body>
 </html>

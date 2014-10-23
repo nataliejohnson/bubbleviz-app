@@ -1,8 +1,8 @@
 {
-  "name": "Bubbleviz: Filter Bubble Visualiser",
+  "name": "Persanalysed",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "Visualises the difference between searching while logged in and anonymous",
+  "description": "Persanalysed is an analytic tool that quantifies your search behaviour.",
   "homepage_url": "http://extensionizr.com",
   "icons": {
     "16": "icons/icon16.png",

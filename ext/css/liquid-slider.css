@@ -439,52 +439,111 @@ h1 {
 .insight-panel {
 	width: 100%;
 	border-top: 1px solid #f3f3f3;
-	border-bottom: 1px solid #f3f3f3;
+	margin-top: 39px;
 	padding-top: 22px;
 	padding-bottom: 27px;
 	margin-bottom: 42px;
 	padding-right: 62px;
 	font-size: 27px;
-	color: #969696;
-	line-height:35px;
-	background: url('img/info.png');
+	color: #a9a9a9;
+	line-height:38px;
+	/*background: url('img/info.png');
 	background-repeat: no-repeat;
-	background-position: 97.8% 26px;
+	background-position: 97.8% 26px;*/	
+	display: inline-block;
+	
+	
 	
 }
 
 #bar-chart-1 {
-	width: 390px;
-	float: left;
+	width: 458px;
+	display: inline-block;
 	position: relative;
-	border-top: 1px solid #e5e5e5;
+	/*border-top: 1px solid #e5e5e5;*/
 	padding-top: 32px;
 	height: 300px;
 }
 #bar-chart-2 {
-	width: 390px;
-	float: right;
+	width: 458px;
+	display: inline-block;
 	position: relative;
-	border-top: 1px solid #e5e5e5;
-	padding-top: 32px;
+	/*border-top: 1px solid #e5e5e5;*/
+    padding-top: 32px;
 	height: 300px;
 }
 
 
 .little-text{
 	padding-bottom: 17px;
-	font-size: 12px;
-	letter-spacing: 0.03em;
-	color:  #231f20;
+	font-size: 14px;
+	letter-spacing: 0.02em;
+	color:  #384047;
 	text-transform: capitalize;
+	margin-top: 31px;
+	border-bottom: 1px solid #f3f3f3;
+	width: 100%;
+	display: inline-block;
 }
 .container {
-  max-width: 1020px;
+  max-width:1024px;
   width: 100%;
   margin: 0 auto;
 }
 
+#links-visited-num,
+#total-results {
+	font-size: 53px;
+	letter-spacing: -0.05em;
+	display: block;
+	margin-left: 37px;
+	}
+	
+	#pie,
+	#pie2 {
+		width: 412px;
+		height: 412px;
+		display: inline-block;
+		}
+#pie.d4.chart {
+	height: 212px;
+	}
+	
+	#pie2 {
+		margin-left: 25px;
+		}
+		
+		.pie {
+			width: 100%;
+			}
+		
+		.under-text {
+			color: #a9a9a9;
+			display: block;
+			margin-top: 10px;
+			margin-bottom: 31px;
+			margin-left: 37px;
+			}
+			
+			.key {
+				margin-bottom: 8px;
+				display: block;
+				line-height: 26px;
+				}
+			
+/**** Circles ****/	
+.circle {
+	border-radius: 50%;
+	width: 14px;
+	height: 14px; 
+	background-color: #ffccff;
+	display: inline-block;
+	margin-right: 10px;
+	/* width and height can be anything, as long as they're equal */
+}
 
+/**** End Circles ****/			
+			
 .navigation .menu-toggle {
   display: block;
   text-align: right;
@@ -512,28 +571,35 @@ h1 {
   float: none;
   display: table;
 }
+
+.not-menu-item {
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  text-align: left;
+  transition: 1s;
+  color: #3663d8;
+width: 333px;
+height: 43px;
+font-size: 32px;
+ background: none;
+  display: block;
+  float: left;
+
+}
 .navigation .menu .menu-item a {
   letter-spacing: -0.01em;
   display: block;
   text-decoration: none;
-  text-align: center;
+  text-align: left;
   transition: 1s;
   color: #ecebec;
-width: 27px;
-height: 27px;
-font-size: 13px;
-padding-top: initial;
-display: table-cell;
-vertical-align: middle;
-horizontal-align: middle;
-margin-left: auto;
-margin-right: auto;
-text-align: center;
-
+width: 43px;
+height: 43px;
+font-size: 32px;
 
 }
 .navigation .menu .menu-item a:hover {
-  color: #231f20;
+  color: #3663d8;
   transition: 1s;
   
 }
@@ -545,26 +611,14 @@ text-align: center;
   .navigation .menu .menu-item {
     float: left;
   }
-}
+
 .navigation .menu .menu-item .currentCrossLink {
   font-weight: normal;
-  color: #231f20;
-    border: 2px solid #231f20;
-  border-radius: 27px;
-}
-@media (min-width: 600px) {
-  .navigation .menu .menu-item .currentCrossLink {
-	  color: #231f20;  border: 2px solid #231f20;
-  border-radius: 27px;
+  color: #3663d8;
   }
-}
-@media (min-width: 600px) {
-  .navigation .menu .menu-item .currentCrossLink:hover {
-	color: #231f20;
-	  border: 2px solid #231f20;
-  border-radius: 27px;
   }
-}
+
+
 .navigation .open {
   display: block;
 }
@@ -624,12 +678,13 @@ text-align: center;
 
 .group {
   zoom: 1;
-  max-width: 1020px;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-right:1px solid  #f1f1f1;
-  border-left: 1px solid  #f1f1f1;
+  max-width: 1024px;
   padding-bottom: 120px;
+  background-color: #fcfcfc;
+padding-left: 40px;
+padding-right: 40px;
+border-radius: 2px;
+
   /*-moz-box-shadow: 1px 3px 10px rgba(0,0,0,0.3);
 -webkit-box-shadow: 1px 3px 10px rgba(0,0,0,0.3);
 box-shadow: 1px 3px 10px rgba(0,0,0,0.3);*/

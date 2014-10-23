@@ -9,6 +9,11 @@ REAL.PerspectiveTransform();
 
 
 
+		
+		   
+
+
+
 var element_to_transform_config = function (elem){
   $elem = $(elem);
   var top = $elem.position().top - $(document).scrollTop();
@@ -118,6 +123,7 @@ var store_sizes = function(){
 }
 
 
+
 var collapse_tile = function($fullview){
   
   console.log('Collapsing tile...');
@@ -126,44 +132,38 @@ var collapse_tile = function($fullview){
 
   setTimeout(function(){ 
     $('#searches').isotope('bindResize');
-    $('body').css('overflow-y', 'auto');
+    $('#mainpage').css('overflow-y', 'scroll');
     $('#dateslider').dateRangeSlider('resize');
-    $('#mainpage').css('overflow', 'auto');
     $('#searches').isotope('layout');
-    //$('#mainpage').addClass('notransition');
-    //$('#searches').isotope({sortBy: 'personalisation'});
-    
-    // $('.accordion__title.active').trigger('click');
-    // var d = $('.accordion__title.active');
-    // d.removeClass('active');
-    // d.addClass('active');
-    // $('#searches').hide().delay(500, function(){
-    //   $('#searches').show();
-    //   console.log('---');
-    // });
+   $('#mainpage').addClass('notransition');
+    //order_and_filter();
 
-    order_and_filter();
   }, 2000);
 
+
 };
+
 
 // expand_tile will receive a tileview element
 var expand_tile = function(elem){
   console.log("Expanding tile...");
-  $('#mainpage').removeClass('notransition');
+   
+  //$('#mainpage').removeClass('notransition');
   $tileview = $(elem);
   $search = $tileview.parent();
   $fullview = $('[data-uid='+$tileview.data('uid')+'].search-details');
   $('#searches').isotope('unbindResize');
   
+  
   $fullview.find(".collapser").click(function(){
     collapse_tile($fullview);
+	 
   });
   
   
   $fullview.find('.results-personal').isotope({
     itemSelector: '.result',
-  	layoutMode: 'masonry',
+  	layoutMode: 'packery',
   	packery: {
       gutter: 0
     },
@@ -179,19 +179,25 @@ var expand_tile = function(elem){
       return true;
     },
     sortBy: 'rank',
+	
+	
   }); 
 
-  
 
-  $('body').css('overflow', 'hidden');
-  $('#mainpage').css('overflow', 'hidden');
-  $fullview.css('overflow', 'hidden');
+
+
+	
+	
+ $('#mainpage').css('overflow', 'hidden');
+ $fullview.css('overflow', 'hidden');
 
   dotrans($('#mainpage'), $fullview);
   setTimeout(function(){ 
     $fullview.find('.results-personal').isotope('layout');
   }, 1500);
+ 
 };
+
 
 
 //==========================================================
@@ -220,7 +226,6 @@ $(function(){
       } else {
         $(tobparSelector).removeClass('sticky'); 
         $(tobparSelector).find(".folder").slideDown();
-        $("#top-nav").css('border-bottom','1px solid #eee');
         $("#top-nav").removeClass('top-nav-scrolled');
         $(window).trigger('resize');
       }
@@ -242,8 +247,11 @@ $(function(){
       $(tobparSelector).find(".folder").stop().slideUp();
     } 
   });*/
+  
 
 });
+
+
 
 
 
@@ -257,6 +265,7 @@ $(function(){
  		resizeBoxes();
  	});
 });
+
 
 
 /*
@@ -331,14 +340,31 @@ $(function(){
     current_date_filter = make_filter_date(data.values.min, max);
     order_and_filter();
   });
+  
 
   var search_changed = function(){
     var searched = $("#termsearch-input").val();
     current_term_filter = make_filter_terms(searched);
     order_and_filter()
   };
+  
+    $(".actual-x").click(function(){
+		  $('#termsearch-input').val('');
+		  $('.actual-x').hide();
+		  		  search_changed();
+				  console.log("search");
+		});
+		
   $("#termsearch-input").on("keypress", search_changed);
   $("#termsearch-input").on("keyup", search_changed);
+  
+   $('.button-group').each( function( i, buttonGroup ) {
+    var $buttonGroup = $( buttonGroup );
+    $buttonGroup.on( 'click', 'button', function() {
+      $buttonGroup.find('.is-checked').removeClass('is-checked');
+      $( this ).addClass('is-checked');
+    });
+  });
 
   $("#sortby-most-personal").click(function(){$("#searches").isotope({sortBy:"personalisation", sortAscending:false});});
   $("#sortby-time-ascending").click(function(){$("#searches").isotope({sortBy:"timestamp", sortAscending:true});});
@@ -365,7 +391,7 @@ function accordiondraw() {
 
   // The clicking action
   $('.accordion__title').on('click', function(e) {
-    console.log("accordion clicked", e);
+    //console.log("accordion clicked", e);
     $('.accordion__content').hide();
     $(this).next().show().prev().addClass('active').siblings().removeClass('active');
     //if slider visible, trigger redraw
@@ -383,13 +409,17 @@ function dotrans($from, $to){
 
         $to.addClass('effeckt-page-animating effeckt-page-active ' + $to.data('transition-in'));
         $from.addClass('effeckt-page-animating '+ $from.data('transition-out'));
-
+	
         setTimeout(function(){ 
           $from.removeClass('effeckt-page-active effeckt-page-animating '+ $from.data('transition-out'));
           $to.removeClass('effeckt-page-animating '+$to.data('transition-in'));
+	
 
           $to.find('.collapser').show();
           $from.find('.collapser').show();
+		
         }, 2000);
+		     
       }
+	
     }

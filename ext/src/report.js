@@ -434,6 +434,15 @@ var redraw_hourly_graph = function(searches) {
     graphData[when.getHours()] += 1;
   });
 
+  var time_most_searched = _(graphData).reduce(function(accum, v, k){
+    if(accum.numsearches < v){
+      return {h: k, numsearches:v};
+    }else{
+      return accum;
+    }
+  }, {h: '', numsearches: 0}).h;
+
+
   // formats it suitably for consumption
   var graphData = _.reduce(graphData, function(res, v,k){
     if(k in labels){
@@ -445,10 +454,6 @@ var redraw_hourly_graph = function(searches) {
     return res;
   }, []);
 
-
-  var graphData = _.sortBy(graphData, graphData,function(o){
-    return k.x;
-  });
 
   var chart = d4.charts.column()
     .mixout('yAxis')
@@ -467,6 +472,35 @@ var redraw_hourly_graph = function(searches) {
   d3.select('#bar-chart-1')
     .datum(graphData)
     .call(chart);
+
+  var hour_to_display = {
+    "0": "12am",
+    "1": "1am",
+    "2": "2am",
+    "3": "3am",
+    "4": "4am",
+    "5": "5am",
+    "6": "6am",
+    "7": "7am",
+    "8": "8am",
+    "9": "9am",
+    "10": "10am",
+    "11": "11am",
+    "12": "12pm",
+    "13": "1pm",
+    "14": "2pm",
+    "15": "3pm",
+    "16": "4pm",
+    "17": "5pm",
+    "18": "6pm",
+    "19": "7pm",
+    "20": "8pm",
+    "21": "9pm",
+    "22": "10pm",
+    "23": "11pm"
+  };
+  
+  $("#time-most-searches").text(hour_to_display[time_most_searched]);
 
   $("#bar-chart-1").parent().find('.spinning').hide();
 }
@@ -491,6 +525,16 @@ var redraw_daily_graph = function(searches){
     "6": "SAT",
   };
 
+  var days_to_display = {
+    "0": "Sundays",
+    "1": "Mondays",
+    "2": "Tuesdays",
+    "3": "Wednesdays",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
+  };
+
   var graphData = {};
 
   // add 0 for hours
@@ -504,6 +548,14 @@ var redraw_daily_graph = function(searches){
     var when = new Date(search.timestamp);
     graphData[when.getDay()] += 1;
   });
+
+  var day_most_searched = _(graphData).reduce(function(accum, v, k){
+    if(accum.v < v){
+      return {d:k, v:v};
+    }else{
+      return accum
+    }
+  }, {d:"", v:0}).d;
 
   // formats it suitably for consumption
   var graphData = _.reduce(graphData, function(res, v,k){
@@ -537,6 +589,8 @@ var redraw_daily_graph = function(searches){
   d3.select('#bar-chart-2')
     .datum(graphData)
     .call(chart);
+
+  $("#day-most-searched").text(days_to_display[day_most_searched]);
 
   $("#bar-chart-2").parent().find('.spinning').hide();
   /* END daily breakdown */

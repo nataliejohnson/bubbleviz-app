@@ -48,14 +48,14 @@
          transition: fill 900ms cubic-bezier(0.25, 0.25, 0.01, 1);
          }
          .bar:hover {
-         fill: #ffccff;
+         fill: #3d60db;
          }
          .x.axis path {
          }
          .y.axis path {
          }
          .chart rect {
-         fill: #006cf7;
+         fill: #3d9bdb;
          width: 100%;
          }
          #top-links .chart text.column-label{
@@ -65,6 +65,17 @@ line-height: 2px;
 fill: rgb(48, 63, 160);
 opacity: 1;
          }
+       
+       #pie.pie2 .series0 {
+          fill:#3d9bdb;
+   
+        }
+        
+        #pie.pie2 .series1 {
+          fill: #3d60db;
+       
+        }
+
          #bar-chart-1 .chart text.column-label, #bar-chart-2 .chart text.column-label{
          display: none;
          }
@@ -217,6 +228,7 @@ opacity: 1;
          fill: #ffccff;
          }  
          .chart-data {
+       margin-top: 88px;
          color: #231f20;
          float: right;
          font-size: 14px;
@@ -241,10 +253,10 @@ opacity: 1;
          color: white;
          }
          .search-ind {
-         background-color: blue;
+         background-color: #3d60db;
          }
          .browser-ind {
-         background-color: gray;
+         background-color: #3d9bdb;
          }
          #top-nav {  
          height: 110px;
@@ -254,6 +266,9 @@ opacity: 1;
          }
          #profile-header {
          display: none;
+         }
+         .tooltip{
+            z-index: 99999;
          }
       </style>
    </head>
@@ -323,7 +338,6 @@ opacity: 1;
                      <article id="bar-chart-2"></article>
                   </article>
                   <article class="insight-panel">
-
                      <p>During the day, you search the most at <span id="time-most-searches">8am</span>.</p>
                      <p>During the week, you search the most on <span id="day-most-searched">Wednesday</span>.</p>
                   </article>
@@ -332,7 +346,6 @@ opacity: 1;
             <div>
                <section class="container main-page group">
                   <h1 class="title">toplinks</h1>
-                  <div id="profile-header">Popular Domains</div>
                   <p class="little-text">Most visited websites</p>
                   <article id="top-links"></article>
                </section>
@@ -340,31 +353,30 @@ opacity: 1;
             <div>
                <section class="container main-page group">
                   <h1 class="title">persanalysation</h1>
-                  <div id="profile-header">Persanalysation</div>
-                  <p class="little-text">Top Categories you searched for</p>
+                  <p class="little-text">Search Influence</p>
                   <article class="pie">
-                     <article id="pie"></article>
+                     <article id="pie" class="pie2"></article>
                      <p class="chart-data">
                         <span id="links-visited-num">unknown number of</span> 
-                        <span class="under-text">Unique Links Visited</span>
+                        <span class="under-text-first">Unique Domains Visited</span>
                         <span class="key"><span class="stupid indicator search-ind"></span>Links that were visited from a search</span>
                         <span class="under-text">Search results that you clicked on</span>
                         <span class="key"><span class="stupid indicator browser-ind"></span>Links visited from your browser </span>
                         <span class="under-text">Links you typed in</span>
                      </p>
                   </article>
-                  <p class="little-text">Top Categories you searched for</p>
+                  <p class="little-text">Personalisation Influence</p>
                   <article class="pie">
                      <article id="pie2"></article>
                      <p class="chart-data">
                         <span id="total-results"></span>
-                        <span class="under-text">Total Search Results</span>
+                        <span class="under-text-first">Total Search Results</span>
                         <span class="key"><span class="stupid indicator indicator-promoted"></span>Promoted Results <span id="promoted-percent">??%</span></span>
-                        <span class="under-text">Results that were moved higher for you.</span>
+                        <span class="under-text">Results that were moved up in rank for you.</span>
                         <span class="key"><span class="stupid indicator indicator-demoted"></span>Demoted Results <span id="demoted-percent">??%</span><br></span>
-                        <span class="under-text">Results that were moved down for you.</span>
+                        <span class="under-text">Results that were moved down in rank for you.</span>
                         <span class="key"><span class="stupid indicator indicator-stable"></span>Neutral Results <span id="neutral-percent">??%</span><br></span>
-                        <span class="under-text">Results that stayed the same in rank.</span>
+                        <span class="under-text">Results that stayed the same rank.</span>
                         <span class="key"><span class="stupid anon-rank">+</span>Unique Results <span id="unique-percent">??%</span><br></span>
                         <span class="under-text">Results that were only shown to you.</span>
                      </p>
@@ -374,7 +386,6 @@ opacity: 1;
             <div>
                <section class="container main-page group">
                   <h1 class="title">topcategories</h1>
-                  <div id="profile-header">Top Categories</div>
                   <p class="little-text">Categories you frequently search for</p>
                   <article id="bubble-chart"></article>
                   <article class="insight-panel">

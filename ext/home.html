@@ -71,10 +71,10 @@
             {{#each personalScores}}
                <div class="result {{category}}">
                   <div class="rank">{{personal_rank}}</div>
-               <div class="stupid">
-                  <div class="anon-rank">{{anonymous_rank}}</div>
-                  <div class="indicator {{indicatorclass}}"></div>
-               </div>
+                  <div class="stupid">
+                     {{#show_rank}}<div class="anon-rank">{{anonymous_rank}}</div>{{/show_rank}}
+                     <div class="indicator {{indicatorclass}}"></div>
+                  </div>
                   <a class"url" href="{{url}}" target="_blank">{{result}}</a>
                </div>
             {{/each}}

@@ -42,15 +42,18 @@ var scores_to_data_template = function(scores){
         score.indicatorclass = "indicator-stable";
       }
     }
-
+    score.show_rank = true;
+    
     if(!score.personal_rank){
       score.anonymous_rank = "+";
-      score.indicatorclass = "indicator-promoted";
+      score.indicatorclass = "indicator-unique";
+      score.show_rank = false;
     }
 
     if(!score.anonymous_rank){
       score.anonymous_rank = "+";
-      score.indicatorclass = "indicator-promoted";
+      score.indicatorclass = "indicator-unique";
+      score.show_rank = false;
     }
 
   });

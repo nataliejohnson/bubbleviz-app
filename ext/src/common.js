@@ -233,7 +233,8 @@ function parseDocumentForResults(element){
 }
 
 function scrapeSearchTerms(element){
-  var elem = element.querySelector('#gbqfq');
+  // We're looking for the search terms in the search bar
+  var elem = element.querySelector('#lst-ib');
   return elem.value;
 }
 

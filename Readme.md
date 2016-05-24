@@ -1,3 +1,13 @@
+Bubbleviz
+=========
+
+A Chrome Extension that will analyse your search results.
+
+
+
+## Notes
+
+
 Existing extension for personalisation analysis: http://bobble.gtisc.gatech.edu/index.html
 
 

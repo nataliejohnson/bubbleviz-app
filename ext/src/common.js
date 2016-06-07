@@ -16,6 +16,12 @@ $(window).load(function() {
 });
 });
 
+function getHash(url){
+  var e = document.createElement('a');
+  e.href = url;
+  return e.hash.slice(1, e.hash.length);
+}
+
 function getParameterByName(query_string, name) {
     
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

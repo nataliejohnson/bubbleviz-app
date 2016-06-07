@@ -64,12 +64,12 @@ function scrapeForResults(){
     var search_terms = scrapeSearchTerms(document);
   
     if(results.length > 0){
-      console.log("Personal results: ", JSON.stringify(results));
+      // console.log("Personal results: ", JSON.stringify(results));
 
       var request = {url: convert_url_to_server_url(document.URL)};
       
       var onResponse = function(response) {
-        console.log("Anonymous results: ", JSON.stringify(response));
+        // console.log("Anonymous results: ", JSON.stringify(response));
         if(!response.error){
           storeResults(document.URL, results, response, search_terms);
         }else{
@@ -89,16 +89,44 @@ function main(){
   var bubbleviz = document.createElement("div");
   bubbleviz.className = "bubbleviz";
   document.getElementsByTagName('body')[0].appendChild(bubbleviz);
+
+  var ps = window.history.pushState;
+  window.history.pushState = function(state) {
+      console.log("Wrapped pushState has been called.", arguments);
+      if (typeof window.history.onpushstate == "function") {
+          window.history.onpushstate.apply(history, arguments);
+      }
+      return ps.apply(window.history, arguments);
+  }
+
         
-    // On url change, do scrape page
+
+  var currentHash = "";
+  // On url change, do scrape page
   function handleChanges(newHash, oldHash){
-    console.log("Hash changed "+oldHash+" -> "+newHash);
+    console.log("Hash changed '"+oldHash+"' -> '"+newHash+"'");
+    currentHash = newHash;
     setTimeout(scrapeForResults, 750);
   }
 
+  function handleInitialised(newHash, oldHash){
+    console.log("Hash initialised '"+oldHash+"' -> '"+newHash+"'");
+    currentHash = newHash;
+    setTimeout(scrapeForResults, 750); 
+  }
+
+
+  window.history.onpushstate = function (state, title, url){
+    var newHash = getHash(url);
+    handleChanges(newHash, currentHash);
+  };
+
+  
   hasher.changed.add(handleChanges); 
-  hasher.initialized.add(handleChanges); 
+  hasher.initialized.add(handleInitialised); 
   hasher.init();
+
+  console.log("Bubbleviz initialised");
 }
 
 var readyStateCheckInterval = setInterval(function() {
@@ -107,3 +135,7 @@ var readyStateCheckInterval = setInterval(function() {
     main();
   }
 }, 10);
+
+var InjectHist = window.history;
+
+console.log("History available to the inject.js script:", window.history);

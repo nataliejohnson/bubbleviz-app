@@ -5,15 +5,15 @@
 
 function storeResults(url, personal, anonymous, search_terms){
   var object_to_store = {
-    url: url, 
-    anonymous: anonymous, 
+    url: url,
+    anonymous: anonymous,
     personal:personal,
     terms: search_terms,
     timestamp: (new Date()).getTime(),
   };
-  
+
   chrome.storage.local.get("searches", function(store){
-   
+
     if(store.searches){
       store.searches.push(object_to_store);
       chrome.storage.local.set({searches: store.searches}, function(){
@@ -37,21 +37,21 @@ function convert_url_to_server_url(url){
   var PREFIX = "https://www.google.com/search"
 
   var server_search_url = url;
-  
+
 
   var parser = document.createElement('a');
   parser.href =  server_search_url;
-  
+
   var index = parser.href.indexOf(parser.search);
   var query = parser.search;
   var hash = parser.href.slice(index + parser.search.length, parser.href.length);
-  
-  if(hash){ 
+
+  if(hash){
     server_search_url = PREFIX + "?" + hash.slice(1,hash.length);
   }else if(query && !hash){
     server_search_url = PREFIX + query;
   }
-  
+
   return server_search_url;
 }
 
@@ -62,12 +62,12 @@ function convert_url_to_server_url(url){
 function scrapeForResults(){
     var results = parseDocumentForResults(document);
     var search_terms = scrapeSearchTerms(document);
-  
+
     if(results.length > 0){
       // console.log("Personal results: ", JSON.stringify(results));
 
       var request = {url: convert_url_to_server_url(document.URL)};
-      
+
       var onResponse = function(response) {
         // console.log("Anonymous results: ", JSON.stringify(response));
         if(!response.error){
@@ -76,7 +76,7 @@ function scrapeForResults(){
           console.log("ERROR: Querying server failed", response.error);
         }
       };
-      
+
 
       chrome.runtime.sendMessage(request, onResponse );
     }
@@ -90,17 +90,6 @@ function main(){
   bubbleviz.className = "bubbleviz";
   document.getElementsByTagName('body')[0].appendChild(bubbleviz);
 
-  var ps = window.history.pushState;
-  window.history.pushState = function(state) {
-      console.log("Wrapped pushState has been called.", arguments);
-      if (typeof window.history.onpushstate == "function") {
-          window.history.onpushstate.apply(history, arguments);
-      }
-      return ps.apply(window.history, arguments);
-  }
-
-        
-
   var currentHash = "";
   // On url change, do scrape page
   function handleChanges(newHash, oldHash){
@@ -112,18 +101,20 @@ function main(){
   function handleInitialised(newHash, oldHash){
     console.log("Hash initialised '"+oldHash+"' -> '"+newHash+"'");
     currentHash = newHash;
-    setTimeout(scrapeForResults, 750); 
+    setTimeout(scrapeForResults, 750);
   }
 
+  window.addEventListener("message", function(event){
+    console.log("Received event from page", event);
+    if (event.source!=window){ return; }
+    if(event.data.newHash){
+      handleChanges(currentHash, event.data.newHash);
+    }
+  }, false);
 
-  window.history.onpushstate = function (state, title, url){
-    var newHash = getHash(url);
-    handleChanges(newHash, currentHash);
-  };
 
-  
-  hasher.changed.add(handleChanges); 
-  hasher.initialized.add(handleInitialised); 
+  hasher.changed.add(handleChanges);
+  hasher.initialized.add(handleInitialised);
   hasher.init();
 
   console.log("Bubbleviz initialised");
@@ -132,6 +123,12 @@ function main(){
 var readyStateCheckInterval = setInterval(function() {
   if (document.readyState === "complete") {
     clearInterval(readyStateCheckInterval);
+
+    var s = document.createElement('script');
+    s.src = chrome.extension.getURL('src/inject/embed-script.js');
+    (document.head || document.documentElement).appendChild(s);
+
+
     main();
   }
 }, 10);

@@ -7,11 +7,10 @@ A Chrome Extension that will analyse your search results.
 
 ## Notes
 
+Problem with content scripts not having access to the page objects
+http://stackoverflow.com/questions/9515704/building-a-chrome-extension-inject-code-in-a-page-using-a-content-script/9517879#9517879
 
 Existing extension for personalisation analysis: http://bobble.gtisc.gatech.edu/index.html
-
-
-
 
 
 ## Scraping google results

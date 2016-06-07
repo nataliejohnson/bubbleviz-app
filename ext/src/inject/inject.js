@@ -105,7 +105,7 @@ function main(){
   }
 
   window.addEventListener("message", function(event){
-    console.log("Received event from page", event);
+    // console.log("Received event from page", event);
     if (event.source!=window){ return; }
     if(event.data.newHash){
       handleChanges(currentHash, event.data.newHash);

@@ -3,3 +3,8 @@ __pycache__
 ENV
 *.un~
 ext/_locales
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
